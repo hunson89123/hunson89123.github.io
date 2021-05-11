@@ -1,9 +1,18 @@
-﻿<!DOCTYPE html>
-<html>
-<body style="background-color:black;">
-	<script src="script_home.js"></script>
-	<div id="breath-light"></div>
-	<!--<input type="button" value="JSgame1" onclick="location.href='https://hunson89123.github.io/JSgame1/'">-->
+﻿<html>
+<head>
+<title>按鈕滑鼠經過變色</title>
+<style type="text/css">
+.over {color:yellow; background: navy}
+.down {color:yellow; background: navy; font-style: italic}
+</style>
+</head>
+<body>
+<input type="Button"
+onMouseOver="this.className='over';"
+onMouseOut="this.className='';"
+onMouseDown="this.className='down';"
+onMouseUp="this.className='over';"
+value="按我!!"
+onClick="this.value='被按了！'" name="Button">
 </body>
-
 </html>
