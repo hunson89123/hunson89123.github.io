@@ -1,9 +1,10 @@
-.button {
-    -webkit-transition-duration: 0.4s; /* Safari */
-    transition-duration: 0.4s;
+button {
+  background-color: white;
+  color: black;
+  border: 2px solid #4CAF50;
 }
 
-.button:hover {
+button:hover {
     background-color: #1C1C1C; /* Green */
     color: white;
 }
