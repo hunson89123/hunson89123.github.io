@@ -1,19 +1,25 @@
-﻿<html>
-	<head>
-		<title>按鈕滑鼠經過變色</title>
-		<style> background="#000"</style>
-		<style type="text/css">
-			.over {color:yellow; background: navy}
-			.down {color:yellow; background: navy; font-style: italic}
-		</style>
-	</head>
-	<body>
-		<input type="Button"
-		onMouseOver="this.className='over';"
-		onMouseOut="this.className='';"
-		onMouseDown="this.className='down';"
-		onMouseUp="this.className='over';"
-		value="按我!!"
-		onClick="this.value='被按了！'" name="Button">
-	</body>
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Q1</title>
+	<style>
+		table,td{
+			border: 1px solid black;
+			text-align: center;
+			font-size: 16px;
+			margin: auto;
+		}
+	</style>
+</head>
+<body background-color:black>
+	<form style="text-align: center;" method="post">
+		請選擇顯示
+		<select name="nameNum">
+	    </select>
+		矩陣
+		<input type="submit" name="btnDisplay" value="顯示">
+	</form>
+</body>
 </html>
