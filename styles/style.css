@@ -1,3 +1,7 @@
+html,body {
+  height: 100%;
+}
+
 button {
   display: inline-block;
   padding: 15px 25px;
@@ -7,7 +11,7 @@ button {
   text-decoration: none;
   outline: none;
   color: #fff;
-  background-color: #4CAF50;
+  background-color: #165bab;
   border: none;
   border-radius: 15px;
   box-shadow: 0 9px #999;
@@ -16,18 +20,27 @@ button {
 }
 
 button:hover {
-    background-color: #3e8e41
+    background-color: #0f3f77
 }
 
 button:active {
-  background-color: #3e8e41;
+  background-color: #0f3f77;
   box-shadow: 0 5px #666;
   transform: translateY(4px);
 }
 
-.content {
-  margin: auto;
-  width: 50%;
-  border: 3px solid green;
-  padding: 10px;
+.outer {
+  margin: 0 auto;
+}
+
+.inner {
+  display: block;
+  height: 100%;
+  align-items: center;
+}
+
+.div_ic {
+  margin: 0 auto;
+  line-height: 100px;
+  text-align: center;
 }
