@@ -1,68 +1,28 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>你好，GitHub</title>
-  </head>
-  <body>
-  <center>
-<script language="JavaScript">
-<!--
-function getCookieVal (offset) {
-  var endstr = document.cookie.indexOf (";", offset);
-  if (endstr == -1)
-    endstr = document.cookie.length;
-  return unescape(document.cookie.substring(offset, endstr));
-}
-function GetCookie (name) {
-  var arg = name + "=";
-  var alen = arg.length;
-  var clen = document.cookie.length;
-  var i = 0;
-  while (i < clen) {
-    var j = i + alen;
-    if (document.cookie.substring(i, j) == arg)
-      return getCookieVal (j);
-    i = document.cookie.indexOf(" ", i) + 1;
-    if (i == 0) 
-      break;
-  }
-  return null;
-}
-function SetCookie (name, value) {
-  var argv = SetCookie.arguments;
-  var argc = SetCookie.arguments.length;
-  var expires = (argc > 2) ? argv[2] : null;
-  var path = (argc > 3) ? argv[3] : null;
-  var domain = (argc > 4) ? argv[4] : null;
-  var secure = (argc > 5) ? argv[5] : false;
-  document.cookie = name + "=" + escape (value) +
-    ((expires == null) ? "" : ("; expires=" + expires.toGMTString())) +
-    ((path == null) ? "" : ("; path=" + path)) +
-    ((domain == null) ? "" : ("; domain=" + domain)) +
-    ((secure == true) ? "; secure" : "");
-}
-function DeleteCookie(name) {
-  var exp = new Date();
-  FixCookieDate (exp); // Correct for Mac bug
-  exp.setTime (exp.getTime() - 1);  // This cookie is history
-  var cval = GetCookie (name);
-  (cval != null)
-    document.cookie = name + "=" + cval + "; expires=" + exp.toGMTString();
-}
-var expdate = new Date();
-var num_visits;
-expdate.setTime(expdate.getTime() + (5*24*60*60*1000));
-if (!(num_visits = GetCookie("num_visits")))
-  num_visits = 0;
-num_visits++;
-SetCookie("num_visits",num_visits,expdate);
-document.write("<font size=3 color=red>您是第 "+num_visits+" 次來的</font>");
--->
-</script>
-</center>
 
+<head>
+	<meta charset="utf-8"> </meta>
+	<style>
+		body {
+			padding: 0;
+			margin: 0;
+		}
 
+		canvas {
+			background: #000;
+			display: block;
+			margin: 0 auto;
+		}
+	</style>
+</head>
 
-  </body>
+<body style="background-color:black;">
+
+	<canvas id="myCanvas" width="1000" height="800"></canvas>
+	<script src="drawString.js"></script>
+	<script src="script.js"></script>
+	<input type="button" value="JSgame1" onclick="location.href='https://hunson89123.github.io/JSgame1/'">
+</body>
+
 </html>
