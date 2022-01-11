@@ -1,5 +1,7 @@
 html,body {
   height: 100%;
+  margin: 0 auto;
+  background-image: linear-gradient(to top left,#0F2027,#2C5364);
 }
 
 button {
@@ -28,19 +30,27 @@ button:active {
   box-shadow: 0 5px #666;
   transform: translateY(4px);
 }
-
-.outer {
+.div {
   margin: 0 auto;
-}
-
-.inner {
-  display: block;
-  height: 100%;
-  align-items: center;
-}
-
-.div_ic {
-  margin: 0 auto;
-  line-height: 100px;
+  /*line-height: 100px;*/
+  position: absolute;
   text-align: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%)
+}
+
+.div p{
+  /*font-family: Microsoft JhengHei;*/
+  font-family: consolas;
+  font-size: 48px;
+  font-style: bold;
+}
+
+.div a{
+  margin: 0 auto;
+  /*font-family: Microsoft JhengHei;*/
+  font-family: consolas;
+  font-size: 48px;
+  font-style: bold;
 }
