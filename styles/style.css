@@ -1,9 +1,8 @@
 html,body {
   height: 100%;
   margin: 0 auto;
-  background-image: linear-gradient(to top left,#0F2027,#2C5364);
+  background-image: radial-gradient(ellipse at center top,#2C5364,#0F2027);
 }
-
 button {
   display: inline-block;
   padding: 15px 25px;
