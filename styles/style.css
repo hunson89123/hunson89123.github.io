@@ -43,7 +43,7 @@ button:active {
 .div p{
   /*font-family: Microsoft JhengHei;*/
   font-family: 'Inconsolata', monospace;
-  font-size: 5em;
+  font-size: 4em;
   font-style: bold;
 }
 
@@ -51,6 +51,6 @@ button:active {
   margin: 0 auto;
   /*font-family: Microsoft JhengHei;*/
   font-family: 'Inconsolata', monospace;
-  font-size: 3em;
+  font-size: 2em;
   font-style: bold;
 }
