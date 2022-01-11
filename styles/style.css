@@ -42,15 +42,15 @@ button:active {
 
 .div p{
   /*font-family: Microsoft JhengHei;*/
-  font-family: consolas;
-  font-size: 48px;
+  font-family: 'Inconsolata', monospace;
+  font-size: 5em;
   font-style: bold;
 }
 
 .div a{
   margin: 0 auto;
   /*font-family: Microsoft JhengHei;*/
-  font-family: consolas;
-  font-size: 48px;
+  font-family: 'Inconsolata', monospace;
+  font-size: 3em;
   font-style: bold;
 }
