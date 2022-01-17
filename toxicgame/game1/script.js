@@ -185,6 +185,7 @@ function touchend(e){
 }
 
 function touchmove(e){
+    e.preventDefault();
     var touch = e.touches[0];
     tX = touch.pageX;
     tY = touch.pageY;
