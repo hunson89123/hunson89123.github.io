@@ -1,0 +1,31 @@
+html,body {
+  height: 100%;
+  margin: 0 auto;
+  background-image: radial-gradient(ellipse at center top,#2C5364,#0F2027 87%);
+}
+
+.div {
+  margin: 0 auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Noto Serif TC', serif;
+  color: #FFFFFF;
+}
+
+h1,h2,h3{
+  font-family: 'Noto Sans TC', sans-serif;
+}
+
+.div p{
+  line-height: 1em;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 4em;
+}
+.div a{
+  margin: 0 auto;
+  /*font-family: Microsoft JhengHei;*/
+  font-family: 'Noto Serif TC', serif;
+  font-size: 2em;
+}
