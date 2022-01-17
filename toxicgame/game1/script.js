@@ -140,6 +140,10 @@ function random(min, max) {
 //event
 document.addEventListener("keydown", keydown, false);//註冊按下鍵盤
 document.addEventListener("keyup", keyup, false);//註冊放開鍵盤
+document.addEventListener("touchstart", touchstart, false);
+document.addEventListener("touchend", touchend, false);
+document.addEventListener("touchcancel", touchcancell, false);
+document.addEventListener("touchmove", touchmove, false);
 
 
 
@@ -158,7 +162,14 @@ function keyup(e) {
     if (e.keyCode == 39) player.dir[3] = 0;
     if (e.keyCode == 32) player.shoot = 0;
 }
-//object
+
+function touchstart(e){
+    if (e.targetTouches.length == 1) player.shoot = 1;
+}
+
+function touchend(e){
+    player.shoot = 0;
+}
 
 function Player(x, y, r) {
     this.x = x;
