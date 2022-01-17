@@ -11,6 +11,11 @@ var bullet = [];
 var wavenum = 0;
 var waveStartTime = 0;
 var waveDelay = 2000;
+
+var tXf = 0;
+var tYf = 0;
+var pXf = 0;
+var pYf = 0;
 main();
 
 function main() {
@@ -142,7 +147,7 @@ document.addEventListener("keydown", keydown, false);//註冊按下鍵盤
 document.addEventListener("keyup", keyup, false);//註冊放開鍵盤
 document.addEventListener("touchstart", touchstart, false);
 document.addEventListener("touchend", touchend, false);
-document.addEventListener("touchcancel", touchcancell, false);
+document.addEventListener("touchcancel", touchcancel, false);
 document.addEventListener("touchmove", touchmove, false);
 
 
@@ -155,6 +160,7 @@ function keydown(e) {
     if (e.keyCode == 39) player.dir[3] = 1;
     if (e.keyCode == 32) player.shoot = 1;
 }
+
 function keyup(e) {
     if (e.keyCode == 38) player.dir[0] = 0;
     if (e.keyCode == 40) player.dir[1] = 0;
@@ -165,12 +171,31 @@ function keyup(e) {
 
 function touchstart(e){
     e.preventDefault();
+    var touch = e.touches[0];
     if (e.targetTouches.length == 1) player.shoot = 1;
+    tXf = touch.pageX;
+    tYf = touch.pageY;
+    pXf = player.x;
+    pYf = player.y;
 }
 
 function touchend(e){
     e.preventDefault();
     player.shoot = 0;
+}
+
+function touchmove(e){
+    var touch = e.touches[0];
+    tX = touch.pageX;
+    tY = touch.pageY;
+    tXm = tX-tXf;
+    tYm = tY-tYf;
+    player.x = pXf + tXm;
+    player.y = pYf + tYm;
+}
+
+function touchcancel(e){
+
 }
 
 function Player(x, y, r) {
