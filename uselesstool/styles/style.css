@@ -6,6 +6,7 @@ html,body {
 
 .div {
   margin: 0 auto;
+  /*line-height: 100px;*/
   position: absolute;
   text-align: center;
   top: 50%;
@@ -14,10 +15,12 @@ html,body {
 }
 
 .div p{
-  line-height: 1em;
+  /*font-family: Microsoft JhengHei;*/
+  /*font-family: 'Inconsolata', monospace;*/
   font-family: 'Noto Serif TC', serif;
   font-size: 4em;
   font-style: bold;
+  line-height: 1em;
 }
 
 .div a{
