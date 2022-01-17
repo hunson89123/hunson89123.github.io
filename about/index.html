@@ -16,13 +16,19 @@
 		<p style="color:#FFFFFB;">Hunson's Lab</p>
 		<h1>關於本站</h1>
 		<h3>一個拿來暫時練習及發明實驗網頁遊戲、工具的地方~</h3>
-		<h3>最後更新時間：
+		<h3>最後更新時間：<br>
 			<span id="lastModified"></span>
 		</h3>
+		
 		<script type="text/javascript">
-			var x = document.lastModified;
+			var x = new Date(document.lastModified);
 			var s = document.getElementById('lastModified');
-			s.innerHTML = x;
+			s.innerHTML =  x.getFullYear()-1911+"/"+
+				    String(x.getMonth()+1).padStart(2,'0')+"/"+
+					String(x.getDate()).padStart(2,'0')+" "+
+					String(x.getHours()).padStart(2,'0')+":"+
+					String(x.getMinutes()).padStart(2,'0')+":"+
+					String(x.getSeconds()).padStart(2,'0');
 		</script>
 		<h1>開發紀錄</h1>
 		<h3>111/01/16 完成主頁、遊戲、工具、關於首頁</h3>
