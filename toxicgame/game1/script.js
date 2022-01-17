@@ -164,10 +164,12 @@ function keyup(e) {
 }
 
 function touchstart(e){
+    e.preventDefault();
     if (e.targetTouches.length == 1) player.shoot = 1;
 }
 
 function touchend(e){
+    e.preventDefault();
     player.shoot = 0;
 }
 
