@@ -4,25 +4,30 @@
 <head>
 	<meta charset="utf-8"> </meta>
 	<style>
-		body {
-			padding: 0;
+		html,body {
+			width: 100%;
+			height: 100%;
 			margin: 0;
 		}
 
 		canvas {
-			background: #000;
+			background: #FFF;
 			display: block;
-			margin: 0 auto;
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
 		}
 	</style>
 </head>
 
-<body style="background-color:black;">
-
-	<canvas id="myCanvas" width="1000" height="800"></canvas>
+<body>
+	<canvas id="myCanvas"></canvas>
 	<script src="drawString.js"></script>
 	<script src="script.js"></script>
-	<input type="button" value="JSgame1" onclick="location.href='https://hunson89123.github.io/JSgame1/'">
+	<p id="demo"></p>
+<!-- 	<script src="script_home.js"></script> -->
 </body>
 
 </html>

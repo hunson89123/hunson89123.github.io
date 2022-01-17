@@ -16,6 +16,8 @@ function loop() {
 
 function resizeCanvas(){
 		var can=document.getElementById('myCanvas');
-			canvas.setAttribute('width',window.innerWidth);
-			canvas.setAttribute('height',window.innerHeight);
+		/* canvas.setAttribute('width',window.innerWidth);
+		canvas.setAttribute('height',window.innerHeight); */
+		can.width = window.innerWidth;
+		can.height = window.innerHeight; 
 }

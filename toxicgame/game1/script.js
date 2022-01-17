@@ -1,7 +1,7 @@
 var canvas = document.getElementById('myCanvas');
 var ctx = canvas.getContext('2d');
-var width = canvas.width;
-var height = canvas.height;
+var width = window.innerWidth;
+var height = window.innerHeight;
 
 var x = 0, y = 0;
 var player;//弧度
@@ -24,7 +24,7 @@ function main() {
 
 
 function loop() {
-
+	resizeCanvas();
     update();
     render();
     if (player.hp == 0) {
@@ -33,6 +33,16 @@ function loop() {
         return;
     }
     requestAnimationFrame(loop);//16ms 60FPS
+}
+
+function resizeCanvas(){
+		var can=document.getElementById('myCanvas');
+		/* canvas.setAttribute('width',window.innerWidth);
+		canvas.setAttribute('height',window.innerHeight); */
+		width = window.innerWidth;
+		height = window.innerHeight; 
+		can.width = window.innerWidth;
+		can.height = window.innerHeight; 
 }
 
 function update() {
