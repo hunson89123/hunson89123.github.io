@@ -218,7 +218,7 @@ function Player(x, y, r) {
 
     this.score = 0;
 
-    this.hp = 3;
+    this.hp = 5;
 
     this.covering = false;
     this.covrtTimer = 0;
@@ -250,7 +250,7 @@ function Player(x, y, r) {
     this.render = function () {
         ctx.fillStyle = this.color;
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
         ctx.fill();
     }
     this.hit = function (dmg) {
