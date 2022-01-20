@@ -5,14 +5,20 @@ var height = window.innerHeight;
 var ground = height*2/3;
 
 var player;
+var obstacle;
+var hvObs = false;
 main();
 
 function main() {
-    player = new Player(10,ground-100,50,100)
+    player = new Player(10,ground-200,125,200)
+    var obstacleH = getRnd(50,200);
+    obstacle = new Obstacle(width,ground-obstacleH,60,obstacleH);
     loop();
 }
 
-
+function getRnd(min,max){
+    return Math.floor(Math.random()*(max-min+1))+min;
+}
 function loop() {
 	resizeCanvas();
     update();
@@ -30,6 +36,7 @@ function resizeCanvas(){
 
 function update() {
     player.update();
+    obstacle.update();
 }
 
 function render() {
@@ -47,20 +54,15 @@ function render() {
     ctx.fillRect(0,canvas.height*2/3,canvas.width,canvas.height);
     /*玩家*/
     player.draw();
-    
+    /*障礙*/
+    obstacle.draw();
 }
 
 document.addEventListener("keydown", keydown, false);
-document.addEventListener("keyup", keyup, false);    
 document.addEventListener("touchstart", touchstart, false);
-document.addEventListener("touchend", touchend, false);
 
 function keydown(e) {
     if (e.keyCode == 32) player.jump = 1;
-}
-
-function keyup(e) {
-    // if (e.keyCode == 32) player.jump = 0;
 }
 
 function touchstart(e){
@@ -69,9 +71,6 @@ function touchstart(e){
     if (e.targetTouches.length == 1) player.jump = 1;
 }
 
-function touchend(e){
-
-}
 function Player(x,y,w,h){
     this.x = x;
     this.y = y;
@@ -80,7 +79,7 @@ function Player(x,y,w,h){
     this.m = 0;
 
     this.jump = 0;
-    this.power = 15;
+    this.power = 17;
     this.speed = 35;
     this.jumpMax=this.power*100;
 
@@ -97,7 +96,7 @@ function Player(x,y,w,h){
             this.jump=0;
             this.m=0;
         }
-        if( this.y > ground-100)this.y = ground-100;
+        if( this.y > ground-200)this.y = ground-200;
     }
 
     this.color = "#FFFFFF"
@@ -105,4 +104,28 @@ function Player(x,y,w,h){
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x,this.y,this.w,this.h)
     }
+}
+
+function Obstacle(x,y,w,h){
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.m = 0;
+
+    this.update = function(){
+        if(this.x+87 > 0)this.x-=7;
+        else{
+            var obstacleH = getRnd(50,200);
+            obstacle = new Obstacle(width,ground-obstacleH,60,obstacleH)
+        }
+    }
+
+    this.color = "#E83015"
+    this.draw = function(){
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x,this.y,this.w,this.h)
+    }
+
+
 }
