@@ -101,12 +101,11 @@ function update() {
 }
 
 function render() {
-    // ctx.fillStyle = "#FFF";
-    let radgrad = ctx.createRadialGradient(canvas.width/2, 0, 0, canvas.width/2, 0, canvas.height*1.25);
-    radgrad.addColorStop(0, '#2C5364');
-    radgrad.addColorStop(1, '#0F2027');
-
-    ctx.fillStyle = radgrad;
+    ctx.fillStyle = "#121212";
+    // let radgrad = ctx.createRadialGradient(canvas.width/2, 0, 0, canvas.width/2, 0, canvas.height*1.25);
+    // radgrad.addColorStop(0, '#2C5364');
+    // radgrad.addColorStop(1, '#0F2027');
+    // ctx.fillStyle = radgrad;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     //---------------------------------------
     player.render();

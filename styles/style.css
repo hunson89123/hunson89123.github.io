@@ -1,7 +1,8 @@
 html,body {
   height: 100%;
   margin: 0 auto;
-  background-image: radial-gradient(ellipse at center top,#2C5364,#0F2027 87%);
+  /*background-image: radial-gradient(ellipse at center top,#2C5364,#0F2027 87%);*/
+  background: #121212;
 }
 
 .div {
