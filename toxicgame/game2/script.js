@@ -3,16 +3,24 @@ var ctx = canvas.getContext('2d');
 var width = window.innerWidth;
 var height = window.innerHeight;
 var ground = height*2/3;
+var point = 0;
 
 var player;
 var obstacle;
 var hvObs = false;
+
+var playerW = 87;
+var playerH = 200;
+var obstacleW = 50;
+var obstacleH = 0;
+var obstacleHMax = 100;
+var obstacleHMin = 40;
 main();
 
 function main() {
-    player = new Player(10,ground-200,125,200)
-    var obstacleH = getRnd(50,200);
-    obstacle = new Obstacle(width,ground-obstacleH,60,obstacleH);
+    player = new Player(0,ground-playerH,playerW,playerH)
+    obstacleH = getRnd(obstacleHMin,obstacleHMax);
+    obstacle = new Obstacle(width,ground-obstacleH,obstacleW,obstacleH);
     loop();
 }
 
@@ -23,7 +31,12 @@ function loop() {
 	resizeCanvas();
     update();
     render();
-    requestAnimationFrame(loop);//16ms 60FPS
+    if(player.dead){
+        drawString(ctx, "G A M E  O V E R\n Point:"+player.point, width / 2, height / 2, "#FF0", 40, "Consolas", 0, "center", 1);
+        return;
+    }
+    requestAnimationFrame(loop);
+    /*debug顯示用*/
 }
 
 function resizeCanvas(){
@@ -40,9 +53,7 @@ function update() {
 }
 
 function render() {
-    /*debug顯示用*/
-    // var str = "["+Math.round(player.y)+","+ground+"]";
-    // drawString(ctx, str, width / 2, height / 2, "#FF0", 40, "Consolas", 0, "center", 1);
+    
     /*背景*/
     let radgrad = ctx.createRadialGradient(canvas.width/2, 0, 0, canvas.width/2, 0, canvas.height*1.25);
     radgrad.addColorStop(0, '#2C5364');
@@ -56,6 +67,10 @@ function render() {
     player.draw();
     /*障礙*/
     obstacle.draw();
+    /*碰撞*/
+    player.touched();
+    /*分數*/
+    if(!player.dead)drawString(ctx, player.point+"", width / 2, height / 2, "#FF0", 40, "Consolas", 0, "center", 1);
 }
 
 document.addEventListener("keydown", keydown, false);
@@ -83,8 +98,13 @@ function Player(x,y,w,h){
     this.speed = 35;
     this.jumpMax=this.power*100;
 
+    this.dead = false;
+    this.point = 0;
     this.update = function(){
         if(this.jump == 1)this.jumping();
+        point++;
+        this.point=Math.round(point/10);
+        // this.isDead();
     }
     
     this.jumping = function(){
@@ -96,13 +116,19 @@ function Player(x,y,w,h){
             this.jump=0;
             this.m=0;
         }
-        if( this.y > ground-200)this.y = ground-200;
+        if( this.y > ground-playerH)this.y = ground-playerH;
     }
 
     this.color = "#FFFFFF"
     this.draw = function(){
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x,this.y,this.w,this.h)
+    }
+
+    this.touched = function(){
+        if(obstacle.x<(player.x+playerW)&&(obstacle.x+obstacleW)>0 && obstacle.y<(player.y+playerH))
+            this.dead = true;
+        else this.dead = false;
     }
 }
 
@@ -116,8 +142,8 @@ function Obstacle(x,y,w,h){
     this.update = function(){
         if(this.x+87 > 0)this.x-=7;
         else{
-            var obstacleH = getRnd(50,200);
-            obstacle = new Obstacle(width,ground-obstacleH,60,obstacleH)
+            obstacleH = getRnd(obstacleHMin,obstacleHMax);
+            obstacle = new Obstacle(width,ground-obstacleH,obstacleW,obstacleH)
         }
     }
 
@@ -126,6 +152,4 @@ function Obstacle(x,y,w,h){
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x,this.y,this.w,this.h)
     }
-
-
 }
