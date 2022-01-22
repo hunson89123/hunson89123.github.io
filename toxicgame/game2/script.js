@@ -11,16 +11,18 @@ var hvObs = false;
 
 var playerW = 87;
 var playerH = 200;
-var obstacleW = 50;
+var obstacleW = 0;
 var obstacleH = 0;
 var obstacleHMax = 100;
 var obstacleHMin = 40;
+var obstacleWMax = 80;
+var obstacleWMin = 40;
+var obstacleSpeed = 7;
 main();
 
 function main() {
     player = new Player(0,ground-playerH,playerW,playerH)
-    obstacleH = getRnd(obstacleHMin,obstacleHMax);
-    obstacle = new Obstacle(width,ground-obstacleH,obstacleW,obstacleH);
+    addObs();
     loop();
 }
 
@@ -72,6 +74,8 @@ function render() {
     player.touched();
     /*分數*/
     if(!player.dead)drawString(ctx, player.point+"", width / 2, height / 2, "#FF0", 40, "Consolas", 0, "center", 1);
+    /*速度*/
+    if(player.point%100==0)obstacleSpeed+=0.1;
 }
 
 document.addEventListener("keydown", keydown, false);
@@ -141,10 +145,9 @@ function Obstacle(x,y,w,h){
     this.m = 0;
 
     this.update = function(){
-        if(this.x+87 > 0)this.x-=7;
+        if(this.x+obstacleW > 0)this.x-=obstacleSpeed;
         else{
-            obstacleH = getRnd(obstacleHMin,obstacleHMax);
-            obstacle = new Obstacle(width,ground-obstacleH,obstacleW,obstacleH)
+            addObs()
         }
     }
 
@@ -153,4 +156,10 @@ function Obstacle(x,y,w,h){
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x,this.y,this.w,this.h)
     }
+}
+
+function addObs(){
+    obstacleH = getRnd(obstacleHMin,obstacleHMax);
+    obstacleW = getRnd(obstacleWMin,obstacleWMax);
+    obstacle = new Obstacle(width,ground-obstacleH,obstacleW,obstacleH);
 }
