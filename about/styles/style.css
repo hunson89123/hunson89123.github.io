@@ -23,10 +23,43 @@ h1,h2,h3{
   line-height: 1em;
   font-family: 'Noto Serif TC', serif;
   font-size: 4em;
+  text-align: center;
 }
 .div a{
   margin: 0 auto;
   /*font-family: Microsoft JhengHei;*/
   font-family: 'Noto Serif TC', serif;
   font-size: 2em;
+}
+
+@media screen and (max-width: 600px){
+  .div p{
+    line-height: 1em;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 3em;
+    font-style: bold;
+    text-align: center;
+  }
+
+  .div a{
+    margin: 0 auto;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.5em;
+    font-style: bold;
+  }
+
+  h1{
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 1.3em;
+  }
+
+  h2{
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 1em;
+  }
+
+  h3{
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 0.8em;
+  }
 }
