@@ -1,0 +1,86 @@
+html,body {
+  height: 100%;
+  margin: 0 auto;
+  background: #121212;
+}
+
+.div {
+  margin: 0 auto;
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%)
+}
+
+.div p{
+  line-height: 1em;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 4em;
+  font-style: bold;
+}
+
+.div a{
+  margin: 0 auto;
+  /*font-family: Microsoft JhengHei;*/
+  font-family: 'Noto Serif TC', serif;
+  font-size: 2em;
+  font-style: bold;
+}
+
+.card {
+  color: #121212;
+  background: #FFFFFF;
+  display: inline-block;
+  margin: 10px;
+  width: 120px;
+  height: 150px;
+}
+
+.box{
+  width: 800px;
+  vertical-align: middle;
+  text-align: center;
+}
+
+h1{
+  line-height: 0.5em;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 3em;
+}
+@media screen and (max-width: 1300px){
+  .div p{
+    line-height: 1em;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 3em;
+    font-style: bold;
+  }
+
+  .div a{
+    margin: 0 auto;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.5em;
+    font-style: bold;
+  }
+
+  .card {
+    color: #121212;
+    background: #FFFFFF;
+    display: inline-block;
+    width: 80px;
+    height: 100px;
+  }
+
+  .box{
+    display: table-cell;
+    width: 800px;
+    vertical-align: middle;
+    text-align: center;
+  }
+
+  h1{
+    line-height: 0.5em;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 2em;
+  }
+}
