@@ -52,7 +52,7 @@ h1{
   .div p{
     line-height: 1em;
     font-family: 'Noto Serif TC', serif;
-    font-size: 3em;
+    font-size: 3.5em;
     font-style: bold;
   }
 
@@ -67,8 +67,8 @@ h1{
     color: #121212;
     background: #FFFFFF;
     display: inline-block;
-    width: 80px;
-    height: 100px;
+    width: 95px;
+    height: 150px;
   }
 
   .box{
@@ -81,6 +81,6 @@ h1{
   h1{
     line-height: 0.5em;
     font-family: 'Noto Serif TC', serif;
-    font-size: 2em;
+    font-size: 3em;
   }
 }
