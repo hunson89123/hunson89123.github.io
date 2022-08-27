@@ -5,6 +5,7 @@
     <title>Hunson's Tool - 跨年倒數</title>
     <link href="style.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC&display=swap" rel="stylesheet">
+    <script src="countdown.js"></script>
   </head>
   <body>
     <div class="div">
@@ -27,27 +28,7 @@
           <h1>秒</h1>
         </div>
       </div>
-      <script type="text/javascript">
-        var today = new Date();
-        var nxtYear = today.getFullYear()+1;
-        var happyNewYear = new Date("Jan 1, "+ nxtYear +" 00:00:00")
-        document.getElementById('title').innerHTML = "距離 "+ nxtYear + " 年剩下";
-        var x = setInterval(function(){
-          var now = new Date().getTime();
-          var cuntTime = happyNewYear - now;
-          var days = Math.floor(cuntTime / (1000 * 60 * 60 * 24));
-          var hours = Math.floor((cuntTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          var minutes = Math.floor((cuntTime % (1000 * 60 * 60)) / (1000 * 60));
-          var seconds = Math.floor((cuntTime % (1000 * 60)) / 1000);
-          document.getElementById('days').innerHTML = days;
-          document.getElementById('hours').innerHTML = hours;
-          document.getElementById('minutes').innerHTML = minutes;
-          document.getElementById('seconds').innerHTML = seconds;
-        },0);
-        // var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-        // var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-        // var dateTime = date+' '+time;
-      </script>
+      
     </div>
   </body>
 </html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <title>戰旗道具合成遊戲</title>
+  <link href="style.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC&display=swap" rel="stylesheet">
+  <script src="rndPic.js"></script>
+  
+</head>
+<body onload="initGame()">
+  <div id="correct" class="correct"></div>
+  <div id="wrong" class="wrong"></div>
+  <div class="baseItemArea">
+    <img id="item1" class="noItem" src="tftItem/0.png">
+    <h1>+</h1>
+    <img id="item2" class="noItem" src="tftItem/0.png">
+    <h1>=</h1>
+    <img id="ans" class="noItem" />
+  </div>
+  <div id="bia" class="baseItemArea">
+  </div>
+  <button id="confirm" type="button" onclick="checkAnswer()" disabled>確認</button>
+
+
+  <script src="baseItemGen.js"></script>
+  <script src="playGame.js"></script>
+</body>
+</html>
