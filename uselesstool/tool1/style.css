@@ -1,7 +1,7 @@
 html,body {
   height: 100%;
   margin: 0 auto;
-  background: #121212;
+  background:#08192d;
 }
 
 .div {
@@ -16,23 +16,20 @@ html,body {
 .div p{
   line-height: 1em;
   font-family: 'Noto Serif TC', serif;
-  font-size: 4em;
+  font-size: 5em;
   font-style: bold;
 }
 
 .div a{
   margin: 0 auto;
-  /*font-family: Microsoft JhengHei;*/
   font-family: 'Noto Serif TC', serif;
-  font-size: 2em;
-  font-style: bold;
 }
 
 .card {
-  color: #121212;
-  background: #FFFFFF;
+  color: #FFFFFF;
+  background: #08192d;
   display: inline-block;
-  margin: 10px;
+  margin: 20px;
   width: 120px;
   height: 150px;
 }
@@ -46,41 +43,5 @@ html,body {
 h1{
   line-height: 0.5em;
   font-family: 'Noto Serif TC', serif;
-  font-size: 3em;
-}
-@media screen and (max-width: 1300px){
-  .div p{
-    line-height: 1em;
-    font-family: 'Noto Serif TC', serif;
-    font-size: 3.5em;
-    font-style: bold;
-  }
-
-  .div a{
-    margin: 0 auto;
-    font-family: 'Noto Serif TC', serif;
-    font-size: 1.5em;
-    font-style: bold;
-  }
-
-  .card {
-    color: #121212;
-    background: #FFFFFF;
-    display: inline-block;
-    width: 95px;
-    height: 150px;
-  }
-
-  .box{
-    display: table-cell;
-    width: 800px;
-    vertical-align: middle;
-    text-align: center;
-  }
-
-  h1{
-    line-height: 0.5em;
-    font-family: 'Noto Serif TC', serif;
-    font-size: 3em;
-  }
+  font-size: 4em;
 }
