@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <title>WebCardGame</title>
+  <link href="style.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/9.9.3/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.9.3/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.9.3/firebase-storage.js"></script>
+  <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-analytics.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-firestore.js";
+  const firebaseConfig = {
+    apiKey: "AIzaSyAIJw-zxh6SvNFodKkZrDVbKL0PTEYX9rg",
+    authDomain: "webcardgame-c43d7.firebaseapp.com",
+    databaseURL: "https://webcardgame-c43d7-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "webcardgame-c43d7",
+    storageBucket: "webcardgame-c43d7.appspot.com",
+    messagingSenderId: "984664999700",
+    appId: "1:984664999700:web:e6ec3b18f3432d9ed8a401",
+    measurementId: "G-K5W43CYZKK"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+
+  const database = getFirestore(app);
+  var text_id=0;
+  var select_id;
+  function writedata(){
+    var t1=document.getElementById("text").value;
+    var t2=document.getElementById("data").value;
+    database.ref('/'+(text_id+1)).set({
+      value_1:t1,
+      value_2:t2
+    });
+  }
+
+  function selectdata(){
+    database.ref('/').once("value",function(data){
+      var z1=data.val();
+      var html_text="";
+      for(x in z1){
+        html_text=html_text+"<a href=\"#\" id=\"t"+x+"\" onClick=\"selectid("+x+")\">第"+x+"筆</a><ol><li id=\"z1_value_1_"+x+"\">"+z1[x].value_1+"</li><li id=\"z1_value_2_"+x+"\">"+z1[x].value_2+"</li></ol><br\>";
+      }
+      document.getElementById("read").innerHTML=html_text;
+    });
+  }
+
+  selectdata();
+</script>
+
+</head>
+<body>
+  <form method="post">
+    <p>
+      <input type="text" name="text" id="text">
+    </p>
+    <p>
+      <input type="text" name="data" id="data">
+    </p>
+  </form>
+  <div id="read" style="color:white;">無資料:(</div>
+</body>
+</html>
