@@ -2,6 +2,18 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.9.3/firebase-app.js'
 import { getDatabase, ref, child, get, set } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-database.js"
 
+//fbConfig
+const firebaseConfig = {
+  apiKey: "AIzaSyAIJw-zxh6SvNFodKkZrDVbKL0PTEYX9rg",
+  authDomain: "webcardgame-c43d7.firebaseapp.com",
+  databaseURL: "https://webcardgame-c43d7-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "webcardgame-c43d7",
+  storageBucket: "webcardgame-c43d7.appspot.com",
+  messagingSenderId: "984664999700",
+  appId: "1:984664999700:web:e6ec3b18f3432d9ed8a401",
+  measurementId: "G-K5W43CYZKK"
+};
+
 //初始化fb
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
