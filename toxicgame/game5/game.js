@@ -1,6 +1,6 @@
 //載入fb文件
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.9.3/firebase-app.js'
-import { getDatabase, ref, child, get, set } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-database.js"
+import { getDatabase, onValue, ref, child, get, set } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-database.js"
 
 //fbConfig
 const firebaseConfig = {
@@ -14,9 +14,14 @@ const firebaseConfig = {
   measurementId: "G-K5W43CYZKK"
 };
 
+//初始化遊戲資料變數
+let numOfUser,numOfRoom;
+let userID = 0;
+
 //初始化fb
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+const dbRef = ref(getDatabase());
 //增
 function writeUserData(userId, name, email, imageUrl) {
   const db = getDatabase();
@@ -27,10 +32,9 @@ function writeUserData(userId, name, email, imageUrl) {
   });
 }
 
-//查
-function selectdata(){
-  const dbRef = ref(getDatabase());
-  get(child(dbRef, `users/0`)).then((snapshot) => {
+//查(users/0)
+function readdata(){
+  get(child(dbRef, 'users/0')).then((snapshot) => {
     if (snapshot.exists()) {
       console.log(snapshot.val().email);
       document.getElementById('read').innerHTML=snapshot.val().email;
@@ -41,5 +45,27 @@ function selectdata(){
     console.error(error);
   });
 }
-writeUserData("0","hunson","hunson89123@gmail.com","https://lh3.googleusercontent.com/ogw/AOh-ky2GM3d-efYoL1aCQkD_urwJqsenth6BMHnibpViUQ=s32-c-mo")
-selectdata();
+
+//查詢遊戲資訊(玩家人數|遊戲房間)
+function readGameData(){
+  onValue(ref(db, 'gameData'),(snapshot) => {
+    numOfUser=snapshot.val().userData.num;
+    numOfRoom=snapshot.val().roomData.num
+    
+    document.getElementById('gameData').innerHTML="線上玩家："+numOfUser+" | 遊戲房間："+numOfRoom;
+  })
+}
+
+function loginCheck(){
+  get(child(dbRef, 'gameData/userData/num')).then((snapshot) => {
+    userID = snapshot.val()+1;
+    console.log(userID);
+    set(ref(db, 'gameData/userData'), {
+      num: userID
+    });
+  });
+  
+}
+// writeUserData("0","hunson","hunson89123@gmail.com","https://lh3.googleusercontent.com/ogw/AOh-ky2GM3d-efYoL1aCQkD_urwJqsenth6BMHnibpViUQ=s32-c-mo")
+readGameData();
+loginCheck();
