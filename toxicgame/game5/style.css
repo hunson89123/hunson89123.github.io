@@ -6,6 +6,7 @@ body {
   display: flex;
   flex-direction: column;
   background:#08192d;
+  color: white;
 }
 
 img{
@@ -49,36 +50,6 @@ button:disabled{
   color: #FFFFFF;
 }
 
-.baseItemArea{
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-}
-
-.noItem{
-  cursor: default;
-}
-
-#wrong{
-  height: 100vh;
-  width: 100vw;
-  position: absolute;
-  z-index: -1;
-}
-
-#correct{
-  height: 100vh;
-  width: 100vw;
-  position: absolute;
-  z-index: -1;
-}
-
-@keyframes fade{
-  0%,100%  {opacity: 0;}
-  50% {opacity: 1;}
-}
 
 @media only screen and (max-width: 600px){
 
