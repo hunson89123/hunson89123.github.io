@@ -1,6 +1,6 @@
 //載入fb文件
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.9.3/firebase-app.js'
-import { getDatabase, onValue, onDisconnect, ref, child, get, set } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-database.js"
+import { getDatabase, onValue, onDisconnect, update, ref, child, get, set } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-database.js"
 import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-auth.js";
 
 //fbConfig
@@ -51,7 +51,14 @@ function readdata(){
 function readGameData(){
   onValue(ref(db, 'players'),(snapshot) => {
     numOfUser = Object.keys(snapshot.val()).length;
-    document.getElementById('gameData').innerHTML="你好！<a style=\'color:yellow\'>"+userName+"</a><br>線上玩家："+numOfUser+" | 遊戲房間："+numOfRoom;
+    if(numOfUser != 0){
+      const loading = document.getElementById('loading');
+      loading.style.animation = "fadeOut .8s forwards";
+      loading.style.zIndex = "0";
+    }
+    document.getElementById('userName').innerHTML="你好！<span style=\'color:yellow\'>"+userName+"</span>"+
+    "<button id=\"edit\" class=\"fa fa-pencil\" onclick=\"editUserName()\"></button>";
+    document.getElementById('gameData').innerHTML="線上玩家："+numOfUser+" | 遊戲房間："+numOfRoom;
   })
 
 }
@@ -61,7 +68,7 @@ function loginCheck(){
   readGameData();
   //初始化遊戲
   function initGame(){
-    const apr = ref(db,`players`);
+    // const apr = ref(db,`players`);
   }
 
   //輸入資料進db
@@ -71,12 +78,12 @@ function loginCheck(){
       console.log("nOU=",numOfUser);
       const uid = user.uid;
       const urf = ref(db,`players/${uid}`);
-      userName = "玩家"+uid.substring(0,4);
+      // userName = "玩家"+uid.substring(0,4);
+      userID = uid;
       set(urf,{
         id: uid,
         index: numOfUser,
         name: userName,
-        color: "",
         hand: "",
       })
       console.log(uid);
@@ -94,9 +101,17 @@ function loginCheck(){
     const errorMessage = error.message;
     console.log(errorCode,errorMessage);
   });
-
-
 }
 
 // writeUserData("0","hunson","hunson89123@gmail.com","https://lh3.googleusercontent.com/ogw/AOh-ky2GM3d-efYoL1aCQkD_urwJqsenth6BMHnibpViUQ=s32-c-mo")
 loginCheck();
+
+//修改名字
+export function editUserName(newName){
+  const updates = {};
+  console.log(userID);
+  updates['players/' + userID + '/name'] = newName;
+  userName = newName;
+  update(ref(db), updates);
+  // loginCheck();
+}

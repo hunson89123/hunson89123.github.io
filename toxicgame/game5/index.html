@@ -6,31 +6,40 @@
   <title>WebCardGame</title>
   <link href="style.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC&display=swap" rel="stylesheet">
-  <!-- <script src="player.js"></script> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script type="module" src="game.js"></script>
 
 </head>
-<body onclick="startGame()">
-  <a id="play" class="startGame">點擊進入遊戲房間</a>
-  <script>
-    function startGame(){
-      if(document.getElementById('play')!=null){
-        var play = document.getElementById('play');
-        var queueArea = document.getElementById('queueArea');
-        play.parentNode.removeChild(play);
-        queueArea.hidden = false; 
-        queueArea.style.animation = "flyIn .5s";
+<body>
+  <div id="loading">登入中請稍後...</div>
+  <span id="userName">你好！玩家----</span>
+  <div id="gameArea" onclick="startGame()">
+    <a id="play" class="startGame">點擊進入遊戲房間</a>
+    <script>;
+      function startGame(){
+        if(document.getElementById('play')!=null){
+          var play = document.getElementById('play');
+          var queueArea = document.getElementById('queueArea');
+          play.parentNode.removeChild(play);
+          queueArea.hidden = false; 
+          queueArea.style.animation = "flyIn .5s";
+        }
       }
-    }
-  </script>
-  <div id="queueArea" class="queueArea" hidden>
-    <ul>
-      <li>player1</li>
-      <li>player2</li>
-      <li>player3</li>
-      <li>player4</li>
-    </ul>
+      const module ={};
+    </script>
+    <script type="module">
+      import { editUserName } from "./game.js";
+      window.editUserName=()=>{
+         editUserName(prompt("請輸入名稱",""));
+      }
+    </script>
+    <div id="queueArea" class="queueArea" hidden>
+      <p>player1</p>
+      <p>player2</p>
+      <p>player3</p>
+      <p>player4</p>
+    </div>
+    <div id="gameData">線上玩家：0 | 遊戲房間：0</div>
   </div>
-  <div id="gameData">你好！玩家----<br>線上玩家：0 | 遊戲房間：0</div>
 </body>
 </html>
