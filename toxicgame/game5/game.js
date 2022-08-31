@@ -51,13 +51,14 @@ function readdata(){
 function readGameData(){
   onValue(ref(db, 'players'),(snapshot) => {
     numOfUser = Object.keys(snapshot.val()).length;
-    document.getElementById('gameData').innerHTML="線上玩家："+numOfUser+" | 遊戲房間："+numOfRoom;
+    document.getElementById('gameData').innerHTML="你好！<a style=\'color:yellow\'>"+userName+"</a><br>線上玩家："+numOfUser+" | 遊戲房間："+numOfRoom;
   })
+
 }
 
 //登入驗證(給ID)
 function loginCheck(){
-
+  readGameData();
   //初始化遊戲
   function initGame(){
     const apr = ref(db,`players`);
@@ -65,14 +66,16 @@ function loginCheck(){
 
   //輸入資料進db
   const auth = getAuth();
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth,(user) => {
     if (user) {
+      console.log("nOU=",numOfUser);
       const uid = user.uid;
       const urf = ref(db,`players/${uid}`);
+      userName = "玩家"+uid.substring(0,4);
       set(urf,{
         id: uid,
-        index: 0,
-        name: "玩家"+uid.substring(0,4),
+        index: numOfUser,
+        name: userName,
         color: "",
         hand: "",
       })
@@ -96,5 +99,4 @@ function loginCheck(){
 }
 
 // writeUserData("0","hunson","hunson89123@gmail.com","https://lh3.googleusercontent.com/ogw/AOh-ky2GM3d-efYoL1aCQkD_urwJqsenth6BMHnibpViUQ=s32-c-mo")
-readGameData();
 loginCheck();

@@ -11,7 +11,7 @@
 
 </head>
 <body onclick="startGame()">
-  <a id="play" class="startGame">點擊任意位置進入遊戲房間</a>
+  <a id="play" class="startGame">點擊進入遊戲房間</a>
   <script>
     function startGame(){
       if(document.getElementById('play')!=null){
@@ -19,11 +19,18 @@
         var queueArea = document.getElementById('queueArea');
         play.parentNode.removeChild(play);
         queueArea.hidden = false; 
-        queueArea.style.animation = "flyIn 1s";
+        queueArea.style.animation = "flyIn .5s";
       }
     }
   </script>
-  <div id="queueArea" class="queueArea" hidden>OOO</div>
-  <div id="gameData">線上玩家：0 | 遊戲房間：0</div>
+  <div id="queueArea" class="queueArea" hidden>
+    <ul>
+      <li>player1</li>
+      <li>player2</li>
+      <li>player3</li>
+      <li>player4</li>
+    </ul>
+  </div>
+  <div id="gameData">你好！玩家----<br>線上玩家：0 | 遊戲房間：0</div>
 </body>
 </html>

@@ -46,7 +46,7 @@ button:active{
 
 button:disabled{
   background-color: #666666;
-  color: #FFFFFF;
+  color: white;
 }
 
 .startGame{
@@ -55,15 +55,18 @@ button:disabled{
   animation: fadeIn .8s infinite alternate;
 }
 
-.queueArea{
+.queueArea ul{
   font-family: 'Noto Serif TC', serif;
   font-size: 2em;
+  color: yellow;
+  list-style-type: none;
 }
-
 #gameData{
   font-family: 'Noto Serif TC', serif;
   font-size: 1.2em;
   position: absolute;
+  align-items: center;
+  justify-self: center;
   bottom: 5%;
 }
 @keyframes fadeIn{
@@ -72,7 +75,7 @@ button:disabled{
 
 @keyframes flyIn{
   from{ opacity: 0; }
-  from{  transform: translateY(-500%); }
+  from{  transform: translateY(-50%); }
   to { transform: translateY(0%);   ;}
 }
 
