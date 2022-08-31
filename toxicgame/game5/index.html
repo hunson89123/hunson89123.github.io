@@ -6,10 +6,24 @@
   <title>WebCardGame</title>
   <link href="style.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC&display=swap" rel="stylesheet">
-</head>
-<body>
+  <!-- <script src="player.js"></script> -->
   <script type="module" src="game.js"></script>
-    <button id="play">開始遊戲</button>
-<p><div id="gameData" style="color:white;">線上玩家： |遊戲房間： </div></p>
+
+</head>
+<body onclick="startGame()">
+  <a id="play" class="startGame">點擊任意位置進入遊戲房間</a>
+  <script>
+    function startGame(){
+      if(document.getElementById('play')!=null){
+        var play = document.getElementById('play');
+        var queueArea = document.getElementById('queueArea');
+        play.parentNode.removeChild(play);
+        queueArea.hidden = false; 
+        queueArea.style.animation = "flyIn 1s";
+      }
+    }
+  </script>
+  <div id="queueArea" class="queueArea" hidden>OOO</div>
+  <div id="gameData">線上玩家：|遊戲房間：</div>
 </body>
 </html>

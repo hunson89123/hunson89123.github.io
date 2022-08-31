@@ -24,6 +24,7 @@ h1{
 
 button{
   max-width: 500px;
+  color: #FFFFFF;
   border: none;
   display: block;
   line-height: 2em;
@@ -49,28 +50,6 @@ button:disabled{
   color: #FFFFFF;
 }
 
-.startGame{
-  font-family: 'Noto Serif TC', serif;
-  font-size: 2em;
-  animation: fadeIn .8s infinite alternate;
-  padding-top: 20%;
-  padding-bottom: 20%;
-}
-
-.queueArea{
-  font-family: 'Noto Serif TC', serif;
-  font-size: 2em;
-}
-
-@keyframes fadeIn{
-  from{ opacity: 0; }
-}
-
-@keyframes flyIn{
-  from{ opacity: 0; }
-  from{  transform: translateY(-500%); }
-  to { transform: translateY(0%);   ;}
-}
 
 @media only screen and (max-width: 600px){
 

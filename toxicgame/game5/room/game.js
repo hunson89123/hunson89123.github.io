@@ -1,7 +1,6 @@
 //載入fb文件
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.9.3/firebase-app.js'
-import { getDatabase, onValue, onDisconnect, ref, child, get, set } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-database.js"
-import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-auth.js";
+import { getDatabase, onValue, ref, child, get, set } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-database.js"
 
 //fbConfig
 const firebaseConfig = {
@@ -17,7 +16,7 @@ const firebaseConfig = {
 
 //初始化遊戲資料變數
 let numOfUser,numOfRoom;
-let userID = 0,userName = '';
+let userID = 0;
 
 //初始化fb
 const app = initializeApp(firebaseConfig);
@@ -57,46 +56,17 @@ function readGameData(){
   })
 }
 
-//登入驗證(給ID)
+//初登入驗證(給ID)
 function loginCheck(){
-
-  //初始化遊戲
-  function initGame(){
-    const apr = ref(db,`players`);
-  }
-
-  //輸入資料進db
-  const auth = getAuth();
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      const uid = user.uid;
-      const urf = ref(db,`players/${uid}`);
-      set(urf,{
-        id: uid,
-        index: 0,
-        name: "玩家"+uid.substring(0,4),
-        color: "",
-        hand: "",
-      })
-      console.log(uid);
-
-      //斷線清除
-      onDisconnect(urf).remove();
-
-      initGame();
-    }
+  get(child(dbRef, 'gameData/userData/num')).then((snapshot) => {
+    userID = snapshot.val()+1;
+    console.log(userID);
+    set(ref(db, 'gameData/userData'), {
+      num: userID
+    });
   });
-
-  signInAnonymously(auth)
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log(errorCode,errorMessage);
-  });
-
-
+  
 }
-
 // writeUserData("0","hunson","hunson89123@gmail.com","https://lh3.googleusercontent.com/ogw/AOh-ky2GM3d-efYoL1aCQkD_urwJqsenth6BMHnibpViUQ=s32-c-mo")
-// readGameData();
+readGameData();
 loginCheck();
