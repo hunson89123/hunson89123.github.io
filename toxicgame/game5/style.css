@@ -53,8 +53,6 @@ button:disabled{
   font-family: 'Noto Serif TC', serif;
   font-size: 2em;
   animation: fadeIn .8s infinite alternate;
-  padding-top: 20%;
-  padding-bottom: 20%;
 }
 
 .queueArea{
@@ -62,6 +60,12 @@ button:disabled{
   font-size: 2em;
 }
 
+#gameData{
+  font-family: 'Noto Serif TC', serif;
+  font-size: 1.2em;
+  position: absolute;
+  bottom: 5%;
+}
 @keyframes fadeIn{
   from{ opacity: 0; }
 }

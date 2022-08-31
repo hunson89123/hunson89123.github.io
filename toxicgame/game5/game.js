@@ -16,7 +16,7 @@ const firebaseConfig = {
 };
 
 //初始化遊戲資料變數
-let numOfUser,numOfRoom;
+let numOfUser = 0,numOfRoom = 0;
 let userID = 0,userName = '';
 
 //初始化fb
@@ -49,10 +49,8 @@ function readdata(){
 
 //查詢遊戲資訊(玩家人數|遊戲房間)
 function readGameData(){
-  onValue(ref(db, 'gameData'),(snapshot) => {
-    numOfUser=snapshot.val().userData.num;
-    numOfRoom=snapshot.val().roomData.num
-    
+  onValue(ref(db, 'players'),(snapshot) => {
+    numOfUser = Object.keys(snapshot.val()).length;
     document.getElementById('gameData').innerHTML="線上玩家："+numOfUser+" | 遊戲房間："+numOfRoom;
   })
 }
@@ -98,5 +96,5 @@ function loginCheck(){
 }
 
 // writeUserData("0","hunson","hunson89123@gmail.com","https://lh3.googleusercontent.com/ogw/AOh-ky2GM3d-efYoL1aCQkD_urwJqsenth6BMHnibpViUQ=s32-c-mo")
-// readGameData();
+readGameData();
 loginCheck();
