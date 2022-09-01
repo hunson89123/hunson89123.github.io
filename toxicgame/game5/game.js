@@ -15,9 +15,17 @@ const firebaseConfig = {
   measurementId: "G-K5W43CYZKK"
 };
 
+//初始化遊戲元素
+const gameStateBar = document.getElementById('gameState');
+const handArea = document.getElementById('handArea');
+const gameData = document.getElementById('gameData');
+const queueArea = document.getElementById('queueArea');
+
 //初始化遊戲資料變數
 let numOfUser = 0,numOfRoom = 0;
 let userID = 0,userName = '';
+let allReady = false;
+let cards = [];
 
 //初始化fb
 const app = initializeApp(firebaseConfig);
@@ -33,26 +41,13 @@ function writeUserData(userId, name, email, imageUrl) {
   });
 }
 
-//查(users/0)
-function readdata(){
-  get(child(dbRef, 'users/0')).then((snapshot) => {
-    if (snapshot.exists()) {
-      document.getElementById('read').innerHTML=snapshot.val().email;
-    } else {
-      console.log("No data available");
-    }
-  }).catch((error) => {
-    console.error(error);
-  });
-}
-
 //查詢遊戲資訊(玩家人數|遊戲房間)
 function readGameData(){
   onValue(ref(db, 'players'),(snapshot) => {
     numOfUser = Object.keys(snapshot.val()).length;
     //登入中請稍候
     if(numOfUser != 0){
-      // console.log("nOU=",numOfUser);
+      console.log("nOU=",numOfUser);
       const loading = document.getElementById('loading');
       if(loading != null){
         loading.style.animation = "fadeOut .8s forwards";
@@ -61,9 +56,7 @@ function readGameData(){
         }, 800);
       }
     }
-    // document.getElementById('userName').innerHTML="你好！<span style=\'color:yellow\'>"+userName+"</span>"+
-    // "<button id=\"edit\" class=\"fa fa-pencil\" onclick=\"editUserName()\"></button>";
-    document.getElementById('gameData').innerHTML="線上玩家："+numOfUser+" | 遊戲房間："+numOfRoom;
+    gameData.innerHTML="線上玩家："+numOfUser+" | 遊戲房間："+numOfRoom;
   })
 
 }
@@ -123,13 +116,15 @@ export function editUserName(newName){
 function startQueue(){
   //進入列隊畫面淡出效果
   if(userName != ""){
-    if(document.getElementById('play')!=null){
-      var play = document.getElementById('play');
-      var queueArea = document.getElementById('queueArea');
+    var play = document.getElementById('play');
+    if(play!=null){
+      
       play.parentNode.removeChild(play);
       queueArea.hidden = false; 
       queueArea.style.animation = "flyIn .5s";
       document.body.style.animation = "bg1 1s forwards";
+      gameStateBar.style.animation = "fadeIn .8s infinite alternate";
+      gameStateBar.innerHTML = "等待玩家中...";
     }
 
     //指定玩家順序
@@ -145,26 +140,51 @@ function startQueue(){
     //取得所有玩家遊戲名稱
     onValue(ref(db, 'players'),(snapshot) => {
       let index = 0;
-      const queueArea = document.getElementById('queueArea');
       let queuePlayers = 
       [ document.getElementById('queuePlayer1'),
       document.getElementById('queuePlayer2'),
       document.getElementById('queuePlayer3'),
       document.getElementById('queuePlayer4') ]
-      queuePlayers.forEach(i => i.innerHTML = "等待玩家中...");
+      queuePlayers.forEach(i => i.innerHTML = "--");
       const sortedList = query(ref(db, 'players'), orderByChild('index'));
 
       get(sortedList).then((snapshot) =>{
-
         snapshot.forEach(function(child){
-        if(child.val().name != "")
-          queuePlayers[index].innerHTML = child.val().name;
-        index++;
-      });
+          let playerName = child.val().name;
+          let playerId = child.val().id;
+          if(playerName != ""){
+            if(playerId == userID)
+              queuePlayers[index].innerHTML = "<span style=\"color:yellow\">"+child.val().name+"</span>";
+            else
+              queuePlayers[index].innerHTML = child.val().name;
+            index++;
+          }
+          if(index == 4)allReady = true;
+        });
       })
-      
+
+      if(allReady){
+        gameStateBar.style.animation="";
+        var cd = 5;
+        setInterval(function() {
+          if(cd>0){
+            gameStateBar.innerHTML = "遊戲將於"+cd+"秒後開始!";  
+            cd--;
+          }else inGame();
+        }, 1000);
+      }
     });
   }
+}
+
+function inGame(){
+
+  document.body.style.animation = "bg2 .5s forwards";
+  gameStateBar.style.animation = "fadeOut .5s forwards";
+  queueArea.style.animation = "fadeOut .5s forwards";
+  gameData.style.animation = "fadeOut .5s forwards";
+  handArea.style.animation = "fadeIn .5s forwards";
+  handArea.hidden = false;
 }
 
 //color code

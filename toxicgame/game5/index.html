@@ -12,7 +12,7 @@
 </head>
 <body>
   <div id="loading">登入中請稍候...</div>
-  <!-- <span id="userName">你好！玩家----</span> -->
+  <span id="gameState"></span>
   <div id="gameArea">
     <a id="play" class="startGame" onclick="editUserName()">點此開始遊戲</a>
     <script>;
@@ -25,12 +25,13 @@
     }
   </script>
   <div id="queueArea" class="queueArea" hidden>
-    <p id="queuePlayer1" >等待玩家中...</p>
-    <p id="queuePlayer2" >等待玩家中...</p>
-    <p id="queuePlayer3" >等待玩家中...</p>
-    <p id="queuePlayer4" >等待玩家中...</p>
+    <p id="queuePlayer1" >--</p>
+    <p id="queuePlayer2" >--</p>
+    <p id="queuePlayer3" >--</p>
+    <p id="queuePlayer4" >--</p>
   </div>
   <div id="gameData">線上玩家：0 | 遊戲房間：0</div>
+  <div id="handArea" hidden></div>
 </div>
 </body>
 </html>
