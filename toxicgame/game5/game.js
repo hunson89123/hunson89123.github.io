@@ -1,6 +1,6 @@
 //載入fb文件
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.9.3/firebase-app.js'
-import { getDatabase, onValue, onDisconnect, update, ref, child, get, set } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-database.js"
+import { getDatabase, onValue, onDisconnect, query, orderByChild, update, ref, child, get, set } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-database.js"
 import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-auth.js";
 
 //fbConfig
@@ -37,7 +37,6 @@ function writeUserData(userId, name, email, imageUrl) {
 function readdata(){
   get(child(dbRef, 'users/0')).then((snapshot) => {
     if (snapshot.exists()) {
-      console.log(snapshot.val().email);
       document.getElementById('read').innerHTML=snapshot.val().email;
     } else {
       console.log("No data available");
@@ -51,13 +50,19 @@ function readdata(){
 function readGameData(){
   onValue(ref(db, 'players'),(snapshot) => {
     numOfUser = Object.keys(snapshot.val()).length;
+    //登入中請稍候
     if(numOfUser != 0){
+      // console.log("nOU=",numOfUser);
       const loading = document.getElementById('loading');
-      loading.style.animation = "fadeOut .8s forwards";
-      loading.style.zIndex = "0";
+      if(loading != null){
+        loading.style.animation = "fadeOut .8s forwards";
+        setTimeout(function() {
+          loading.parentNode.removeChild(loading);
+        }, 800);
+      }
     }
-    document.getElementById('userName').innerHTML="你好！<span style=\'color:yellow\'>"+userName+"</span>"+
-    "<button id=\"edit\" class=\"fa fa-pencil\" onclick=\"editUserName()\"></button>";
+    // document.getElementById('userName').innerHTML="你好！<span style=\'color:yellow\'>"+userName+"</span>"+
+    // "<button id=\"edit\" class=\"fa fa-pencil\" onclick=\"editUserName()\"></button>";
     document.getElementById('gameData').innerHTML="線上玩家："+numOfUser+" | 遊戲房間："+numOfRoom;
   })
 
@@ -65,24 +70,18 @@ function readGameData(){
 
 //登入驗證(給ID)
 function loginCheck(){
-  readGameData();
-  //初始化遊戲
-  function initGame(){
-    // const apr = ref(db,`players`);
-  }
 
   //輸入資料進db
   const auth = getAuth();
   onAuthStateChanged(auth,(user) => {
     if (user) {
-      console.log("nOU=",numOfUser);
       const uid = user.uid;
       const urf = ref(db,`players/${uid}`);
       // userName = "玩家"+uid.substring(0,4);
       userID = uid;
       set(urf,{
         id: uid,
-        index: numOfUser,
+        index: "",
         name: userName,
         hand: "",
       })
@@ -91,7 +90,8 @@ function loginCheck(){
       //斷線清除
       onDisconnect(urf).remove();
 
-      initGame();
+      //讀取遊戲資訊
+      readGameData();
     }
   });
 
@@ -101,6 +101,8 @@ function loginCheck(){
     const errorMessage = error.message;
     console.log(errorCode,errorMessage);
   });
+
+
 }
 
 // writeUserData("0","hunson","hunson89123@gmail.com","https://lh3.googleusercontent.com/ogw/AOh-ky2GM3d-efYoL1aCQkD_urwJqsenth6BMHnibpViUQ=s32-c-mo")
@@ -108,10 +110,69 @@ loginCheck();
 
 //修改名字
 export function editUserName(newName){
-  const updates = {};
-  console.log(userID);
-  updates['players/' + userID + '/name'] = newName;
-  userName = newName;
-  update(ref(db), updates);
-  // loginCheck();
+  if(newName != "" && newName != null){
+    const updates = {};
+    updates['players/' + userID + '/name'] = newName;
+    userName = newName;
+    update(ref(db), updates);
+    startQueue();
+  }
 }
+
+//進入列隊畫面
+function startQueue(){
+  //進入列隊畫面淡出效果
+  if(userName != ""){
+    if(document.getElementById('play')!=null){
+      var play = document.getElementById('play');
+      var queueArea = document.getElementById('queueArea');
+      play.parentNode.removeChild(play);
+      queueArea.hidden = false; 
+      queueArea.style.animation = "flyIn .5s";
+      document.body.style.animation = "bg1 1s forwards";
+    }
+
+    //指定玩家順序
+    get(child(dbRef, 'players')).then((snapshot) => {
+      var time = new Date().getTime();
+      snapshot.forEach(function(child){
+        const updates = {};
+        updates['players/'+child.key+'/index'] = time;
+        update(ref(db),updates);
+      });
+    });
+
+    //取得所有玩家遊戲名稱
+    onValue(ref(db, 'players'),(snapshot) => {
+      let index = 0;
+      const queueArea = document.getElementById('queueArea');
+      let queuePlayers = 
+      [ document.getElementById('queuePlayer1'),
+      document.getElementById('queuePlayer2'),
+      document.getElementById('queuePlayer3'),
+      document.getElementById('queuePlayer4') ]
+      queuePlayers.forEach(i => i.innerHTML = "等待玩家中...");
+      const sortedList = query(ref(db, 'players'), orderByChild('index'));
+
+      get(sortedList).then((snapshot) =>{
+
+        snapshot.forEach(function(child){
+        if(child.val().name != "")
+          queuePlayers[index].innerHTML = child.val().name;
+        index++;
+      });
+      })
+      
+    });
+  }
+}
+
+//color code
+//Blue   #188CFF
+//Red    #FF3B30
+//Yellow #EBD300
+//Green  #00C700
+//Blueen #01E8E7
+//Purple #AE6BFF
+//Orange #FF8800
+//Pink   #F65CB2

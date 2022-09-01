@@ -11,37 +11,26 @@
 
 </head>
 <body>
-  <div id="loading">登入中請稍後...</div>
-  <span id="userName">你好！玩家----</span>
-  <div id="gameArea" onclick="startGame()">
-    <a id="play" class="startGame">點擊進入遊戲房間</a>
+  <div id="loading">登入中請稍候...</div>
+  <!-- <span id="userName">你好！玩家----</span> -->
+  <div id="gameArea">
+    <a id="play" class="startGame" onclick="editUserName()">點此開始遊戲</a>
     <script>;
-      function startGame(){
-        if(document.getElementById('play')!=null){
-          var play = document.getElementById('play');
-          var queueArea = document.getElementById('queueArea');
-          play.parentNode.removeChild(play);
-          queueArea.hidden = false; 
-          queueArea.style.animation = "flyIn .5s";
-          document.body.style.animation = "bg2 1s forwards";
-        }
-      }
-      const module ={};
-    </script>
-    <script type="module">
-      import { editUserName } from "./game.js";
-      window.editUserName=()=>{
-         editUserName(prompt("請輸入名稱",""));
-         document.body.style.animation = "bg1 1s forwards";
-      }
-    </script>
-    <div id="queueArea" class="queueArea" hidden>
-      <p>player1</p>
-      <p>player2</p>
-      <p>player3</p>
-      <p>player4</p>
-    </div>
-    <div id="gameData">線上玩家：0 | 遊戲房間：0</div>
+    
+  </script>
+  <script type="module">
+    import { editUserName } from "./game.js";
+    window.editUserName=()=>{
+      editUserName(prompt("請輸入玩家名稱",""));
+    }
+  </script>
+  <div id="queueArea" class="queueArea" hidden>
+    <p id="queuePlayer1" >等待玩家中...</p>
+    <p id="queuePlayer2" >等待玩家中...</p>
+    <p id="queuePlayer3" >等待玩家中...</p>
+    <p id="queuePlayer4" >等待玩家中...</p>
   </div>
+  <div id="gameData">線上玩家：0 | 遊戲房間：0</div>
+</div>
 </body>
 </html>
