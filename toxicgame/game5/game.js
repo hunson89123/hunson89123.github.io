@@ -45,6 +45,7 @@ function writeUserData(userId, name, email, imageUrl) {
 function readGameData(){
   onValue(ref(db, 'players'),(snapshot) => {
     numOfUser = Object.keys(snapshot.val()).length;
+    numOfRoom = parseInt(numOfUser/4)+1;
     //登入中請稍候
     if(numOfUser != 0){
       console.log("nOU=",numOfUser);
@@ -57,6 +58,10 @@ function readGameData(){
       }
     }
     gameData.innerHTML="線上玩家："+numOfUser+" | 遊戲房間："+numOfRoom;
+    set(ref(db,'gameData'),{
+      numOfUser: numOfUser,
+      numOfRoom: numOfRoom,
+    });
   })
 
 }
@@ -77,7 +82,8 @@ function loginCheck(){
         index: "",
         name: userName,
         hand: "",
-      })
+        room: numOfRoom,
+      });
       console.log(uid);
 
       //斷線清除
@@ -132,8 +138,11 @@ function startQueue(){
       var time = new Date().getTime();
       snapshot.forEach(function(child){
         const updates = {};
-        updates['players/'+child.key+'/index'] = time;
-        update(ref(db),updates);
+        if(child.key == userID){
+          updates['players/'+child.key+'/index'] = time;
+          updates['players/'+child.key+'/room'] = numOfRoom;
+          update(ref(db),updates);
+        }
       });
     });
 
