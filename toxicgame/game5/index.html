@@ -23,6 +23,7 @@
           play.parentNode.removeChild(play);
           queueArea.hidden = false; 
           queueArea.style.animation = "flyIn .5s";
+          document.body.style.animation = "bg2 1s forwards";
         }
       }
       const module ={};
@@ -31,6 +32,7 @@
       import { editUserName } from "./game.js";
       window.editUserName=()=>{
          editUserName(prompt("請輸入名稱",""));
+         document.body.style.animation = "bg1 1s forwards";
       }
     </script>
     <div id="queueArea" class="queueArea" hidden>
