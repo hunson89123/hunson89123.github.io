@@ -33,6 +33,8 @@ p{
   font-size: 2em;
   animation: fadeIn .8s infinite alternate;
   animation-delay: .8s;
+  padding: 10px;
+  border: thick double white;
 }
 
 .queueArea ul{
@@ -80,9 +82,7 @@ p{
 
 #handArea{
   font-family: 'Noto Serif TC', serif;
-  font-size: 2em;
-  line-height: 2em;
-  /*text-align: center;*/
+  text-align: center;
   width: 100vw;
   height: 30vh;
   position: absolute;
@@ -90,11 +90,12 @@ p{
   z-index: 10;
   white-space: nowrap;
   display: none;
-  justify-content: center;
+  justify-content: left;
+  overflow-x: auto;
 }
 
 .hand{
-  font-size: 6em;
+  font-size: 10em;
   position: relative;
   cursor: pointer;
 }
