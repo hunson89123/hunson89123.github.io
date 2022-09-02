@@ -75,18 +75,21 @@ p{
 
 #handArea{
   width: 100vw;
-  height: 30vh;
+  height: 40vh;
   position: absolute;
   bottom: 0;
   z-index: 10;
   white-space: nowrap;
   display: none;
-  justify-content: left;
+  justify-content: start;
   overflow-x: auto;
+  overflow-y: hidden ;
+  align-items: flex-end;
 }
 
 .hand{
-  position: absolute;
+  bottom: 0;
+  position: relative;
   cursor: pointer;
   height: 30vh;
 }

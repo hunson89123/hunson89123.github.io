@@ -211,22 +211,32 @@ function startQueue(){
 }
 
 function inGame(){
-  console.log('mecll');
+  cardSelected();
   const vw = window.innerWidth ;
   document.body.style.animation = "bg2 .5s forwards";
   handArea.style.display = 'flex';
   const cw = handCards[0].offsetWidth;
-  for(let i =0 ;i<13 ;i++){
-    handCards[i].style.marginLeft = i * cw/3 +"px";
+  for(let i =1 ;i<13 ;i++){
+    handCards[i].style.marginLeft =-cw / 3 +"px";
   }
-  handArea.style.width = cw/3*12+cw+"px";
+  // handArea.style.width = cw*12+cw+"px";
   gameStateBar.style.animation = "fadeOut .5s forwards";
   queueArea.style.animation = "fadeOut .5s forwards";
   gameData.style.animation = "fadeOut .5s forwards";
-  handArea.style.animation = "fadeIn .5s forwards";
+  handArea.style.animation = "fadeIn 2s forwards";
   handArea.hidden = false;
 }
 
+function cardSelected(){
+  const handCardsImg = document.getElementsByTagName("img");
+  const cardSelected = e =>{
+    e.target.style.bottom = (e.target.style.bottom + 50) + "px"
+  }
+
+  for(let hCI of handCardsImg){
+    hCI.addEventListener("click", cardSelected);
+  }
+}
 //color code
 //Blue   #188CFF
 //Red    #FF3B30
