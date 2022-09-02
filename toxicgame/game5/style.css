@@ -74,8 +74,6 @@ p{
 }
 
 #handArea{
-  font-family: 'Noto Serif TC', serif;
-  text-align: center;
   width: 100vw;
   height: 30vh;
   position: absolute;
@@ -131,5 +129,13 @@ p{
 
   button:hover{
     background-color:#005FCB;
+  }
+
+  #gameArea{
+    justify-items: left;
+  }
+
+  .hand{
+    cursor: none;
   }
 }

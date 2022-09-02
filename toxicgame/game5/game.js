@@ -217,9 +217,9 @@ function inGame(){
   handArea.style.display = 'flex';
   const cw = handCards[0].offsetWidth;
   for(let i =0 ;i<13 ;i++){
-    handCards[i].style.marginLeft = i * ((vw-cw)/12) +"px";
+    handCards[i].style.marginLeft = i * cw/3 +"px";
   }
-  // handArea.style.
+  handArea.style.width = cw/3*12+cw+"px";
   gameStateBar.style.animation = "fadeOut .5s forwards";
   queueArea.style.animation = "fadeOut .5s forwards";
   gameData.style.animation = "fadeOut .5s forwards";
