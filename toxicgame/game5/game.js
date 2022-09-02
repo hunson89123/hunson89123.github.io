@@ -26,19 +26,37 @@ let numOfUser = 0,numOfRoom = 0;
 let userID = 0,userName = '';
 let allReady = false;
 let cards = [];
+let queuePlayers =[];
+let handCards = [];
 
 //初始化fb
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const dbRef = ref(getDatabase());
-//增
-function writeUserData(userId, name, email, imageUrl) {
-  const db = getDatabase();
-  set(ref(db, 'users/' + userId), {
-    username: name,
-    email: email,
-    profile_picture : imageUrl
-  });
+
+//初始化遊戲元素陣列
+function initGameEle(){
+  queuePlayers= 
+  [ document.getElementById('queuePlayer1'),
+  document.getElementById('queuePlayer2'),
+  document.getElementById('queuePlayer3'),
+  document.getElementById('queuePlayer4') ];
+
+  handCards = [
+  document.getElementById('hand1'),
+  document.getElementById('hand2'),
+  document.getElementById('hand3'),
+  document.getElementById('hand4'),
+  document.getElementById('hand5'),
+  document.getElementById('hand6'),
+  document.getElementById('hand7'),
+  document.getElementById('hand8'),
+  document.getElementById('hand9'),
+  document.getElementById('hand10'),
+  document.getElementById('hand11'),
+  document.getElementById('hand12'),
+  document.getElementById('hand13')
+  ]
 }
 
 //查詢遊戲資訊(玩家人數|遊戲房間)
@@ -120,6 +138,7 @@ export function editUserName(newName){
 
 //進入列隊畫面
 function startQueue(){
+  initGameEle();
   //進入列隊畫面淡出效果
   if(userName != ""){
     var play = document.getElementById('play');
@@ -147,16 +166,11 @@ function startQueue(){
     });
 
     //取得所有玩家遊戲名稱
+    var cdStartGame;
     onValue(ref(db, 'players'),(snapshot) => {
       let index = 0;
-      let queuePlayers = 
-      [ document.getElementById('queuePlayer1'),
-      document.getElementById('queuePlayer2'),
-      document.getElementById('queuePlayer3'),
-      document.getElementById('queuePlayer4') ]
       queuePlayers.forEach(i => i.innerHTML = "--");
       const sortedList = query(ref(db, 'players'), orderByChild('index'));
-
       get(sortedList).then((snapshot) =>{
         snapshot.forEach(function(child){
           let playerName = child.val().name;
@@ -168,20 +182,27 @@ function startQueue(){
               queuePlayers[index].innerHTML = child.val().name;
             index++;
           }
-          if(index > 3){
+          console.log(index);
+          if(index > 3 ){
             gameStateBar.style.animation="";
             // var cd = 5;
             var cd =1;
-            setInterval(function() {
-              if(cd>0){
-                gameStateBar.innerHTML = "遊戲將於"+cd+"秒後開始!";  
+            //檢測到計時是否存在
+            if(!cdStartGame){
+              cdStartGame = setInterval(function() {
+                if(cd>0){
+                  gameStateBar.innerHTML = "遊戲將於"+cd+"秒後開始!";  
+                }else if (cd === 0){
+                  clearInterval(cdStartGame);
+                  inGame();
+                }
                 cd--;
-              }else inGame();
-            }, 1000);
-
+              }, 1000);
+            }
+            console.log(index+":"+allReady);
           }
-          console.log(index+":"+allReady);
         });
+
       })
 
 
@@ -190,9 +211,15 @@ function startQueue(){
 }
 
 function inGame(){
-
+  console.log('mecll');
+  const vw = window.innerWidth ;
   document.body.style.animation = "bg2 .5s forwards";
-  document.getElementById('handArea').style.display = 'flex';
+  handArea.style.display = 'flex';
+  const cw = handCards[0].offsetWidth;
+  for(let i =0 ;i<13 ;i++){
+    handCards[i].style.marginLeft = i * ((vw-cw)/12) +"px";
+  }
+  // handArea.style.
   gameStateBar.style.animation = "fadeOut .5s forwards";
   queueArea.style.animation = "fadeOut .5s forwards";
   gameData.style.animation = "fadeOut .5s forwards";

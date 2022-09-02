@@ -9,13 +9,6 @@ body {
   color: white;
 }
 
-img{
-  display: flex;
-  width: 100px;
-  height: 100px;
-  cursor: pointer;
-}
-
 h1{
   font-size: 100px;
   color: white;
@@ -35,6 +28,7 @@ p{
   animation-delay: .8s;
   padding: 10px;
   border: thick double white;
+  cursor: pointer;
 }
 
 .queueArea ul{
@@ -77,7 +71,6 @@ p{
   align-items: center;
   justify-content: center;
   display: flex;
-
 }
 
 #handArea{
@@ -95,9 +88,9 @@ p{
 }
 
 .hand{
-  font-size: 10em;
-  position: relative;
+  position: absolute;
   cursor: pointer;
+  height: 30vh;
 }
 @keyframes fadeIn{
   from{ opacity: 0; }
@@ -124,11 +117,6 @@ p{
   to{background-color: #144379;}
 }
 @media only screen and (max-width: 600px){
-
-  img{
-    width: 60px;
-    height: 60px;
-  }
 
   h1{
     font-size: 80px;
