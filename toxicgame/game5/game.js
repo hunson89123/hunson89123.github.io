@@ -45,10 +45,10 @@ function writeUserData(userId, name, email, imageUrl) {
 function readGameData(){
   onValue(ref(db, 'players'),(snapshot) => {
     numOfUser = Object.keys(snapshot.val()).length;
-    numOfRoom = parseInt(numOfUser/4)+1;
+    numOfRoom = parseInt((numOfUser%4)/4)+1;
     //登入中請稍候
     if(numOfUser != 0){
-      console.log("nOU=",numOfUser);
+      // console.log("nOU=",numOfUser);
       const loading = document.getElementById('loading');
       if(loading != null){
         loading.style.animation = "fadeOut .8s forwards";
@@ -124,7 +124,7 @@ function startQueue(){
   if(userName != ""){
     var play = document.getElementById('play');
     if(play!=null){
-      
+
       play.parentNode.removeChild(play);
       queueArea.hidden = false; 
       queueArea.style.animation = "flyIn .5s";
@@ -163,25 +163,27 @@ function startQueue(){
           let playerId = child.val().id;
           if(playerName != ""){
             if(playerId == userID)
-              queuePlayers[index].innerHTML = "<span style=\"color:yellow\">"+child.val().name+"</span>";
+              queuePlayers[index].innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+child.val().name+"</span>";
             else
               queuePlayers[index].innerHTML = child.val().name;
             index++;
           }
-          if(index == 4)allReady = true;
+          if(index > 3){
+            gameStateBar.style.animation="";
+            var cd = 5;
+            setInterval(function() {
+              if(cd>0){
+                gameStateBar.innerHTML = "遊戲將於"+cd+"秒後開始!";  
+                cd--;
+              }else inGame();
+            }, 1000);
+
+          }
+          console.log(index+":"+allReady);
         });
       })
 
-      if(allReady){
-        gameStateBar.style.animation="";
-        var cd = 5;
-        setInterval(function() {
-          if(cd>0){
-            gameStateBar.innerHTML = "遊戲將於"+cd+"秒後開始!";  
-            cd--;
-          }else inGame();
-        }, 1000);
-      }
+
     });
   }
 }
