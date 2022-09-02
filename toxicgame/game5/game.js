@@ -170,7 +170,8 @@ function startQueue(){
           }
           if(index > 3){
             gameStateBar.style.animation="";
-            var cd = 5;
+            // var cd = 5;
+            var cd =1;
             setInterval(function() {
               if(cd>0){
                 gameStateBar.innerHTML = "遊戲將於"+cd+"秒後開始!";  
@@ -191,6 +192,7 @@ function startQueue(){
 function inGame(){
 
   document.body.style.animation = "bg2 .5s forwards";
+  document.getElementById('handArea').style.display = 'flex';
   gameStateBar.style.animation = "fadeOut .5s forwards";
   queueArea.style.animation = "fadeOut .5s forwards";
   gameData.style.animation = "fadeOut .5s forwards";

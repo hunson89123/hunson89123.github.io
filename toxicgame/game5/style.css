@@ -75,19 +75,29 @@ p{
   align-items: center;
   justify-content: center;
   display: flex;
+
 }
 
 #handArea{
   font-family: 'Noto Serif TC', serif;
   font-size: 2em;
-  line-height: 100vh;
+  line-height: 2em;
+  /*text-align: center;*/
   width: 100vw;
   height: 30vh;
   position: absolute;
   bottom: 0;
   z-index: 10;
+  white-space: nowrap;
+  display: none;
+  justify-content: center;
 }
 
+.hand{
+  font-size: 6em;
+  position: relative;
+  cursor: pointer;
+}
 @keyframes fadeIn{
   from{ opacity: 0; }
   to{opacity: 1;}
