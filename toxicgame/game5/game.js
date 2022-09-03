@@ -272,7 +272,8 @@ function cardSelected(){
   const handCardsImg = document.getElementsByTagName("img");
   const cardSelected = e =>{
     var cardRect = e.target.getBoundingClientRect();
-    var offset = bodyRect.bottom - cardRect.bottom;
+    var handAreaRect = handArea.getBoundingClientRect();
+    var offset = handAreaRect.bottom - cardRect.bottom;
     gameStateBar.innerHTML = offset
     // console.log("bodyRectBT:"+bodyRect.bottom+"cardRectBT:"+cardRect.bottom+" offsetBT:"+offset);
     for(let i = 0; i<13 ; i++){
