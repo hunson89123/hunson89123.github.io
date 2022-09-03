@@ -75,7 +75,7 @@ p{
 
 #handArea{
   width: 100vw;
-  height: 40vh;
+  height: 40%;
   position: absolute;
   bottom: 0;
   z-index: 10;
@@ -91,7 +91,7 @@ p{
   bottom: 0;
   position: absolute;
   cursor: pointer;
-  height: 15vh;
+  height: 15%;
 }
 @keyframes fadeIn{
   from{ opacity: 0; }
