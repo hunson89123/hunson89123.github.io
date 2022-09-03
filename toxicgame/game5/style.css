@@ -88,6 +88,14 @@ p{
   align-items: flex-end;
 }
 
+#handState{
+ font-family: 'Noto Serif TC', serif;
+ font-size: 1.5em;
+ text-align: center;
+ width: 100vw;
+ top: 0;
+ position: absolute;
+}
 .hand{
   bottom: 0;
   position: absolute;

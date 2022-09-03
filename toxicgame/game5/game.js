@@ -16,12 +16,14 @@ const firebaseConfig = {
 };
 
 //初始化遊戲元素
+const vw = window.innerWidth ;
+const vh = window.innerHeight ;
 const gameStateBar = document.getElementById('gameState');
 const handArea = document.getElementById('handArea');
 const gameData = document.getElementById('gameData');
 const queueArea = document.getElementById('queueArea');
-const vw = window.innerWidth ;
-const vh = window.innerHeight ;
+const handState = document.getElementById('handState');
+
 
 //初始化遊戲資料變數
 let numOfUser = 0,numOfRoom = 0;
@@ -36,6 +38,10 @@ let handCardsSelectedArr = new Array(13).fill(false);
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const dbRef = ref(getDatabase());
+
+//初始化動畫
+const infFade = "fadeIn .8s infinite alternate";
+
 
 //初始化遊戲元素陣列
 function initGameEle(){
@@ -103,7 +109,7 @@ function readGameData(){
     if(e.key == "Enter")
       if(numOfUser != 0)
         editUserName();
-  },false);
+    },false);
 }
 
 //登入驗證(給ID)
@@ -123,6 +129,7 @@ function loginCheck(){
         name: userName,
         hand: "",
         room: numOfRoom,
+        host: false,
       });
       console.log(uid);
 
@@ -166,16 +173,15 @@ function startQueue(){
   if(userName != ""){
     var play = document.getElementById('play');
     if(play!=null){
-
       play.parentNode.removeChild(play);
       queueArea.hidden = false; 
       queueArea.style.animation = "flyIn .5s";
       document.body.style.animation = "bg1 1s forwards";
-      gameStateBar.style.animation = "fadeIn .8s infinite alternate";
+      gameStateBar.style.animation = infFade;
       gameStateBar.innerHTML = "等待玩家中...";
     }
 
-    //指定玩家順序
+    //給定玩家登入時/房間
     get(child(dbRef, 'players')).then((snapshot) => {
       var time = new Date().getTime();
       snapshot.forEach(function(child){
@@ -236,8 +242,12 @@ function startQueue(){
 //進入遊戲
 function inGame(){
   cardSelected();
+  //進入牌局動畫
   document.body.style.animation = "bg2 .5s forwards";
   handArea.style.display = 'flex';
+  gameStateBar.innerHTML = "輪到你出牌了!"
+  gameStateBar.style.animation = infFade;
+
   let coverW = (vw > 600)?1:2;
   const cw = handCards[0].offsetWidth;
   //上排卡
@@ -261,12 +271,14 @@ function inGame(){
   // handArea.style.width = cw*12+cw+"px";
   // gameStateBar.style.animation = "fadeOut .5s forwards";
   queueArea.style.animation = "fadeOut .5s forwards";
+  queueArea.parentNode.removeChild(queueArea);
   gameData.style.animation = "fadeOut .5s forwards";
+  gameData.parentNode.removeChild(gameData);
   handArea.style.animation = "fadeIn 2s forwards";
   handArea.hidden = false;
 }
 
-//卡片選取動畫
+//卡片選取
 function cardSelected(){
   var bodyRect = document.body.getBoundingClientRect();
   const handCardsImg = document.getElementsByTagName("img");
@@ -274,8 +286,9 @@ function cardSelected(){
     var cardRect = e.target.getBoundingClientRect();
     var handAreaRect = handArea.getBoundingClientRect();
     var offset = handAreaRect.bottom - cardRect.bottom;
-    gameStateBar.innerHTML = offset
-    // console.log("bodyRectBT:"+bodyRect.bottom+"cardRectBT:"+cardRect.bottom+" offsetBT:"+offset);
+    var cardSelectStr = "";
+
+    //卡片選取動畫
     for(let i = 0; i<13 ; i++){
       if(e.target.id == handCards[i].id){
         e.target.style.outlineOffset = "-3px";
@@ -284,16 +297,35 @@ function cardSelected(){
           e.target.style.filter = "";
         }else{
           e.target.style.bottom = offset +  20 + "px";
-          e.target.style.filter = "drop-shadow(10px 20px 10px black)";
+          e.target.style.filter = "drop-shadow(0 10px 0 rgba(0, 0, 0, 0.7))";
         }
         handCardsSelectedArr[i] = !handCardsSelectedArr[i];
       }
     }
+
+    //卡片選取字串
+    for(let i=0 ; i<13 ; i++){
+      if(handCardsSelectedArr[i])
+        cardSelectStr += cards[i] + " ";
+    }
+    handCardState(cardSelectStr);
   }
 
   for(let hCI of handCardsImg){
     hCI.addEventListener("click", cardSelected);
   }
+}
+
+
+//卡牌圖片=>出牌提示
+function handCardState(cardSelectStr){
+  cardSelectStr=cardSelectStr.replace(/c/g,'♣');
+  cardSelectStr=cardSelectStr.replace(/d/g,'♦');
+  cardSelectStr=cardSelectStr.replace(/h/g,'♥');
+  cardSelectStr=cardSelectStr.replace(/s/g,'♠');
+  if(cardSelectStr != "")
+    handState.innerHTML = "選取卡牌："+cardSelectStr;
+  else handState.innerHTML = "請點選卡牌";
 }
 
 //YatesShuffle演算法
