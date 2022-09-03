@@ -259,7 +259,7 @@ function inGame(){
     else handCards[i].style.left = (vw - (cw/coverW*5+cw))/2 +"px";
   }
   // handArea.style.width = cw*12+cw+"px";
-  gameStateBar.style.animation = "fadeOut .5s forwards";
+  // gameStateBar.style.animation = "fadeOut .5s forwards";
   queueArea.style.animation = "fadeOut .5s forwards";
   gameData.style.animation = "fadeOut .5s forwards";
   handArea.style.animation = "fadeIn 2s forwards";
@@ -273,15 +273,16 @@ function cardSelected(){
   const cardSelected = e =>{
     var cardRect = e.target.getBoundingClientRect();
     var offset = bodyRect.bottom - cardRect.bottom;
+    gameStateBar.innerHTML = offset
     // console.log("bodyRectBT:"+bodyRect.bottom+"cardRectBT:"+cardRect.bottom+" offsetBT:"+offset);
     for(let i = 0; i<13 ; i++){
       if(e.target.id == handCards[i].id){
         e.target.style.outlineOffset = "-3px";
         if(handCardsSelectedArr[i]){
-          e.target.style.bottom = offset - 20 + "px";
+          // e.target.style.bottom = offset - 20 + "px";
           e.target.style.filter = "";
         }else{
-          e.target.style.bottom = offset +  20 + "px";
+          // e.target.style.bottom = offset +  20 + "px";
           e.target.style.filter = "drop-shadow(10px 20px 30px black)";
         }
         handCardsSelectedArr[i] = !handCardsSelectedArr[i];
