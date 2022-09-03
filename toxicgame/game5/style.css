@@ -74,6 +74,7 @@ p{
 }
 
 #handArea{
+  float: inline-end;
   width: 100vw;
   height: 40vh;
   position: absolute;
