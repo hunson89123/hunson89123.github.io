@@ -82,6 +82,11 @@ function readGameData(){
     });
   })
 
+  //偵測鍵盤是否按下Enter
+  window.addEventListener('keydown',function(e){
+    if(e.key == "Enter")
+      editUserName();
+  },false);
 }
 
 //登入驗證(給ID)
@@ -112,6 +117,7 @@ function loginCheck(){
     }
   });
 
+  //匿名登入
   signInAnonymously(auth)
   .catch((error) => {
     const errorCode = error.code;
@@ -119,14 +125,14 @@ function loginCheck(){
     console.log(errorCode,errorMessage);
   });
 
-
 }
 
 // writeUserData("0","hunson","hunson89123@gmail.com","https://lh3.googleusercontent.com/ogw/AOh-ky2GM3d-efYoL1aCQkD_urwJqsenth6BMHnibpViUQ=s32-c-mo")
 loginCheck();
 
 //修改名字
-export function editUserName(newName){
+export function editUserName(){
+  let newName = prompt("請輸入玩家名稱","");
   if(newName != "" && newName != null){
     const updates = {};
     updates['players/' + userID + '/name'] = newName;
@@ -210,14 +216,28 @@ function startQueue(){
   }
 }
 
+//進入遊戲
 function inGame(){
   cardSelected();
   const vw = window.innerWidth ;
   document.body.style.animation = "bg2 .5s forwards";
   handArea.style.display = 'flex';
   const cw = handCards[0].offsetWidth;
-  for(let i =1 ;i<13 ;i++){
-    handCards[i].style.marginLeft =-cw / 3 +"px";
+  //上排卡
+  for(let i =0 ;i<7 ;i++){
+    handCards[i].style.bottom = 20 + "vh";
+    if(i > 0) {
+      handCards[i].style.left =  (handCards[i-1].getBoundingClientRect().left + cw/2) +"px";
+    }
+    else handCards[i].style.left = (vw - cw*3.5)/2 +"px";
+  }
+
+  //下排卡
+  for(let i =7 ;i < 13; i++){
+    if(i > 7) {
+      handCards[i].style.left =  (handCards[i-1].getBoundingClientRect().left + cw/2) +"px";
+    }
+    else handCards[i].style.left = (vw - cw*3)/2 +"px";
   }
   // handArea.style.width = cw*12+cw+"px";
   gameStateBar.style.animation = "fadeOut .5s forwards";
@@ -227,10 +247,11 @@ function inGame(){
   handArea.hidden = false;
 }
 
+//卡片選取動畫
 function cardSelected(){
   const handCardsImg = document.getElementsByTagName("img");
   const cardSelected = e =>{
-    e.target.style.bottom = (e.target.style.bottom + 50) + "px"
+    // e.target.style.bottom = (e.target.style.bottom + 50) + "px"
   }
 
   for(let hCI of handCardsImg){

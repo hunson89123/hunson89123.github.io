@@ -89,9 +89,9 @@ p{
 
 .hand{
   bottom: 0;
-  position: relative;
+  position: absolute;
   cursor: pointer;
-  height: 30vh;
+  height: 15vh;
 }
 @keyframes fadeIn{
   from{ opacity: 0; }
