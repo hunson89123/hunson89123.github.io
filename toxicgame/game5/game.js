@@ -211,7 +211,6 @@ function startQueue(){
               queuePlayers[index].innerHTML = child.val().name;
             index++;
           }
-          console.log(index);
           if(index > 3 ){
             gameStateBar.style.animation="";
             // var cd = 5;
