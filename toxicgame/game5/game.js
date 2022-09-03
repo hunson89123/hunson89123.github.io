@@ -284,7 +284,7 @@ function cardSelected(){
           e.target.style.filter = "";
         }else{
           e.target.style.bottom = offset +  20 + "px";
-          e.target.style.filter = "drop-shadow(10px 20px 30px black)";
+          e.target.style.filter = "drop-shadow(10px 20px 10px black)";
         }
         handCardsSelectedArr[i] = !handCardsSelectedArr[i];
       }
