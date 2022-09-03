@@ -280,10 +280,10 @@ function cardSelected(){
       if(e.target.id == handCards[i].id){
         e.target.style.outlineOffset = "-3px";
         if(handCardsSelectedArr[i]){
-          // e.target.style.bottom = offset - 20 + "px";
+          e.target.style.bottom = offset - 20 + "px";
           e.target.style.filter = "";
         }else{
-          // e.target.style.bottom = offset +  20 + "px";
+          e.target.style.bottom = offset +  20 + "px";
           e.target.style.filter = "drop-shadow(10px 20px 30px black)";
         }
         handCardsSelectedArr[i] = !handCardsSelectedArr[i];
