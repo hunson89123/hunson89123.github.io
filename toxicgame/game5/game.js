@@ -20,6 +20,8 @@ const gameStateBar = document.getElementById('gameState');
 const handArea = document.getElementById('handArea');
 const gameData = document.getElementById('gameData');
 const queueArea = document.getElementById('queueArea');
+const vw = window.innerWidth ;
+const vh = window.innerHeight ;
 
 //初始化遊戲資料變數
 let numOfUser = 0,numOfRoom = 0;
@@ -28,6 +30,7 @@ let allReady = false;
 let cards = [];
 let queuePlayers =[];
 let handCards = [];
+let handCardsSelectedArr = new Array(13).fill(false);
 
 //初始化fb
 const app = initializeApp(firebaseConfig);
@@ -57,6 +60,19 @@ function initGameEle(){
   document.getElementById('hand12'),
   document.getElementById('hand13')
   ]
+
+  const suits = ['c' , 'd' , 'h' , 's'];
+  const number = [1,2,3,4,5,6,7,8,9,10,11,12,13];
+  for(let i=0 ; i<52 ; i++){
+    cards[i] = suits[parseInt(i/13)] + number[i%13];
+  }
+  console.log(cards);
+  cards = shuffle(cards);
+  console.log(cards);
+
+  for(let i=0 ; i<13 ; i++){
+    handCards[i].src = "./cards/"+cards[i]+".png";
+  }
 }
 
 //查詢遊戲資訊(玩家人數|遊戲房間)
@@ -219,25 +235,27 @@ function startQueue(){
 //進入遊戲
 function inGame(){
   cardSelected();
-  const vw = window.innerWidth ;
   document.body.style.animation = "bg2 .5s forwards";
   handArea.style.display = 'flex';
+  let coverW = (vw > 600)?1:2;
   const cw = handCards[0].offsetWidth;
   //上排卡
   for(let i =0 ;i<7 ;i++){
     handCards[i].style.bottom = 20 + "vh";
+    //console.log(vh);
+    console.log(vh-handCards[i].getBoundingClientRect().bottom);
     if(i > 0) {
-      handCards[i].style.left =  (handCards[i-1].getBoundingClientRect().left + cw/2) +"px";
+      handCards[i].style.left =  (handCards[i-1].getBoundingClientRect().left + cw/coverW) +"px";
     }
-    else handCards[i].style.left = (vw - cw*4)/2 +"px";
+    else handCards[i].style.left = (vw - (cw/coverW*6+cw))/2 +"px";
   }
 
   //下排卡
   for(let i =7 ;i < 13; i++){
     if(i > 7) {
-      handCards[i].style.left =  (handCards[i-1].getBoundingClientRect().left + cw/2) +"px";
+      handCards[i].style.left =  (handCards[i-1].getBoundingClientRect().left + cw/coverW) +"px";
     }
-    else handCards[i].style.left = (vw - cw*3.5)/2 +"px";
+    else handCards[i].style.left = (vw - (cw/coverW*5+cw))/2 +"px";
   }
   // handArea.style.width = cw*12+cw+"px";
   gameStateBar.style.animation = "fadeOut .5s forwards";
@@ -251,12 +269,29 @@ function inGame(){
 function cardSelected(){
   const handCardsImg = document.getElementsByTagName("img");
   const cardSelected = e =>{
-    // e.target.style.bottom = (e.target.style.bottom + 50) + "px"
+    for(let i = 0; i<13 ; i++){
+      if(e.target.id == handCards[i].id){
+        handCardsSelectedArr[i] = !handCardsSelectedArr[i];
+        e.target.style.bottom = 
+        (handCardsSelectedArr[i])?
+        vh - e.target.getBoundingClientRect().bottom + 20 +"px" :
+        vh - e.target.getBoundingClientRect().bottom - 20 +"px" ;
+      }
+    }
   }
 
   for(let hCI of handCardsImg){
     hCI.addEventListener("click", cardSelected);
   }
+}
+
+//YatesShuffle演算法
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
 }
 //color code
 //Blue   #188CFF
