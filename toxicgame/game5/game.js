@@ -101,7 +101,8 @@ function readGameData(){
   //偵測鍵盤是否按下Enter
   window.addEventListener('keydown',function(e){
     if(e.key == "Enter")
-      editUserName();
+      if(numOfUser != 0)
+        editUserName();
   },false);
 }
 
@@ -241,7 +242,7 @@ function inGame(){
   const cw = handCards[0].offsetWidth;
   //上排卡
   for(let i =0 ;i<7 ;i++){
-    handCards[i].style.bottom = 20 + "vh";
+    handCards[i].style.bottom = 15 + "vh";
     //console.log(vh);
     console.log(vh-handCards[i].getBoundingClientRect().bottom);
     if(i > 0) {
@@ -267,15 +268,23 @@ function inGame(){
 
 //卡片選取動畫
 function cardSelected(){
+  var bodyRect = document.body.getBoundingClientRect();
   const handCardsImg = document.getElementsByTagName("img");
   const cardSelected = e =>{
+    var cardRect = e.target.getBoundingClientRect();
+    var offset = bodyRect.bottom - cardRect.bottom;
+    // console.log("bodyRectBT:"+bodyRect.bottom+"cardRectBT:"+cardRect.bottom+" offsetBT:"+offset);
     for(let i = 0; i<13 ; i++){
       if(e.target.id == handCards[i].id){
+        e.target.style.outlineOffset = "-3px";
+        if(handCardsSelectedArr[i]){
+          e.target.style.bottom = offset - 20 + "px";
+          e.target.style.filter = "";
+        }else{
+          e.target.style.bottom = offset +  20 + "px";
+          e.target.style.filter = "drop-shadow(10px 20px 30px black)";
+        }
         handCardsSelectedArr[i] = !handCardsSelectedArr[i];
-        e.target.style.bottom = 
-        (handCardsSelectedArr[i])?
-        vh - e.target.getBoundingClientRect().bottom + 20 +"px" :
-        vh - e.target.getBoundingClientRect().bottom - 20 +"px" ;
       }
     }
   }
