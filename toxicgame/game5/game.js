@@ -229,7 +229,7 @@ function inGame(){
     if(i > 0) {
       handCards[i].style.left =  (handCards[i-1].getBoundingClientRect().left + cw/2) +"px";
     }
-    else handCards[i].style.left = (vw - cw*3.5)/2 +"px";
+    else handCards[i].style.left = (vw - cw*4)/2 +"px";
   }
 
   //下排卡
@@ -237,7 +237,7 @@ function inGame(){
     if(i > 7) {
       handCards[i].style.left =  (handCards[i-1].getBoundingClientRect().left + cw/2) +"px";
     }
-    else handCards[i].style.left = (vw - cw*3)/2 +"px";
+    else handCards[i].style.left = (vw - cw*3.5)/2 +"px";
   }
   // handArea.style.width = cw*12+cw+"px";
   gameStateBar.style.animation = "fadeOut .5s forwards";
