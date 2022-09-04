@@ -23,15 +23,16 @@ const handArea = document.getElementById('handArea');
 const gameData = document.getElementById('gameData');
 const queueArea = document.getElementById('queueArea');
 const handState = document.getElementById('handState');
-
+let handCards = [];
 
 //初始化遊戲資料變數
 let numOfUser = 0,numOfRoom = 0;
-let userID = 0,userName = '',userRoom = 0;
+let userID = 0,userName = '',userRoom = 0,userIndex = 0;
 let allReady = false;
 let cards = [];
+let cardsTmp = [];
+let userCards = [];
 let queuePlayers =[];
-let handCards = [];
 let handCardsSelectedArr = new Array(13).fill(false);
 let host = false;
 
@@ -70,18 +71,12 @@ function initGameEle(){
 
   //產生52張牌
   const suits = ['c' , 'd' , 'h' , 's'];
-  const number = [1,2,3,4,5,6,7,8,9,10,11,12,13];
+  const number = [3,4,5,6,7,8,9,10,11,12,13,1,2];
   for(let i=0 ; i<52 ; i++){
-    cards[i] = suits[parseInt(i/13)] + number[i%13];
+    cards[i] = suits[i%4] + number[parseInt(i/4)];
+    cardsTmp[i] = i;
   }
-
-  //洗牌
-  cards = shuffle(cards);
-
-  //發牌
-  for(let i=0 ; i<13 ; i++){
-    handCards[i].src = "./cards/"+cards[i]+".png";
-  }
+  console.log(cards);
 }
 
 //查詢遊戲資訊(玩家人數|遊戲房間)
@@ -227,12 +222,17 @@ function startQueue(){
           const updates = {};
 
           if(playerName != "" && playerRoom == userRoom){
+
             //指派第一位為室長
             if(index == 0) updates['players/'+child.key+'/host'] = true;
             update(ref(db),updates);
             console.log(playerId,":",userID);
-            if(playerId == userID)
+            if(playerId == userID){
               queuePlayers[index].innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+child.val().name+"</span>";
+
+              //指派玩家順序
+              userIndex = index;
+            }
             else
               queuePlayers[index].innerHTML = child.val().name;
             index++;
@@ -263,6 +263,7 @@ function startQueue(){
 
 //進入遊戲
 function inGame(){
+  cardShufDealSort();
   cardSelected();
   //進入牌局動畫
   document.body.style.animation = "bg2 .5s forwards";
@@ -315,13 +316,25 @@ function moveToRoom(){
   //將玩家資料複製至房間
   get(child(dbRef, 'players')).then((snapshot) => {
     snapshot.forEach(function(child){
-      if(child.val().room){
+      // if(child.val().room){
 
-      }
+      // }
     });
   });
 }
 
+//卡牌洗發
+function cardShufDealSort(){
+  //洗牌Shuffle
+  cardsTmp = shuffle(cardsTmp);
+
+  //發牌Deal、理牌Sort
+  userCards = cardsTmp.slice((userIndex-1)*13,(userIndex-1)*13+13);
+  userCards.sort(function(a,b){return a-b});
+  for(let i=0 ; i<13 ; i++){
+    handCards[i].src = "./cards/"+cards[userCards[i]]+".png";
+  }
+}
 //卡片選取
 function cardSelected(){
   var bodyRect = document.body.getBoundingClientRect();
@@ -350,7 +363,7 @@ function cardSelected(){
     //卡片選取字串
     for(let i=0 ; i<13 ; i++){
       if(handCardsSelectedArr[i])
-        cardSelectStr += cards[i] + " ";
+        cardSelectStr += cards[userCards[i]] + " ";
     }
     handCardState(cardSelectStr);
   }
