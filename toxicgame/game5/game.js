@@ -27,12 +27,13 @@ const handState = document.getElementById('handState');
 
 //初始化遊戲資料變數
 let numOfUser = 0,numOfRoom = 0;
-let userID = 0,userName = '';
+let userID = 0,userName = '',userRoom = 0;
 let allReady = false;
 let cards = [];
 let queuePlayers =[];
 let handCards = [];
 let handCardsSelectedArr = new Array(13).fill(false);
+let host = false;
 
 //初始化fb
 const app = initializeApp(firebaseConfig);
@@ -67,15 +68,17 @@ function initGameEle(){
   document.getElementById('hand13')
   ]
 
+  //產生52張牌
   const suits = ['c' , 'd' , 'h' , 's'];
   const number = [1,2,3,4,5,6,7,8,9,10,11,12,13];
   for(let i=0 ; i<52 ; i++){
     cards[i] = suits[parseInt(i/13)] + number[i%13];
   }
-  console.log(cards);
-  cards = shuffle(cards);
-  console.log(cards);
 
+  //洗牌
+  cards = shuffle(cards);
+
+  //發牌
   for(let i=0 ; i<13 ; i++){
     handCards[i].src = "./cards/"+cards[i]+".png";
   }
@@ -85,10 +88,9 @@ function initGameEle(){
 function readGameData(){
   onValue(ref(db, 'players'),(snapshot) => {
     numOfUser = Object.keys(snapshot.val()).length;
-    numOfRoom = parseInt((numOfUser%4)/4)+1;
+    numOfRoom = Math.ceil(numOfUser/4);
     //登入中請稍候
     if(numOfUser != 0){
-      // console.log("nOU=",numOfUser);
       const loading = document.getElementById('loading');
       if(loading != null){
         loading.style.animation = "fadeOut .8s forwards";
@@ -97,12 +99,22 @@ function readGameData(){
         }, 800);
       }
     }
+
     gameData.innerHTML="線上玩家："+numOfUser+" | 遊戲房間："+numOfRoom;
     set(ref(db,'gameData'),{
       numOfUser: numOfUser,
       numOfRoom: numOfRoom,
     });
+
+    //指定玩家房間編號
+    const updates ={};
+    if(userRoom == 0){
+      updates['players/'+userID+'/room'] = numOfRoom;
+      userRoom = numOfRoom;
+      update(ref(db),updates);
+    }
   })
+
 
   //偵測鍵盤是否按下Enter
   window.addEventListener('keydown',function(e){
@@ -115,6 +127,7 @@ function readGameData(){
 //登入驗證(給ID)
 function loginCheck(){
 
+
   //輸入資料進db
   const auth = getAuth();
   onAuthStateChanged(auth,(user) => {
@@ -124,15 +137,12 @@ function loginCheck(){
       // userName = "玩家"+uid.substring(0,4);
       userID = uid;
       set(urf,{
-        id: uid,
         index: "",
         name: userName,
         hand: "",
-        room: numOfRoom,
+        room: userRoom,
         host: false,
       });
-      console.log(uid);
-
       //斷線清除
       onDisconnect(urf).remove();
 
@@ -140,6 +150,9 @@ function loginCheck(){
       readGameData();
     }
   });
+
+
+  
 
   //匿名登入
   signInAnonymously(auth)
@@ -188,8 +201,11 @@ function startQueue(){
         const updates = {};
         if(child.key == userID){
           updates['players/'+child.key+'/index'] = time;
-          updates['players/'+child.key+'/room'] = numOfRoom;
+          // updates['players/'+child.key+'/room'] = numOfRoom;
           update(ref(db),updates);
+
+          //給定玩家房間編號
+          // userRoom = numOfRoom;
         }
       });
     });
@@ -198,13 +214,23 @@ function startQueue(){
     var cdStartGame;
     onValue(ref(db, 'players'),(snapshot) => {
       let index = 0;
+      //初始化列隊列表(全--)
       queuePlayers.forEach(i => i.innerHTML = "--");
+
+      //依據進入列隊時間排序
       const sortedList = query(ref(db, 'players'), orderByChild('index'));
       get(sortedList).then((snapshot) =>{
         snapshot.forEach(function(child){
           let playerName = child.val().name;
-          let playerId = child.val().id;
-          if(playerName != ""){
+          let playerId = child.key;
+          let playerRoom = child.val().room;
+          const updates = {};
+
+          if(playerName != "" && playerRoom == userRoom){
+            //指派第一位為室長
+            if(index == 0) updates['players/'+child.key+'/host'] = true;
+            update(ref(db),updates);
+            console.log(playerId,":",userID);
             if(playerId == userID)
               queuePlayers[index].innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+child.val().name+"</span>";
             else
@@ -230,10 +256,7 @@ function startQueue(){
             console.log(index+":"+allReady);
           }
         });
-
       })
-
-
     });
   }
 }
@@ -246,6 +269,16 @@ function inGame(){
   handArea.style.display = 'flex';
   gameStateBar.innerHTML = "輪到你出牌了!"
   gameStateBar.style.animation = infFade;
+
+  //判斷是否為室長
+  get(child(dbRef, 'players')).then((snapshot) => {
+    snapshot.forEach(function(child){
+      console.log(child.val().host);
+      if(child.key == userID){
+        host = child.val().host;
+      }
+    });
+  });
 
   let coverW = (vw > 600)?1:2;
   const cw = handCards[0].offsetWidth;
@@ -277,6 +310,18 @@ function inGame(){
   handArea.hidden = false;
 }
 
+//進入遊戲房間
+function moveToRoom(){
+  //將玩家資料複製至房間
+  get(child(dbRef, 'players')).then((snapshot) => {
+    snapshot.forEach(function(child){
+      if(child.val().room){
+
+      }
+    });
+  });
+}
+
 //卡片選取
 function cardSelected(){
   var bodyRect = document.body.getBoundingClientRect();
@@ -296,7 +341,7 @@ function cardSelected(){
           e.target.style.filter = "";
         }else{
           e.target.style.bottom = offset +  20 + "px";
-          e.target.style.filter = "drop-shadow(0 10px 0 rgba(0, 0, 0, 0.7))";
+          e.target.style.filter = "drop-shadow(0 10px 0  rgba(0, 0, 0, 0.7))";
         }
         handCardsSelectedArr[i] = !handCardsSelectedArr[i];
       }
@@ -322,10 +367,15 @@ function handCardState(cardSelectStr){
   cardSelectStr=cardSelectStr.replace(/d/g,'♦');
   cardSelectStr=cardSelectStr.replace(/h/g,'♥');
   cardSelectStr=cardSelectStr.replace(/s/g,'♠');
+  cardSelectStr=cardSelectStr.replace(/11/g,'J');
+  cardSelectStr=cardSelectStr.replace(/12/g,'Q');
+  cardSelectStr=cardSelectStr.replace(/13/g,'K');
+
   if(cardSelectStr != "")
     handState.innerHTML = "選取卡牌："+cardSelectStr;
   else handState.innerHTML = "請點選卡牌";
 }
+
 
 //YatesShuffle演算法
 function shuffle(array) {
