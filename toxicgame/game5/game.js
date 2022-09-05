@@ -272,19 +272,6 @@ function inGame(){
   gameStateBar.innerHTML = "輪到你出牌了!"
   gameStateBar.style.animation = infFade;
 
-  //判斷是否為室長
-  get(child(dbRef, 'players')).then((snapshot) => {
-    snapshot.forEach(function(child){
-      if(child.key == userID){
-        host = child.val().host;
-        console.log(host);
-      }
-    });
-  });
-
-  
-
-
   let coverW = (vw > 600)?1:2;
   const cw = handCards[0].offsetWidth;
   //上排卡
@@ -327,13 +314,21 @@ function moveToRoom(){
 
 //卡牌洗發
 function cardShufDealSort(){
-  //洗牌並將牌輸入進Fb
-  if(userIndex == 0){
-    cardsTmp = shuffle(cardsTmp);
-    set(ref(db,'rooms/'+userRoom),{
-      cards: cardsTmp,
+  //判斷是否為室長並洗牌將牌輸入進Fb
+  get(child(dbRef, 'players')).then((snapshot) => {
+    snapshot.forEach(function(child){
+      if(child.key == userID){
+        host = child.val().host;
+      }
+
+      if(host){
+        cardsTmp = shuffle(cardsTmp);
+        set(ref(db,'rooms/'+userRoom),{
+          cards: cardsTmp,
+        });
+      }
     });
-  }
+  });
 
   //從Fb取得牌
   get(child(dbRef, 'rooms')).then((snapshot) => {
