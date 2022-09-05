@@ -272,7 +272,7 @@ function inGame(){
   //進入牌局動畫
   document.body.style.animation = "bg2 .5s forwards";
   handArea.style.display = 'flex';
-  gameStateBar.innerHTML = "輪到你出牌了!"
+  gameStateBar.innerHTML = "您的順序是第"+userIndex+"位";
   gameStateBar.style.animation = infFade;
   queueArea.style.animation = "fadeOut .5s forwards";
   queueArea.parentNode.removeChild(queueArea);
