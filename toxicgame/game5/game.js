@@ -35,6 +35,7 @@ let userCards = [];
 let queuePlayers =[];
 let handCardsSelectedArr = new Array(13).fill(false);
 let host = false;
+let haveC3 = false;
 
 //初始化fb
 const app = initializeApp(firebaseConfig);
@@ -265,13 +266,22 @@ function inGame(){
   //洗發理牌
   cardShufDealSort();
 
+  //給定卡牌選卡動畫及事件
   cardSelected();
+
   //進入牌局動畫
   document.body.style.animation = "bg2 .5s forwards";
   handArea.style.display = 'flex';
   gameStateBar.innerHTML = "輪到你出牌了!"
   gameStateBar.style.animation = infFade;
+  queueArea.style.animation = "fadeOut .5s forwards";
+  queueArea.parentNode.removeChild(queueArea);
+  gameData.style.animation = "fadeOut .5s forwards";
+  gameData.parentNode.removeChild(gameData);
+  handArea.style.animation = "fadeIn 2s forwards";
+  handArea.hidden = false;
 
+  //指定卡牌位置及間距
   let coverW = (vw > 600)?1:2;
   const cw = handCards[0].offsetWidth;
   //上排卡
@@ -290,14 +300,6 @@ function inGame(){
     }
     else handCards[i].style.left = (vw - (cw/coverW*5+cw))/2 +"px";
   }
-  // handArea.style.width = cw*12+cw+"px";
-  // gameStateBar.style.animation = "fadeOut .5s forwards";
-  queueArea.style.animation = "fadeOut .5s forwards";
-  queueArea.parentNode.removeChild(queueArea);
-  gameData.style.animation = "fadeOut .5s forwards";
-  gameData.parentNode.removeChild(gameData);
-  handArea.style.animation = "fadeIn 2s forwards";
-  handArea.hidden = false;
 }
 
 //進入遊戲房間
@@ -343,9 +345,12 @@ function cardShufDealSort(){
 
       const updates = {};
       updates['players/'+userID+'/hand'] = userCards;
+      updates['players/'+userID+'/index'] = userIndex;
       update(ref(db),updates);
 
       for(let i=0 ; i<13 ; i++){
+        if(userCards[i] == 0)haveC3 = true;
+
         handCards[i].src = "./cards/"+cards[userCards[i]]+".png";
       }
     });
