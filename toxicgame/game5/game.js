@@ -23,7 +23,10 @@ const handArea = document.getElementById('handArea');
 const gameData = document.getElementById('gameData');
 const queueArea = document.getElementById('queueArea');
 const handState = document.getElementById('handState');
+const playerDataArea = document.getElementById('playerDataArea');
+let queuePlayers =[];
 let handCards = [];
+let playerData = [];
 
 //初始化遊戲資料變數
 let numOfUser = 0,numOfRoom = 0;
@@ -32,7 +35,6 @@ let allReady = false;
 let cards = [];
 let cardsTmp = [];
 let userCards = [];
-let queuePlayers =[];
 let handCardsSelectedArr = new Array(13).fill(false);
 let host = false;
 let haveC3 = false;
@@ -48,11 +50,12 @@ const infFade = "fadeIn .8s infinite alternate";
 
 //初始化遊戲元素陣列
 function initGameEle(){
-  queuePlayers= 
-  [ document.getElementById('queuePlayer1'),
+  queuePlayers= [ 
+  document.getElementById('queuePlayer1'),
   document.getElementById('queuePlayer2'),
   document.getElementById('queuePlayer3'),
-  document.getElementById('queuePlayer4') ];
+  document.getElementById('queuePlayer4') 
+  ];
 
   handCards = [
   document.getElementById('hand1'),
@@ -68,8 +71,14 @@ function initGameEle(){
   document.getElementById('hand11'),
   document.getElementById('hand12'),
   document.getElementById('hand13')
-  ]
+  ];
 
+  playerData = [
+  document.getElementById('playerData1'),
+  document.getElementById('playerData2'),
+  document.getElementById('playerData3'),
+  document.getElementById('playerData4')
+  ];
   //產生52張牌
   const suits = ['c' , 'd' , 'h' , 's'];
   const number = [3,4,5,6,7,8,9,10,11,12,13,1,2];
@@ -228,16 +237,22 @@ function startQueue(){
             else updates['players/'+child.key+'/host'] = false;
             update(ref(db),updates);
             // console.log(playerId,":",userID);
+            
             if(playerId == userID){
-              queuePlayers[index].innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+index+":"+child.val().name+"</span>";
-
+              queuePlayers[index].innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+child.val().name+"</span>";
               //指派玩家順序
               userIndex = index;
             }
             else
-              queuePlayers[index].innerHTML = child.val().name;
+              queuePlayers[index].innerHTML = playerName;
+            //產生玩家資料卡
+            for(let i=0 ; i<userIndex+1 ; i++){
+              console.log(index%4);
+              playerData[index%4].innerHTML = playerName;
+            }
             index++;
           }
+
           if(index > 3 ){
             gameStateBar.style.animation="";
             // var cd = 5;
@@ -272,6 +287,7 @@ function inGame(){
   //進入牌局動畫
   document.body.style.animation = "bg2 .5s forwards";
   handArea.style.display = 'flex';
+  playerDataArea.style.display = 'flex';
   gameStateBar.innerHTML = "您的順序是第"+userIndex+"位";
   gameStateBar.style.animation = infFade;
   queueArea.style.animation = "fadeOut .5s forwards";
@@ -279,7 +295,7 @@ function inGame(){
   gameData.style.animation = "fadeOut .5s forwards";
   gameData.parentNode.removeChild(gameData);
   handArea.style.animation = "fadeIn 2s forwards";
-  handArea.hidden = false;
+  playerDataArea.style.animation = "fadeIn 2s forwards";
 
   //指定卡牌位置及間距
   let coverW = (vw > 600)?1:2;
