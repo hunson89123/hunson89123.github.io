@@ -76,7 +76,6 @@ function initGameEle(){
     cards[i] = suits[i%4] + number[parseInt(i/4)];
     cardsTmp[i] = i;
   }
-  console.log(cards);
 }
 
 //查詢遊戲資訊(玩家人數|遊戲房間)
@@ -225,8 +224,9 @@ function startQueue(){
 
             //指派第一位為室長
             if(index == 0) updates['players/'+child.key+'/host'] = true;
+            else updates['players/'+child.key+'/host'] = false;
             update(ref(db),updates);
-            console.log(playerId,":",userID);
+            // console.log(playerId,":",userID);
             if(playerId == userID){
               queuePlayers[index].innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+child.val().name+"</span>";
 
@@ -246,14 +246,13 @@ function startQueue(){
               cdStartGame = setInterval(function() {
                 if(cd>0){
                   gameStateBar.innerHTML = "遊戲將於"+cd+"秒後開始!";  
-                }else if (cd === 0){
+                }else if (cd == 0){
                   clearInterval(cdStartGame);
                   inGame();
                 }
                 cd--;
               }, 1000);
             }
-            console.log(index+":"+allReady);
           }
         });
       })
@@ -263,7 +262,9 @@ function startQueue(){
 
 //進入遊戲
 function inGame(){
+  //洗發理牌
   cardShufDealSort();
+
   cardSelected();
   //進入牌局動畫
   document.body.style.animation = "bg2 .5s forwards";
@@ -274,20 +275,21 @@ function inGame(){
   //判斷是否為室長
   get(child(dbRef, 'players')).then((snapshot) => {
     snapshot.forEach(function(child){
-      console.log(child.val().host);
       if(child.key == userID){
         host = child.val().host;
+        console.log(host);
       }
     });
   });
+
+  
+
 
   let coverW = (vw > 600)?1:2;
   const cw = handCards[0].offsetWidth;
   //上排卡
   for(let i =0 ;i<7 ;i++){
     handCards[i].style.bottom = 15 + "vh";
-    //console.log(vh);
-    console.log(vh-handCards[i].getBoundingClientRect().bottom);
     if(i > 0) {
       handCards[i].style.left =  (handCards[i-1].getBoundingClientRect().left + cw/coverW) +"px";
     }
@@ -325,16 +327,35 @@ function moveToRoom(){
 
 //卡牌洗發
 function cardShufDealSort(){
-  //洗牌Shuffle
-  cardsTmp = shuffle(cardsTmp);
+  //洗牌並將牌輸入進Fb
+  if(userIndex == 0){
+    cardsTmp = shuffle(cardsTmp);
+    set(ref(db,'rooms/'+userRoom),{
+      cards: cardsTmp,
+    });
+  }
 
-  //發牌Deal、理牌Sort
-  userCards = cardsTmp.slice((userIndex-1)*13,(userIndex-1)*13+13);
+  //從Fb取得牌
+  get(child(dbRef, 'rooms')).then((snapshot) => {
+    snapshot.forEach(function(child){
+      if(child.key == userRoom)
+        cardsTmp = child.val().cards;
+    });
+  });
+
+  //發牌、理牌
+  userCards = cardsTmp.slice((userIndex)*13,(userIndex)*13+13);
   userCards.sort(function(a,b){return a-b});
+
+  const updates = {};
+  updates['players/'+userID+'/hand'] = userCards;
+  update(ref(db),updates);
+
   for(let i=0 ; i<13 ; i++){
     handCards[i].src = "./cards/"+cards[userCards[i]]+".png";
   }
 }
+
 //卡片選取
 function cardSelected(){
   var bodyRect = document.body.getBoundingClientRect();
@@ -368,6 +389,7 @@ function cardSelected(){
     handCardState(cardSelectStr);
   }
 
+  //加入卡牌點擊事件
   for(let hCI of handCardsImg){
     hCI.addEventListener("click", cardSelected);
   }
