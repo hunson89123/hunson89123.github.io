@@ -341,20 +341,22 @@ function cardShufDealSort(){
       console.log(child.key +":"+ userRoom);
       if(child.key == userRoom)
         cardsTmp = child.val().cards;
+
+      //發牌、理牌
+      userCards = cardsTmp.slice((userIndex)*13,(userIndex)*13+13);
+      userCards.sort(function(a,b){return a-b});
+
+      const updates = {};
+      updates['players/'+userID+'/hand'] = userCards;
+      update(ref(db),updates);
+
+      for(let i=0 ; i<13 ; i++){
+        handCards[i].src = "./cards/"+cards[userCards[i]]+".png";
+      }
     });
   });
 
-  //發牌、理牌
-  userCards = cardsTmp.slice((userIndex)*13,(userIndex)*13+13);
-  userCards.sort(function(a,b){return a-b});
-
-  const updates = {};
-  updates['players/'+userID+'/hand'] = userCards;
-  update(ref(db),updates);
-
-  for(let i=0 ; i<13 ; i++){
-    handCards[i].src = "./cards/"+cards[userCards[i]]+".png";
-  }
+  
 }
 
 //卡片選取
