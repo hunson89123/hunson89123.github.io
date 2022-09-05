@@ -229,7 +229,7 @@ function startQueue(){
             update(ref(db),updates);
             // console.log(playerId,":",userID);
             if(playerId == userID){
-              queuePlayers[index].innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+child.val().name+"</span>";
+              queuePlayers[index].innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+index+":"+child.val().name+"</span>";
 
               //指派玩家順序
               userIndex = index;
