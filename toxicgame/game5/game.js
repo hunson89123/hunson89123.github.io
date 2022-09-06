@@ -376,8 +376,10 @@ function cardShufDealSort(){
       //檢查誰持有梅花三
 
       for(let i=0 ; i<13 ; i++){
-        console.log(userCards[i]);
-        if(userCards[i] == 0)haveC3 = true;
+        if(userCards[i] == 0){
+          console.log('WWWWWWWWWW');
+          haveC3 = true;
+        }
         handCards[i].src = "./cards/"+cards[userCards[i]]+".png";
       }
 
