@@ -39,6 +39,7 @@ let playerNames = [];
 let handCardsSelectedArr = new Array(13).fill(false);
 let host = false;
 let haveC3 = false;
+let nowPlay = 0;
 
 //初始化fb
 const app = initializeApp(firebaseConfig);
@@ -237,19 +238,18 @@ function startQueue(){
             if(index == 0) updates['players/'+child.key+'/host'] = true;
             else updates['players/'+child.key+'/host'] = false;
             update(ref(db),updates);
-            console.log(playerId.substr(0,3),":",userID.substr(0,3));
+            // console.log(playerId.substr(0,3),":",userID.substr(0,3));
             // console.log(playerId+"==>"+userID);
             if(playerId === userID){
               // console.log(playerId,":",userID);
               queuePlayers[index].innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+child.val().name+"</span>";
               //指派玩家順序
-              console.log("["+index+"==>"+playerId.substr(0,3),":",userID.substr(0,3)+"]");
+              // console.log("["+index+"==>"+playerId.substr(0,3),":",userID.substr(0,3)+"]");
               userIndex = index;
             }
             else
               queuePlayers[index].innerHTML = playerName;
             //產生玩家資料卡
-            // gameStateBar.innerHTML = "您的順序是第"+userIndex+"位";
             if(userIndex%2==1)playerData[(userIndex+index+2)%4].innerHTML =playerName;
             else playerData[(userIndex+index)%4].innerHTML = playerName;
             playerNames[index] = playerName;
@@ -321,10 +321,19 @@ function inGame(){
 
   console.log(playerNames);
   onValue(ref(db, 'rooms/'+userRoom+'/nowPlay'),(snapshot) => {
-    if(snapshot.val() == userIndex)
-    gameStateBar.innerHTML = "輪到你出牌了!";
-  else
-    gameStateBar.innerHTML = playerNames[snapshot.val()] +"持有♣3，出牌中...";
+    nowPlay = snapshot.val();
+    if(nowPlay == userIndex){
+      gameStateBar.innerHTML = "輪到你出牌了!";
+      playerData[0].style.animation = "boxYellow .8s infinite alternate";
+    }
+    else{
+      console.log(userIndex%2)
+      if(userIndex%2==1)playerData[(userIndex+nowPlay+2)%4].style.animation = "boxGreen .8s infinite alternate";
+      else playerData[(userIndex+nowPlay)%4].style.animation = "boxGreen .8s infinite alternate";
+      gameStateBar.innerHTML = playerNames[nowPlay] +"持有♣3，出牌中...";
+      playerData[0].style.animation = "";
+      // playerData[nowPlay].style.animation = "boxGreen .8s infinite alternate";
+    }
   });
 }
 
@@ -337,7 +346,6 @@ function cardShufDealSort(){
         host = child.val().host;
       }
       if(host){
-        // gameStateBar.innerHTML = "這我洗的牌";
         cardsTmp = shuffle(cardsTmp);
         set(ref(db,'rooms/'+userRoom),{
           cards: cardsTmp,
@@ -367,7 +375,10 @@ function cardShufDealSort(){
         if(userCards[i] == 0)haveC3 = true;
         handCards[i].src = "./cards/"+cards[userCards[i]]+".png";
       }
-      if(haveC3)updates['rooms/'+userRoom+'/nowPlay'] = userIndex;
+      if(haveC3){
+        handCardState.innerHTML = "我有梅花三ㄏㄏ";
+        updates['rooms/'+userRoom+'/nowPlay'] = userIndex;
+    }
       update(ref(db),updates);
 
     });

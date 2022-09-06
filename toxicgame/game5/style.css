@@ -144,6 +144,16 @@ p{
   from{ background-color: #0e2e53;}
   to{background-color: #144379;}
 }
+
+@keyframes boxYellow{
+  from{ box-shadow: none;}
+  to{box-shadow: 0 0 20px yellow;}
+}
+
+@keyframes boxGreen{
+  from{ box-shadow: none;}
+  to{box-shadow: 0 0 20px #00C700;}
+}
 @media only screen and (max-width: 600px){
 
   h1{
