@@ -345,8 +345,10 @@ function cardShufDealSort(){
       if(child.key == userID){
         host = child.val().host;
       }
+
       if(host){
         cardsTmp = shuffle(cardsTmp);
+        console.log("["+cardsTmp+"]");
         set(ref(db,'rooms/'+userRoom),{
           cards: cardsTmp,
           nowPlay: 0,
@@ -358,7 +360,7 @@ function cardShufDealSort(){
   //從Fb取得牌
   get(child(dbRef, 'rooms')).then((snapshot) => {
     snapshot.forEach(function(child){
-      console.log("["+userIndex+"]");
+      
       if(child.key == userRoom)
         cardsTmp = child.val().cards;
 
