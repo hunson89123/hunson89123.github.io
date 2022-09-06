@@ -323,6 +323,7 @@ function inGame(){
   console.log(playerNames);
   onValue(ref(db, 'rooms/'+userRoom+'/nowPlay'),(snapshot) => {
     nowPlay = snapshot.val();
+    playerData.forEach(i => i.style.animation = "");
     if(nowPlay == userIndex){
       gameStateBar.innerHTML = "輪到你出牌了!";
       playerData[0].style.animation = "boxYellow .8s infinite alternate";
