@@ -351,7 +351,7 @@ function cardShufDealSort(){
         // console.log("["+cardsTmp+"]");
         set(ref(db,'rooms/'+userRoom),{
           cards: cardsTmp,
-          nowPlay: 0,
+          nowPlay: "",
         });
         isDeal = true;
       }
