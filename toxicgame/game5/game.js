@@ -248,14 +248,14 @@ function startQueue(){
             else
               queuePlayers[index].innerHTML = playerName;
             //產生玩家資料卡
-            gameStateBar.innerHTML = "您的順序是第"+userIndex+"位";
+            // gameStateBar.innerHTML = "您的順序是第"+userIndex+"位";
             if(userIndex%2==1)playerData[(userIndex+index+2)%4].innerHTML =playerName;
             else playerData[(userIndex+index)%4].innerHTML =playerName;
             index++;
           }
-
-          if(index % 4 == 0 ){
-            gameStateBar.style.animation="";
+        });
+        if(index % 4 == 0 ){
+          gameStateBar.style.animation="";
             // var cd = 5;
             var cd =1;
             //檢測到計時是否存在
@@ -271,8 +271,7 @@ function startQueue(){
               }, 1000);
             }
           }
-        });
-      })
+        })
     });
   }
 }
