@@ -358,7 +358,7 @@ function cardShufDealSort(){
   //從Fb取得牌
   get(child(dbRef, 'rooms')).then((snapshot) => {
     snapshot.forEach(function(child){
-      // console.log(child.key +":"+ userRoom);
+      console.log("["+userIndex+"]");
       if(child.key == userRoom)
         cardsTmp = child.val().cards;
 
