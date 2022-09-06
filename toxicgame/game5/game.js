@@ -39,6 +39,7 @@ let playerNames = [];
 let handCardsSelectedArr = new Array(13).fill(false);
 let host = false;
 let haveC3 = false;
+let isDeal = false;
 let nowPlay = 0;
 
 //初始化fb
@@ -346,13 +347,14 @@ function cardShufDealSort(){
         host = child.val().host;
       }
 
-      if(host){
+      if(host && !isDeal){
         cardsTmp = shuffle(cardsTmp);
         console.log("["+cardsTmp+"]");
         set(ref(db,'rooms/'+userRoom),{
           cards: cardsTmp,
           nowPlay: 0,
         });
+        isDeal = true;
       }
     });
   });
