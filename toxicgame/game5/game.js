@@ -35,6 +35,7 @@ let allReady = false;
 let cards = [];
 let cardsTmp = [];
 let userCards = [];
+let playerNames = [];
 let handCardsSelectedArr = new Array(13).fill(false);
 let host = false;
 let haveC3 = false;
@@ -250,7 +251,8 @@ function startQueue(){
             //產生玩家資料卡
             // gameStateBar.innerHTML = "您的順序是第"+userIndex+"位";
             if(userIndex%2==1)playerData[(userIndex+index+2)%4].innerHTML =playerName;
-            else playerData[(userIndex+index)%4].innerHTML =playerName;
+            else playerData[(userIndex+index)%4].innerHTML = playerName;
+            playerNames[index] = playerName;
             index++;
           }
         });
@@ -309,7 +311,6 @@ function inGame(){
     }
     else handCards[i].style.left = (vw - (cw/coverW*6+cw))/2 +"px";
   }
-
   //下排卡
   for(let i =7 ;i < 13; i++){
     if(i > 7) {
@@ -317,17 +318,11 @@ function inGame(){
     }
     else handCards[i].style.left = (vw - (cw/coverW*5+cw))/2 +"px";
   }
-}
 
-//進入遊戲房間
-function moveToRoom(){
-  //將玩家資料複製至房間
-  get(child(dbRef, 'players')).then((snapshot) => {
-    snapshot.forEach(function(child){
-      // if(child.val().room){
+  console.log(playerNames);
+  onValue(ref(db, 'rooms/'+userRoom+'/nowPlay'),(snapshot) => {
 
-      // }
-    });
+    gameStateBar.innerHTML = playerNames[snapshot.val()];
   });
 }
 
@@ -340,10 +335,11 @@ function cardShufDealSort(){
         host = child.val().host;
       }
       if(host){
-        gameStateBar.innerHTML = "這我洗的牌";
+        // gameStateBar.innerHTML = "這我洗的牌";
         cardsTmp = shuffle(cardsTmp);
         set(ref(db,'rooms/'+userRoom),{
           cards: cardsTmp,
+          nowPlay: 0,
         });
       }
     });
@@ -352,7 +348,7 @@ function cardShufDealSort(){
   //從Fb取得牌
   get(child(dbRef, 'rooms')).then((snapshot) => {
     snapshot.forEach(function(child){
-      console.log(child.key +":"+ userRoom);
+      // console.log(child.key +":"+ userRoom);
       if(child.key == userRoom)
         cardsTmp = child.val().cards;
 
@@ -363,13 +359,16 @@ function cardShufDealSort(){
       const updates = {};
       updates['players/'+userID+'/hand'] = userCards;
       updates['players/'+userID+'/index'] = userIndex;
-      update(ref(db),updates);
 
+      //檢查誰持有梅花三
       for(let i=0 ; i<13 ; i++){
         if(userCards[i] == 0)haveC3 = true;
-
         handCards[i].src = "./cards/"+cards[userCards[i]]+".png";
       }
+      if(haveC3)updates['rooms/'+userRoom+'/nowPlay'] = userIndex;
+      console.log(userRoom);
+      update(ref(db),updates);
+
     });
   });
 
@@ -431,7 +430,10 @@ function handCardState(cardSelectStr){
   else handState.innerHTML = "請點選卡牌";
 }
 
+//辨別出牌牌型
+function cardType(){
 
+}
 //YatesShuffle演算法
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -440,6 +442,7 @@ function shuffle(array) {
   }
   return array;
 }
+
 //color code
 //Blue   #188CFF
 //Red    #FF3B30
