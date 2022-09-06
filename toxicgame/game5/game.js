@@ -339,8 +339,8 @@ function cardShufDealSort(){
       if(child.key == userID){
         host = child.val().host;
       }
-
       if(host){
+        gameStateBar.innerHTML = "這我洗的牌";
         cardsTmp = shuffle(cardsTmp);
         set(ref(db,'rooms/'+userRoom),{
           cards: cardsTmp,
