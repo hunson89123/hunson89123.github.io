@@ -112,10 +112,13 @@ p{
 }
 
 .playerData{
+  font-family: 'Noto Serif TC', serif;
+  font-size: 1em;
   position: absolute;
   width: 150px;
   height: 100px;
   border: 1px solid white;
+  text-align: center;
 }
 @keyframes fadeIn{
   from{ opacity: 0; }

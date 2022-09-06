@@ -246,10 +246,8 @@ function startQueue(){
             else
               queuePlayers[index].innerHTML = playerName;
             //產生玩家資料卡
-            for(let i=0 ; i<userIndex+1 ; i++){
-              console.log(index%4);
-              playerData[index%4].innerHTML = playerName;
-            }
+            console.log(userIndex+1);
+            playerData[(index+userIndex)%4].innerHTML = index +":" +playerName;
             index++;
           }
 
