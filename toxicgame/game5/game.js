@@ -320,7 +320,7 @@ function inGame(){
     else handCards[i].style.left = (vw - (cw/coverW*5+cw))/2 +"px";
   }
 
-  console.log(playerNames);
+  // console.log(playerNames);
   onValue(ref(db, 'rooms/'+userRoom+'/nowPlay'),(snapshot) => {
     nowPlay = snapshot.val();
     playerData.forEach(i => i.style.animation = "");
@@ -329,12 +329,10 @@ function inGame(){
       playerData[0].style.animation = "boxYellow .8s infinite alternate";
     }
     else{
-      console.log(userIndex%2)
+
       if(userIndex%2==1)playerData[(userIndex+nowPlay+2)%4].style.animation = "boxGreen .8s infinite alternate";
       else playerData[(userIndex+nowPlay)%4].style.animation = "boxGreen .8s infinite alternate";
       gameStateBar.innerHTML = playerNames[nowPlay] +"持有♣3，出牌中...";
-      playerData[0].style.animation = "";
-      // playerData[nowPlay].style.animation = "boxGreen .8s infinite alternate";
     }
   });
 }
@@ -350,7 +348,7 @@ function cardShufDealSort(){
 
       if(host && !isDeal){
         cardsTmp = shuffle(cardsTmp);
-        console.log("["+cardsTmp+"]");
+        // console.log("["+cardsTmp+"]");
         set(ref(db,'rooms/'+userRoom),{
           cards: cardsTmp,
           nowPlay: 0,
@@ -363,7 +361,7 @@ function cardShufDealSort(){
   //從Fb取得牌
   get(child(dbRef, 'rooms')).then((snapshot) => {
     snapshot.forEach(function(child){
-      
+
       if(child.key == userRoom)
         cardsTmp = child.val().cards;
 
@@ -376,14 +374,17 @@ function cardShufDealSort(){
       updates['players/'+userID+'/index'] = userIndex;
 
       //檢查誰持有梅花三
+
       for(let i=0 ; i<13 ; i++){
+        console.log(userCards[i]);
         if(userCards[i] == 0)haveC3 = true;
         handCards[i].src = "./cards/"+cards[userCards[i]]+".png";
       }
+
       if(haveC3){
         handCardState.innerHTML = "我有梅花三ㄏㄏ";
         updates['rooms/'+userRoom+'/nowPlay'] = userIndex;
-    }
+      }
       update(ref(db),updates);
 
     });
