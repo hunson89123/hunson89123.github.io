@@ -321,8 +321,10 @@ function inGame(){
 
   console.log(playerNames);
   onValue(ref(db, 'rooms/'+userRoom+'/nowPlay'),(snapshot) => {
-
-    gameStateBar.innerHTML = playerNames[snapshot.val()];
+    if(snapshot.val() == userIndex)
+    gameStateBar.innerHTML = "輪到你出牌了!";
+  else
+    gameStateBar.innerHTML = playerNames[snapshot.val()] +"持有♣3，出牌中...";
   });
 }
 
