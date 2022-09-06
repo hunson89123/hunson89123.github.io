@@ -319,24 +319,27 @@ function inGame(){
     }
     else handCards[i].style.left = (vw - (cw/coverW*5+cw))/2 +"px";
   }
+  playerDataCards();
+}
 
-  // console.log(playerNames);
+function playerDataCards(){
   onValue(ref(db, 'rooms/'+userRoom+'/nowPlay'),(snapshot) => {
     nowPlay = snapshot.val();
     playerData.forEach(i => i.style.animation = "");
+    playerData.forEach(i => i.style.borderColor = "white");
     if(nowPlay == userIndex){
       gameStateBar.innerHTML = "輪到你出牌了!";
       playerData[0].style.animation = "boxYellow .8s infinite alternate";
+      playerData[0].style.borderColor = "yellow";
     }
     else{
-
-      if(userIndex%2==1)playerData[(userIndex+nowPlay+2)%4].style.animation = "boxGreen .8s infinite alternate";
-      else playerData[(userIndex+nowPlay)%4].style.animation = "boxGreen .8s infinite alternate";
-      gameStateBar.innerHTML = playerNames[nowPlay] +"持有♣3，出牌中...";
+      var nowPlayIndex = (userIndex%2==1)?(userIndex+nowPlay+2)%4:(userIndex+nowPlay)%4;
+      playerData[nowPlayIndex].style.animation = "boxGreen .8s infinite alternate";
+      playerData[nowPlayIndex].style.borderColor = "#00C700";
+      gameStateBar.innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+playerNames[nowPlay]+"</span> 持有♣3，出牌中...";
     }
   });
 }
-
 //卡牌洗發
 function cardShufDealSort(){
   //判斷是否為室長並洗牌將牌輸入進Fb
@@ -384,9 +387,9 @@ function cardShufDealSort(){
       }
 
       if(haveC3){
-        handCardState.innerHTML = "我有梅花三ㄏㄏ";
+        handState.innerHTML = "請點選卡牌";
         updates['rooms/'+userRoom+'/nowPlay'] = userIndex;
-      }
+      }else  handState.innerHTML = "";
       update(ref(db),updates);
 
     });
