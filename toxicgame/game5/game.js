@@ -142,6 +142,7 @@ function loginCheck(){
       userID = uid;
       set(urf,{
         index: "",
+        time: "",
         name: userName,
         hand: "",
         room: userRoom,
@@ -204,8 +205,7 @@ function startQueue(){
       snapshot.forEach(function(child){
         const updates = {};
         if(child.key == userID){
-          updates['players/'+child.key+'/index'] = time;
-          // updates['players/'+child.key+'/room'] = numOfRoom;
+          updates['players/'+child.key+'/time'] = time;
           update(ref(db),updates);
 
           //給定玩家房間編號
@@ -222,7 +222,7 @@ function startQueue(){
       queuePlayers.forEach(i => i.innerHTML = "--");
 
       //依據進入列隊時間排序
-      const sortedList = query(ref(db, 'players'), orderByChild('index'));
+      const sortedList = query(ref(db, 'players'), orderByChild('time'));
       get(sortedList).then((snapshot) =>{
         snapshot.forEach(function(child){
           let playerName = child.val().name;
@@ -236,22 +236,24 @@ function startQueue(){
             if(index == 0) updates['players/'+child.key+'/host'] = true;
             else updates['players/'+child.key+'/host'] = false;
             update(ref(db),updates);
-            // console.log(playerId,":",userID);
-            
-            if(playerId == userID){
+            console.log(playerId.substr(0,3),":",userID.substr(0,3));
+            // console.log(playerId+"==>"+userID);
+            if(playerId === userID){
+              // console.log(playerId,":",userID);
               queuePlayers[index].innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+child.val().name+"</span>";
               //指派玩家順序
+              console.log("["+index+"==>"+playerId.substr(0,3),":",userID.substr(0,3)+"]");
               userIndex = index;
             }
             else
               queuePlayers[index].innerHTML = playerName;
             //產生玩家資料卡
-            console.log(userIndex+1);
-            playerData[(index+userIndex)%4].innerHTML = index +":" +playerName;
+            gameStateBar.innerHTML = "您的順序是第"+userIndex+"位";
+            playerData[index].innerHTML = (userIndex+index)%4 +":" +playerName;
             index++;
           }
 
-          if(index > 3 ){
+          if(index % 4 == 0 ){
             gameStateBar.style.animation="";
             // var cd = 5;
             var cd =1;
@@ -276,8 +278,6 @@ function startQueue(){
 
 //進入遊戲
 function inGame(){
-  //洗發理牌
-  cardShufDealSort();
 
   //給定卡牌選卡動畫及事件
   cardSelected();
@@ -286,7 +286,7 @@ function inGame(){
   document.body.style.animation = "bg2 .5s forwards";
   handArea.style.display = 'flex';
   playerDataArea.style.display = 'flex';
-  gameStateBar.innerHTML = "您的順序是第"+userIndex+"位";
+  // gameStateBar.innerHTML = "您的順序是第"+userIndex+"位";
   gameStateBar.style.animation = infFade;
   queueArea.style.animation = "fadeOut .5s forwards";
   queueArea.parentNode.removeChild(queueArea);
@@ -294,6 +294,9 @@ function inGame(){
   gameData.parentNode.removeChild(gameData);
   handArea.style.animation = "fadeIn 2s forwards";
   playerDataArea.style.animation = "fadeIn 2s forwards";
+
+  //洗發理牌
+  cardShufDealSort();
 
   //指定卡牌位置及間距
   let coverW = (vw > 600)?1:2;
