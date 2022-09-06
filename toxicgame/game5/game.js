@@ -251,8 +251,9 @@ function startQueue(){
             else
               queuePlayers[index].innerHTML = playerName;
             //產生玩家資料卡
-            if(userIndex%2==1)playerData[(userIndex+index+2)%4].innerHTML =playerName;
-            else playerData[(userIndex+index)%4].innerHTML = playerName;
+            var playerCardStr = playerName + "<br>🂠 13";
+            if(userIndex%2==1)playerData[(userIndex+index+2)%4].innerHTML = playerCardStr;
+            else playerData[(userIndex+index)%4].innerHTML = playerCardStr;
             playerNames[index] = playerName;
             index++;
           }
@@ -379,10 +380,7 @@ function cardShufDealSort(){
       //檢查誰持有梅花三
 
       for(let i=0 ; i<13 ; i++){
-        if(userCards[i] == 0){
-          console.log('WWWWWWWWWW');
-          haveC3 = true;
-        }
+        if(userCards[i] == 0)haveC3 = true;
         handCards[i].src = "./cards/"+cards[userCards[i]]+".png";
       }
 
