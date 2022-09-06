@@ -368,7 +368,6 @@ function cardShufDealSort(){
         handCards[i].src = "./cards/"+cards[userCards[i]]+".png";
       }
       if(haveC3)updates['rooms/'+userRoom+'/nowPlay'] = userIndex;
-      console.log(haveC3);
       update(ref(db),updates);
 
     });
