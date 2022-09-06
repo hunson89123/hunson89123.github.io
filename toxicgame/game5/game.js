@@ -249,7 +249,7 @@ function startQueue(){
               queuePlayers[index].innerHTML = playerName;
             //產生玩家資料卡
             gameStateBar.innerHTML = "您的順序是第"+userIndex+"位";
-            playerData[index].innerHTML = (userIndex+index)%4 +":" +playerName;
+            playerData[(userIndex+index+2)%4].innerHTML =playerName;
             index++;
           }
 
