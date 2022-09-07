@@ -365,11 +365,15 @@ function playerDataCards(){
     if(nowPlay == userIndex){
       gameStateBar.innerHTML = "輪到你出牌了!";
       playerData[0].style.animation = "boxYellow .8s infinite alternate";
+      pass.hidden = false;
+      playCard.hidden = false;
     }
     else{
       var nowPlayIndex = (userIndex%2==1)?(userIndex+nowPlay+2)%4:(userIndex+nowPlay)%4;
       playerData[nowPlayIndex].style.animation = "boxGreen .8s infinite alternate";
       gameStateBar.innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+playerNames[nowPlay]+"</span> 持有♣3，出牌中...";
+      pass.hidden = true;
+      playCard.hidden = true;
     }
   });
 }
