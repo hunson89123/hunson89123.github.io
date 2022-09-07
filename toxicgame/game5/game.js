@@ -271,18 +271,35 @@ function startQueue(){
             var cd =1;
             //檢測到計時是否存在
             if(!cdStartGame){
-              cdStartGame = setInterval(function() {
-                if(cd>0){
-                  gameStateBar.innerHTML = "遊戲將於"+cd+"秒後開始!";  
-                }else if (cd == 0){
-                  clearInterval(cdStartGame);
-                  inGame();
-                }
-                cd--;
-              }, 1000);
+                //判斷是否為室長並洗牌將牌輸入進Fb(先暗發，同時發易出現bug)
+                get(child(dbRef, 'players')).then((snapshot) => {
+                  snapshot.forEach(function(child){
+                    if(child.key == userID){
+                      host = child.val().host;
+                    }
+                    if(host && !isDeal){
+                      cardsTmp = shuffle(cardsTmp);
+                      set(ref(db,'rooms/'+userRoom),{
+                        cards: cardsTmp,
+                        nowPlay: "",
+                      });
+                      isDeal = true;
+                    }
+                  });
+                });
+
+                cdStartGame = setInterval(function() {
+                  if(cd>0){
+                    gameStateBar.innerHTML = "遊戲將於"+cd+"秒後開始!";  
+                  }else if (cd == 0){
+                    clearInterval(cdStartGame);
+                    inGame();
+                  }
+                  cd--;
+                }, 1000);
+              }
             }
-          }
-        })
+          })
     });
   }
 }
@@ -350,25 +367,6 @@ function playerDataCards(){
 }
 //卡牌洗發
 function cardShufDealSort(){
-  //判斷是否為室長並洗牌將牌輸入進Fb
-  get(child(dbRef, 'players')).then((snapshot) => {
-    snapshot.forEach(function(child){
-      if(child.key == userID){
-        host = child.val().host;
-      }
-      console.log(host +":"+ !isDeal);
-      if(host && !isDeal){
-        cardsTmp = shuffle(cardsTmp);
-        // console.log("["+cardsTmp+"]");
-        set(ref(db,'rooms/'+userRoom),{
-          cards: cardsTmp,
-          nowPlay: "",
-        });
-        isDeal = true;
-      }
-    });
-  });
-
   //從Fb取得牌
   get(child(dbRef, 'rooms')).then((snapshot) => {
     snapshot.forEach(function(child){
@@ -376,7 +374,6 @@ function cardShufDealSort(){
 
       if(child.key == userRoom)
         cardsTmp = child.val().cards;
-      console.log(cardsTmp);
       //發牌、理牌
       userCards = cardsTmp.slice((userIndex)*13,(userIndex)*13+13);
       userCards.sort(function(a,b){return a-b});
