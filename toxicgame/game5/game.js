@@ -356,7 +356,7 @@ function cardShufDealSort(){
       if(child.key == userID){
         host = child.val().host;
       }
-
+      console.log(host +":"+ !isDeal);
       if(host && !isDeal){
         cardsTmp = shuffle(cardsTmp);
         // console.log("["+cardsTmp+"]");
