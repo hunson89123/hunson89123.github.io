@@ -223,7 +223,7 @@ function startQueue(){
       let index = 0;
       //初始化列隊列表(全--及限制字長)
       queuePlayers.forEach(i => i.innerHTML = "--");
-      queuePlayers.forEach(i => i.style.textAlig = "50vw");
+      queuePlayers.forEach(i => i.style.textAlign = "center");
       queuePlayers.forEach(i => i.style.width = "50vw");
       queuePlayers.forEach(i => i.style.overflow = "hidden");
       queuePlayers.forEach(i => i.style.textOverflow = "ellipsis");
@@ -246,10 +246,7 @@ function startQueue(){
             if(index == 0) updates['players/'+child.key+'/host'] = true;
             else updates['players/'+child.key+'/host'] = false;
             update(ref(db),updates);
-            // console.log(playerId.substr(0,3),":",userID.substr(0,3));
-            // console.log(playerId+"==>"+userID);
             if(playerId === userID){
-              // console.log(playerId,":",userID);
               queuePlayers[index].innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+child.val().name+"</span>";
               //指派玩家順序
               // console.log("["+index+"==>"+playerId.substr(0,3),":",userID.substr(0,3)+"]");
@@ -258,7 +255,7 @@ function startQueue(){
             else
               queuePlayers[index].innerHTML = playerName;
             //產生玩家資料卡
-            var playerCardStr = playerName + "<br>🂠 13";
+            var playerCardStr = playerName + "<br>🂢 13";
             if(userIndex%2==1)playerData[(userIndex+index+2)%4].innerHTML = playerCardStr;
             else playerData[(userIndex+index)%4].innerHTML = playerCardStr;
             playerNames[index] = playerName;
@@ -346,7 +343,7 @@ function inGame(){
   }
   playerDataCards();
 }
-
+//玩家資料卡顯示
 function playerDataCards(){
   onValue(ref(db, 'rooms/'+userRoom+'/nowPlay'),(snapshot) => {
     nowPlay = snapshot.val();
@@ -355,12 +352,10 @@ function playerDataCards(){
     if(nowPlay == userIndex){
       gameStateBar.innerHTML = "輪到你出牌了!";
       playerData[0].style.animation = "boxYellow .8s infinite alternate";
-      playerData[0].style.borderColor = "yellow";
     }
     else{
       var nowPlayIndex = (userIndex%2==1)?(userIndex+nowPlay+2)%4:(userIndex+nowPlay)%4;
       playerData[nowPlayIndex].style.animation = "boxGreen .8s infinite alternate";
-      playerData[nowPlayIndex].style.borderColor = "#00C700";
       gameStateBar.innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+playerNames[nowPlay]+"</span> 持有♣3，出牌中...";
     }
   });

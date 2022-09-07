@@ -110,6 +110,15 @@ p{
   align-items: center;
 }
 
+.playPass{
+  font-family: 'Noto Serif TC', serif;
+  font-size: 1.5em;
+  position: absolute;
+  bottom: 0;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .hand{
   bottom: 0;
   position: absolute;
