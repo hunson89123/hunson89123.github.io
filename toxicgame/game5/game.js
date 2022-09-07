@@ -24,6 +24,8 @@ const gameData = document.getElementById('gameData');
 const queueArea = document.getElementById('queueArea');
 const handState = document.getElementById('handState');
 const playerDataArea = document.getElementById('playerDataArea');
+const pass = document.getElementById('pass');
+const playCard = document.getElementById('playCard');
 let queuePlayers =[];
 let handCards = [];
 let playerData = [];
@@ -41,7 +43,7 @@ let host = false;
 let haveC3 = false;
 let isDeal = false;
 let nowPlay = 0;
-
+let isPass = false;
 //初始化fb
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
@@ -89,6 +91,17 @@ function initGameEle(){
     cards[i] = suits[i%4] + number[parseInt(i/4)];
     cardsTmp[i] = i;
   }
+
+  //新增出牌過牌點擊事件
+  pass.onclick = function(){
+    isPass=true;
+    passOrPlay();
+  };
+
+  playCard.onclick = function(){
+    isPass =false;
+    passOrPlay();
+  };
 }
 
 //查詢遊戲資訊(玩家人數|遊戲房間)
@@ -450,6 +463,17 @@ function handCardState(cardSelectStr){
   else handState.innerHTML = "請點選卡牌";
 }
 
+//出牌過牌
+function passOrPlay(){
+  get(child(dbRef, 'rooms/'+userRoom+'/nowPlay')).then((snapshot) => {
+    var np = snapshot.val();
+    if(np<3)np++;
+    else np = 0;
+    const updates = {};
+    updates[ 'rooms/'+userRoom+'/nowPlay'] = np;
+    update(ref(db),updates);
+  });
+}
 //辨別出牌牌型
 function cardType(){
 
