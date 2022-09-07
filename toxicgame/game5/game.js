@@ -221,9 +221,16 @@ function startQueue(){
     var cdStartGame;
     onValue(ref(db, 'players'),(snapshot) => {
       let index = 0;
-      //初始化列隊列表(全--)
+      //初始化列隊列表(全--及限制字長)
       queuePlayers.forEach(i => i.innerHTML = "--");
-
+      queuePlayers.forEach(i => i.style.textAlig = "50vw");
+      queuePlayers.forEach(i => i.style.width = "50vw");
+      queuePlayers.forEach(i => i.style.overflow = "hidden");
+      queuePlayers.forEach(i => i.style.textOverflow = "ellipsis");
+      queuePlayers.forEach(i => i.style.whiteSpace = "nowrap");
+      // overflow: hidden;
+      // text-overflow: ellipsis;
+      // white-space: nowrap;
       //依據進入列隊時間排序
       const sortedList = query(ref(db, 'players'), orderByChild('time'));
       get(sortedList).then((snapshot) =>{
