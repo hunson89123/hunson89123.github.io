@@ -373,9 +373,10 @@ function cardShufDealSort(){
   get(child(dbRef, 'rooms')).then((snapshot) => {
     snapshot.forEach(function(child){
 
+
       if(child.key == userRoom)
         cardsTmp = child.val().cards;
-
+      console.log(cardsTmp);
       //發牌、理牌
       userCards = cardsTmp.slice((userIndex)*13,(userIndex)*13+13);
       userCards.sort(function(a,b){return a-b});
@@ -385,7 +386,6 @@ function cardShufDealSort(){
       updates['players/'+userID+'/index'] = userIndex;
 
       //檢查誰持有梅花三
-
       for(let i=0 ; i<13 ; i++){
         if(userCards[i] == 0)haveC3 = true;
         handCards[i].src = "./cards/"+cards[userCards[i]]+".png";
