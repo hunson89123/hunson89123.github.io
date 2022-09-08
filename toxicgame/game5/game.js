@@ -365,7 +365,10 @@ function playerDataCards(){
     playerData.forEach(i => i.style.borderColor = "white");
     if(nowPlay == userIndex){
       gameStateBar.innerHTML = "輪到你出牌了!";
+      handState.innerHTML = "請點選卡牌";
       playerData[0].style.animation = "boxYellow .8s infinite alternate";
+
+      //若無持有梅花三則可PASS，反之持有但並非第一回合則可PASS
       if(!haveC3)pass.hidden = false;
       else if(!isFirst)pass.hidden = false;
       playCard.hidden = false;
@@ -374,9 +377,8 @@ function playerDataCards(){
     else{
       var nowPlayIndex = (userIndex%2==1)?(userIndex+nowPlay+2)%4:(userIndex+nowPlay)%4;
       playerData[nowPlayIndex].style.animation = "boxGreen .8s infinite alternate";
-      gameStateBar.innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+playerNames[nowPlay]+"</span> 持有♣3，出牌中...";
-      
-      //若無持有梅花三則可PASS，反之持有但並非第一回合則可PASS
+      if(isFirst)gameStateBar.innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+playerNames[nowPlay]+"</span> 持有♣3，出牌中...";
+      else gameStateBar.innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+playerNames[nowPlay]+"</span> 出牌中...";
       pass.hidden = true;
       playCard.hidden = true;
     }
@@ -421,35 +423,36 @@ function cardShufDealSort(){
 function cardSelected(){
   var bodyRect = document.body.getBoundingClientRect();
   const handCardsImg = document.getElementsByTagName("img");
-  const cardSelected = e =>{
-    var cardRect = e.target.getBoundingClientRect();
-    var handAreaRect = handArea.getBoundingClientRect();
-    var offset = handAreaRect.bottom - cardRect.bottom;
-    var cardSelectStr = "";
-
-    //卡片選取動畫
-    for(let i = 0; i<13 ; i++){
-      if(e.target.id == handCards[i].id){
-        e.target.style.outlineOffset = "-3px";
-        if(handCardsSelectedArr[i]){
-          e.target.style.bottom = offset - 20 + "px";
-          e.target.style.filter = "";
-        }else{
-          e.target.style.bottom = offset +  20 + "px";
-          e.target.style.filter = "drop-shadow(0 10px 0  rgba(0, 0, 0, 0.7))";
+  if(nowPlay == userIndex){
+    const cardSelected = e =>{
+      var cardRect = e.target.getBoundingClientRect();
+      var handAreaRect = handArea.getBoundingClientRect();
+      var offset = handAreaRect.bottom - cardRect.bottom;
+      var cardSelectStr = "";
+  
+      //卡片選取動畫
+      for(let i = 0; i<13 ; i++){
+        if(e.target.id == handCards[i].id){
+          e.target.style.outlineOffset = "-3px";
+          if(handCardsSelectedArr[i]){
+            e.target.style.bottom = offset - 20 + "px";
+            e.target.style.filter = "";
+          }else{
+            e.target.style.bottom = offset +  20 + "px";
+            e.target.style.filter = "drop-shadow(0 10px 0  rgba(0, 0, 0, 0.7))";
+          }
+          handCardsSelectedArr[i] = !handCardsSelectedArr[i];
         }
-        handCardsSelectedArr[i] = !handCardsSelectedArr[i];
       }
+  
+      //卡片選取字串
+      for(let i=0 ; i<13 ; i++){
+        if(handCardsSelectedArr[i])
+          cardSelectStr += cards[userCards[i]] + " ";
+      }
+      handCardState(cardSelectStr);
     }
-
-    //卡片選取字串
-    for(let i=0 ; i<13 ; i++){
-      if(handCardsSelectedArr[i])
-        cardSelectStr += cards[userCards[i]] + " ";
-    }
-    handCardState(cardSelectStr);
   }
-
   //加入卡牌點擊事件
   for(let hCI of handCardsImg){
     hCI.addEventListener("click", cardSelected);
@@ -466,10 +469,11 @@ function handCardState(cardSelectStr){
   cardSelectStr=cardSelectStr.replace(/11/g,'J');
   cardSelectStr=cardSelectStr.replace(/12/g,'Q');
   cardSelectStr=cardSelectStr.replace(/13/g,'K');
-
-  if(cardSelectStr != "")
-    handState.innerHTML = "選取卡牌："+cardSelectStr;
-  else handState.innerHTML = "請點選卡牌";
+  if(nowPlay == userIndex){
+    if(cardSelectStr != "")
+      handState.innerHTML = "選取卡牌："+cardSelectStr;
+    else handState.innerHTML = "請點選卡牌";
+  }
 }
 
 //出牌過牌
