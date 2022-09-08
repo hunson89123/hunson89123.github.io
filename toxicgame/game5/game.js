@@ -465,7 +465,7 @@ function handCardState(cardSelectStr){
     let cardSelectArr = cardSelectStr.split(" ");
     let cTStr = cardType(cardSelectArr);
 
-    //變更顯示花色及JQK
+    //轉換顯示花色及JQK
     cardSelectStr=cardSelectStr.replace(/c/g,'♣');
     cardSelectStr=cardSelectStr.replace(/d/g,'♦');
     cardSelectStr=cardSelectStr.replace(/h/g,'♥');
@@ -474,6 +474,7 @@ function handCardState(cardSelectStr){
     cardSelectStr=cardSelectStr.replace(/12/g,'Q');
     cardSelectStr=cardSelectStr.replace(/13/g,'K');
 
+    //手牌選取狀態顯示
     if(cardSelectStr != ""){
       if(cTStr!=""){
         handState.innerHTML = "選取卡牌："+cTStr;
