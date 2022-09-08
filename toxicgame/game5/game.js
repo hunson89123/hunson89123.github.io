@@ -461,17 +461,19 @@ function cardSelected(){
 
 //卡牌圖片=>出牌提示
 function handCardState(cardSelectStr){
-  cardSelectStr=cardSelectStr.replace(/c/g,'♣');
-  cardSelectStr=cardSelectStr.replace(/d/g,'♦');
-  cardSelectStr=cardSelectStr.replace(/h/g,'♥');
-  cardSelectStr=cardSelectStr.replace(/s/g,'♠');
-  cardSelectStr=cardSelectStr.replace(/11/g,'J');
-  cardSelectStr=cardSelectStr.replace(/12/g,'Q');
-  cardSelectStr=cardSelectStr.replace(/13/g,'K');
   if(nowPlay == userIndex){
     let cardSelectArr = cardSelectStr.split(" ");
-    // console.log(cardSelectArr.length+":"+cardSelectArr);
     let cTStr = cardType(cardSelectArr);
+
+    //變更顯示花色及JQK
+    cardSelectStr=cardSelectStr.replace(/c/g,'♣');
+    cardSelectStr=cardSelectStr.replace(/d/g,'♦');
+    cardSelectStr=cardSelectStr.replace(/h/g,'♥');
+    cardSelectStr=cardSelectStr.replace(/s/g,'♠');
+    cardSelectStr=cardSelectStr.replace(/11/g,'J');
+    cardSelectStr=cardSelectStr.replace(/12/g,'Q');
+    cardSelectStr=cardSelectStr.replace(/13/g,'K');
+
     if(cardSelectStr != ""){
       if(cTStr!=""){
         handState.innerHTML = "選取卡牌："+cTStr;
