@@ -367,7 +367,6 @@ function playerDataCards(){
       gameStateBar.innerHTML = "輪到你出牌了!";
       handState.innerHTML = "請點選卡牌";
       playerData[0].style.animation = "boxYellow .8s infinite alternate";
-
       //若無持有梅花三則可PASS，反之持有但並非第一回合則可PASS
       if(!haveC3)pass.hidden = false;
       else if(!isFirst)pass.hidden = false;
@@ -408,7 +407,6 @@ function cardShufDealSort(){
       }
 
       if(haveC3){
-        handState.innerHTML = "請點選卡牌";
         updates['rooms/'+userRoom+'/nowPlay'] = userIndex;
       }else  handState.innerHTML = "";
       update(ref(db),updates);
@@ -428,7 +426,7 @@ function cardSelected(){
     var handAreaRect = handArea.getBoundingClientRect();
     var offset = handAreaRect.bottom - cardRect.bottom;
     var cardSelectStr = "";
-    
+
       //卡片選取動畫
       for(let i = 0; i<13 ; i++){
         if(e.target.id == handCards[i].id){
@@ -443,7 +441,7 @@ function cardSelected(){
           handCardsSelectedArr[i] = !handCardsSelectedArr[i];
         }
       }
-      
+
       //卡片選取字串
       for(let i=0 ; i<13 ; i++){
         if(handCardsSelectedArr[i])
@@ -451,7 +449,7 @@ function cardSelected(){
       }
       handCardState(cardSelectStr);
     }
-    
+
   //加入卡牌點擊事件
   for(let hCI of handCardsImg){
     hCI.addEventListener("click", cardSelected);
@@ -485,6 +483,8 @@ function passOrPlay(){
     updates[ 'rooms/'+userRoom+'/nowPlay'] = np;
     update(ref(db),updates);
   });
+
+  handState.innerHTML = "";
 }
 //辨別出牌牌型
 function cardType(){
