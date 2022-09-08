@@ -423,13 +423,12 @@ function cardShufDealSort(){
 function cardSelected(){
   var bodyRect = document.body.getBoundingClientRect();
   const handCardsImg = document.getElementsByTagName("img");
-  if(nowPlay == userIndex){
-    const cardSelected = e =>{
-      var cardRect = e.target.getBoundingClientRect();
-      var handAreaRect = handArea.getBoundingClientRect();
-      var offset = handAreaRect.bottom - cardRect.bottom;
-      var cardSelectStr = "";
-  
+  const cardSelected = e =>{
+    var cardRect = e.target.getBoundingClientRect();
+    var handAreaRect = handArea.getBoundingClientRect();
+    var offset = handAreaRect.bottom - cardRect.bottom;
+    var cardSelectStr = "";
+    
       //卡片選取動畫
       for(let i = 0; i<13 ; i++){
         if(e.target.id == handCards[i].id){
@@ -444,7 +443,7 @@ function cardSelected(){
           handCardsSelectedArr[i] = !handCardsSelectedArr[i];
         }
       }
-  
+      
       //卡片選取字串
       for(let i=0 ; i<13 ; i++){
         if(handCardsSelectedArr[i])
@@ -452,7 +451,7 @@ function cardSelected(){
       }
       handCardState(cardSelectStr);
     }
-  }
+    
   //加入卡牌點擊事件
   for(let hCI of handCardsImg){
     hCI.addEventListener("click", cardSelected);
