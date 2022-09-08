@@ -31,6 +31,8 @@ let handCards = [];
 let playerData = [];
 
 //初始化遊戲資料變數
+const suits = ['c' , 'd' , 'h' , 's'];
+const number = [3,4,5,6,7,8,9,10,11,12,13,1,2];
 let numOfUser = 0,numOfRoom = 0;
 let userID = 0,userName = '',userRoom = 0,userIndex = 0;
 let allReady = false;
@@ -45,6 +47,7 @@ let isDeal = false;
 let nowPlay = 0;
 let isPass = false;
 let isFirst = true;
+
 //初始化fb
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
@@ -86,8 +89,6 @@ function initGameEle(){
   document.getElementById('playerData4')
   ];
   //產生52張牌
-  const suits = ['c' , 'd' , 'h' , 's'];
-  const number = [3,4,5,6,7,8,9,10,11,12,13,1,2];
   for(let i=0 ; i<52 ; i++){
     cards[i] = suits[i%4] + number[parseInt(i/4)];
     cardsTmp[i] = i;
@@ -447,6 +448,7 @@ function cardSelected(){
         if(handCardsSelectedArr[i])
           cardSelectStr += cards[userCards[i]] + " ";
       }
+      cardSelectStr = cardSelectStr.slice(0,-1);
       handCardState(cardSelectStr);
     }
 
@@ -467,8 +469,12 @@ function handCardState(cardSelectStr){
   cardSelectStr=cardSelectStr.replace(/12/g,'Q');
   cardSelectStr=cardSelectStr.replace(/13/g,'K');
   if(nowPlay == userIndex){
+    let cardSelectArr = cardSelectStr.split(" ");
+    // console.log(cardSelectArr.length+":"+cardSelectArr);
+    let cTStr = cardType(cardSelectArr);
     if(cardSelectStr != "")
-      handState.innerHTML = "選取卡牌："+cardSelectStr;
+      if(cTStr!="") handState.innerHTML = "選取卡牌："+cTStr;
+      else handState.innerHTML = "選取卡牌："+cardSelectStr;
     else handState.innerHTML = "請點選卡牌";
   }
 }
@@ -487,8 +493,29 @@ function passOrPlay(){
   handState.innerHTML = "";
 }
 //辨別出牌牌型
-function cardType(){
+function cardType(cSArr){
+  var cTSArr = ["單張", "對子", "順子", "葫蘆", "鐵支", "同花順"];
+  var cTBArr = [];
+  var cSSArr = []; //花色
+  var cSNArr = []; //數字
+  var cTString = "";
+  //截取選牌陣列之花色
+  cSArr.forEach(c => cSSArr.push(c[0]));
+  cSArr.forEach(c => cSNArr.push(c.substr(1)));
+  cTBArr = [
+  isSingle     (cSArr, cSSArr, cSNArr),
+  isPair       (cSArr, cSSArr, cSNArr),
+  isStraight   (cSArr, cSSArr, cSNArr),
+  isFullHouse  (cSArr, cSSArr, cSNArr),
+  isFourOfaKind(cSArr, cSSArr, cSNArr),
+  isFlush      (cSArr, cSSArr, cSNArr)
+  ];
 
+  for(let i=0 ; i<6; i++){
+    if(cTBArr[i])cTString += cTSArr[i];
+  }
+  console.log(cSSArr+":"+cSNArr);
+  return cTString;
 }
 //YatesShuffle演算法
 function shuffle(array) {
