@@ -475,10 +475,8 @@ function handCardState(cardSelectStr){
     if(cardSelectStr != ""){
       if(cTStr!=""){
         handState.innerHTML = "選取卡牌："+cTStr;
-        else handState.innerHTML = "";
-      }
-      else handState.innerHTML = "請點選卡牌";
-    }
+      }else handState.innerHTML = "";
+    }else handState.innerHTML = "請點選卡牌";
   }
 }
 
