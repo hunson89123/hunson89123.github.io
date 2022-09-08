@@ -16,11 +16,11 @@ function isPair(selected, selectedH, selectedN) {
 function isStraight(selected, selectedH,  selectedN) {
   if (selected.length == 5) {
     let valid = true;
+    selectedN = selectedN.sort();
     for (let i = 0; i < 4; i++) {
       let current = selectedN[i];
       let next = selectedN[i+1];
-
-
+      console.log(current+" "+next);
       if (current == 2 || current == 1) {
         current += 13;
       }
@@ -31,6 +31,7 @@ function isStraight(selected, selectedH,  selectedN) {
         valid = false;
         break;
       }
+
     }
     return valid;
   }
