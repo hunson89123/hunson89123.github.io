@@ -472,10 +472,13 @@ function handCardState(cardSelectStr){
     let cardSelectArr = cardSelectStr.split(" ");
     // console.log(cardSelectArr.length+":"+cardSelectArr);
     let cTStr = cardType(cardSelectArr);
-    if(cardSelectStr != "")
-      if(cTStr!="") handState.innerHTML = "選取卡牌："+cTStr;
-      else handState.innerHTML = "選取卡牌："+cardSelectStr;
-    else handState.innerHTML = "請點選卡牌";
+    if(cardSelectStr != ""){
+      if(cTStr!=""){
+        handState.innerHTML = "選取卡牌："+cTStr;
+        else handState.innerHTML = "";
+      }
+      else handState.innerHTML = "請點選卡牌";
+    }
   }
 }
 
