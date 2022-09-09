@@ -21,10 +21,10 @@ function isStraight(selected, selectedH,  selectedN) {
       let current = selectedN[i];
       let next = selectedN[i+1];
       
-      if (current == 2 || current == 1 && selectedN[0] == 10 || selectedN[0] == 11) {
+      if ((current == 2 || current == 1) && (selectedN[0] == 10 || selectedN[0] == 11)) {
         current += 13;
       }
-      if (next == 2 || next == 1 && selectedN[0] == 10 || selectedN[0] == 11) {
+      if ((next == 2 || next == 1) && (selectedN[0] == 10 || selectedN[0] == 11)) {
         next += 13;
       }
       console.log(current+" "+next);
