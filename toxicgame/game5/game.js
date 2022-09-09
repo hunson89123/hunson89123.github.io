@@ -371,7 +371,7 @@ function playerDataCards(){
         recoveryVar();
         gameStateBar.innerHTML = "輪到你出牌了!";
         handState.innerHTML = "請點選卡牌";
-        showSelectedState();
+        handCardState(cardSelectStr);
         playerData[0].style.animation = "boxYellow .8s infinite alternate";
           //若無持有梅花三則可PASS，反之持有但並非第一回合則可PASS
           if(!haveC3)pass.hidden = false;
@@ -466,7 +466,7 @@ function cardSelected(){
 
 //顯示當前選牌狀態
 function showSelectedState(){
-   handState.innerHTML = handCardState(cardSelectStr);
+   // handState.innerHTML = handCardState(cardSelectStr);
 }
 
 //卡牌圖片=>出牌提示
