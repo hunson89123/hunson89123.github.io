@@ -466,7 +466,7 @@ function cardSelected(){
 
 //顯示當前選牌狀態
 function showSelectedState(){
-  playerData[0].innerHTML = cardSelectStr;
+   handState.innerHTML = handCardState(cardSelectStr);
 }
 
 //卡牌圖片=>出牌提示
@@ -549,7 +549,7 @@ function playCards(){
 
 //還原初始變數
 function recoveryVar(){
-  isCardType = false;
+  // isCardType = false;
 }
 //YatesShuffle演算法
 function shuffle(array) {
