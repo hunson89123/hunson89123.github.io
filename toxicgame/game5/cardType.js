@@ -16,7 +16,7 @@ function isPair(selected, selectedH, selectedN) {
 function isStraight(selected, selectedH,  selectedN) {
   if (selected.length == 5) {
     let valid = true;
-    selectedN = selectedN.sort();
+    selectedN = selectedN.sort(function(a,b){return a-b});
     for (let i = 0; i < 4; i++) {
       let current = selectedN[i];
       let next = selectedN[i+1];

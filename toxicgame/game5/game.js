@@ -381,7 +381,9 @@ function playerDataCards(){
       else gameStateBar.innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+playerNames[nowPlay]+"</span> 出牌中...";
       pass.hidden = true;
       playCard.hidden = true;
+      isFirst = false;
     }
+    
   });
 }
 //卡牌洗發
