@@ -365,7 +365,6 @@ function playerDataCards(){
     if(nowPlay!==""){
       playerData.forEach(i => i.style.animation = "");
       playerData.forEach(i => i.style.borderColor = "white");
-      console.log(nowPlay,isFirst);
       if(nowPlay === userIndex){
         gameStateBar.innerHTML = "輪到你出牌了!";
         handState.innerHTML = "請點選卡牌";
@@ -373,6 +372,7 @@ function playerDataCards(){
           //若無持有梅花三則可PASS，反之持有但並非第一回合則可PASS
           if(!haveC3)pass.hidden = false;
           else if(!isFirst)pass.hidden = false;
+          else pass.hidden = true;
           playCard.hidden = false;
         }else{
           var nowPlayIndex = (userIndex%2==1)?(userIndex+nowPlay+2)%4:(userIndex+nowPlay)%4;
