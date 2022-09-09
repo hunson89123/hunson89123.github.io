@@ -41,6 +41,7 @@ let cardsTmp = [];
 let userCards = [];
 let playerNames = [];
 let handCardsSelectedArr = new Array(13).fill(false);
+let cardSelectStr = "";
 let host = false;
 let haveC3 = false;
 let isDeal = false;
@@ -367,8 +368,10 @@ function playerDataCards(){
       playerData.forEach(i => i.style.animation = "");
       playerData.forEach(i => i.style.borderColor = "white");
       if(nowPlay === userIndex){
+        recoveryVar();
         gameStateBar.innerHTML = "輪到你出牌了!";
         handState.innerHTML = "請點選卡牌";
+        showSelectedState();
         playerData[0].style.animation = "boxYellow .8s infinite alternate";
           //若無持有梅花三則可PASS，反之持有但並非第一回合則可PASS
           if(!haveC3)pass.hidden = false;
@@ -429,7 +432,7 @@ function cardSelected(){
     var cardRect = e.target.getBoundingClientRect();
     var handAreaRect = handArea.getBoundingClientRect();
     var offset = handAreaRect.bottom - cardRect.bottom;
-    var cardSelectStr = "";
+    cardSelectStr = "";
 
       //卡片選取動畫
       for(let i = 0; i<13 ; i++){
@@ -461,6 +464,10 @@ function cardSelected(){
   }
 }
 
+//顯示當前選牌狀態
+function showSelectedState(){
+  playerData[0].innerHTML = cardSelectStr;
+}
 
 //卡牌圖片=>出牌提示
 function handCardState(cardSelectStr){
@@ -486,7 +493,10 @@ function handCardState(cardSelectStr){
         isCardType = false;
         handState.innerHTML = "";
       }
-    }else handState.innerHTML = "請點選卡牌";
+    }else{ 
+      isCardType = false;
+      handState.innerHTML = "請點選卡牌";
+    }
   }
 }
 
@@ -535,6 +545,11 @@ function cardType(cSArr){
 //出牌
 function playCards(){
 
+}
+
+//還原初始變數
+function recoveryVar(){
+  isCardType = false;
 }
 //YatesShuffle演算法
 function shuffle(array) {
