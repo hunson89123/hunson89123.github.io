@@ -362,30 +362,29 @@ function inGame(){
 function playerDataCards(){
   onValue(ref(db, 'rooms/'+userRoom+'/nowPlay'),(snapshot) => {
     nowPlay = snapshot.val();
-    console.log(nowPlay);
-    playerData.forEach(i => i.style.animation = "");
-    playerData.forEach(i => i.style.borderColor = "white");
-    if(nowPlay === userIndex){
-      gameStateBar.innerHTML = "輪到你出牌了!";
-      handState.innerHTML = "請點選卡牌";
-      playerData[0].style.animation = "boxYellow .8s infinite alternate";
-      //若無持有梅花三則可PASS，反之持有但並非第一回合則可PASS
-      if(!haveC3)pass.hidden = false;
-      else if(!isFirst)pass.hidden = false;
-      playCard.hidden = false;
-      isFirst = false;
-    }
-    else{
-      var nowPlayIndex = (userIndex%2==1)?(userIndex+nowPlay+2)%4:(userIndex+nowPlay)%4;
-      playerData[nowPlayIndex].style.animation = "boxGreen .8s infinite alternate";
-      if(isFirst)gameStateBar.innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+playerNames[nowPlay]+"</span> 持有♣3，出牌中...";
-      else gameStateBar.innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+playerNames[nowPlay]+"</span> 出牌中...";
-      pass.hidden = true;
-      playCard.hidden = true;
-      isFirst = false;
-    }
-    
-  });
+    if(nowPlay!=""){
+      playerData.forEach(i => i.style.animation = "");
+      playerData.forEach(i => i.style.borderColor = "white");
+      if(nowPlay === userIndex){
+        gameStateBar.innerHTML = "輪到你出牌了!";
+        handState.innerHTML = "請點選卡牌";
+        playerData[0].style.animation = "boxYellow .8s infinite alternate";
+          //若無持有梅花三則可PASS，反之持有但並非第一回合則可PASS
+          if(!haveC3)pass.hidden = false;
+          else if(!isFirst)pass.hidden = false;
+          playCard.hidden = false;
+        }
+        else{
+          var nowPlayIndex = (userIndex%2==1)?(userIndex+nowPlay+2)%4:(userIndex+nowPlay)%4;
+          playerData[nowPlayIndex].style.animation = "boxGreen .8s infinite alternate";
+          if(isFirst)gameStateBar.innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+playerNames[nowPlay]+"</span> 持有♣3，出牌中...";
+          else gameStateBar.innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+playerNames[nowPlay]+"</span> 出牌中...";
+          pass.hidden = true;
+          playCard.hidden = true;
+        }
+        isFirst = false;
+      }
+    });
 }
 //卡牌洗發
 function cardShufDealSort(){
