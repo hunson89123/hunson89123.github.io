@@ -20,13 +20,14 @@ function isStraight(selected, selectedH,  selectedN) {
     for (let i = 0; i < 4; i++) {
       let current = selectedN[i];
       let next = selectedN[i+1];
-      console.log(current+" "+next);
+      
       if (current == 2 || current == 1 && selectedN[0] == 10 || selectedN[0] == 11) {
         current += 13;
       }
       if (next == 2 || next == 1 && selectedN[0] == 10 || selectedN[0] == 11) {
         next += 13;
       }
+      console.log(current+" "+next);
       if (current != next - 1) {
         valid = false;
         break;

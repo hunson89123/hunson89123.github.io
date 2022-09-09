@@ -44,9 +44,10 @@ let handCardsSelectedArr = new Array(13).fill(false);
 let host = false;
 let haveC3 = false;
 let isDeal = false;
-let nowPlay = 0;
+let nowPlay = -1;
 let isPass = false;
 let isFirst = true;
+let isLoading = false;
 
 //初始化fb
 const app = initializeApp(firebaseConfig);
@@ -112,14 +113,13 @@ function readGameData(){
     numOfUser = Object.keys(snapshot.val()).length;
     numOfRoom = Math.ceil(numOfUser/4);
     //登入中請稍候
-    if(numOfUser != 0){
+    if(numOfUser != 0 && !isLoading){
+      isLoading = true;
       const loading = document.getElementById('loading');
-      if(loading != null){
-        loading.style.animation = "fadeOut .8s forwards";
-        setTimeout(function() {
-          loading.parentNode.removeChild(loading);
-        }, 800);
-      }
+      loading.style.animation = "fadeOut .8s forwards";
+      setTimeout(function() {
+        loading.parentNode.removeChild(loading);
+      }, 800);
     }
 
     gameData.innerHTML="線上玩家："+numOfUser+" | 遊戲房間："+numOfRoom;
@@ -364,8 +364,7 @@ function playerDataCards(){
     nowPlay = snapshot.val();
     playerData.forEach(i => i.style.animation = "");
     playerData.forEach(i => i.style.borderColor = "white");
-    console.log(isFirst);
-    if(nowPlay == userIndex){
+    if(nowPlay === userIndex){
       gameStateBar.innerHTML = "輪到你出牌了!";
       handState.innerHTML = "請點選卡牌";
       playerData[0].style.animation = "boxYellow .8s infinite alternate";
