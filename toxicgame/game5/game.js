@@ -48,6 +48,7 @@ let nowPlay = -1;
 let isPass = false;
 let isFirst = true;
 let isLoading = false;
+let isCardType = false;
 
 //初始化fb
 const app = initializeApp(firebaseConfig);
@@ -479,24 +480,32 @@ function handCardState(cardSelectStr){
     //手牌選取狀態顯示
     if(cardSelectStr != ""){
       if(cTStr!=""){
+        isCardType = true;
         handState.innerHTML = "選取卡牌："+cTStr;
-      }else handState.innerHTML = "";
+      }else{
+        isCardType = false;
+        handState.innerHTML = "";
+      }
     }else handState.innerHTML = "請點選卡牌";
   }
 }
 
 //出牌過牌
 function passOrPlay(){
-  get(child(dbRef, 'rooms/'+userRoom+'/nowPlay')).then((snapshot) => {
-    var np = snapshot.val();
-    if(np<3)np++;
-    else np = 0;
-    const updates = {};
-    updates[ 'rooms/'+userRoom+'/nowPlay'] = np;
-    update(ref(db),updates);
-  });
+  if(isPass || isCardType){
+    get(child(dbRef, 'rooms/'+userRoom+'/nowPlay')).then((snapshot) => {
+      var np = snapshot.val();
+      if(np<3)np++;
+      else np = 0;
+      const updates = {};
+      updates[ 'rooms/'+userRoom+'/nowPlay'] = np;
+      update(ref(db),updates);
+    });
+    handState.innerHTML = "";
+  }else{
+    handState.innerHTML = "錯誤的出牌!";
+  }
 
-  handState.innerHTML = "";
 }
 //辨別出牌牌型
 function cardType(cSArr){
@@ -522,6 +531,10 @@ function cardType(cSArr){
   }
   console.log(cSSArr+":"+cSNArr);
   return cTString;
+}
+//出牌
+function playCards(){
+
 }
 //YatesShuffle演算法
 function shuffle(array) {
