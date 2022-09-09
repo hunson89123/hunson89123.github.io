@@ -365,7 +365,7 @@ function playerDataCards(){
     if(nowPlay!==""){
       playerData.forEach(i => i.style.animation = "");
       playerData.forEach(i => i.style.borderColor = "white");
-      console.log(nowPlay);
+      console.log(nowPlay,isFirst);
       if(nowPlay === userIndex){
         gameStateBar.innerHTML = "輪到你出牌了!";
         handState.innerHTML = "請點選卡牌";
