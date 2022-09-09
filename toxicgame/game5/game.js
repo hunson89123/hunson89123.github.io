@@ -365,6 +365,7 @@ function playerDataCards(){
     if(nowPlay!==""){
       playerData.forEach(i => i.style.animation = "");
       playerData.forEach(i => i.style.borderColor = "white");
+      console.log(nowPlay);
       if(nowPlay === userIndex){
         gameStateBar.innerHTML = "輪到你出牌了!";
         handState.innerHTML = "請點選卡牌";
@@ -373,8 +374,7 @@ function playerDataCards(){
           if(!haveC3)pass.hidden = false;
           else if(!isFirst)pass.hidden = false;
           playCard.hidden = false;
-        }
-        else{
+        }else{
           var nowPlayIndex = (userIndex%2==1)?(userIndex+nowPlay+2)%4:(userIndex+nowPlay)%4;
           playerData[nowPlayIndex].style.animation = "boxGreen .8s infinite alternate";
           if(isFirst)gameStateBar.innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+playerNames[nowPlay]+"</span> 持有♣3，出牌中...";
