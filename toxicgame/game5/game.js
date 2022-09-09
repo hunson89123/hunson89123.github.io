@@ -362,7 +362,7 @@ function inGame(){
 function playerDataCards(){
   onValue(ref(db, 'rooms/'+userRoom+'/nowPlay'),(snapshot) => {
     nowPlay = snapshot.val();
-    if(nowPlay!=""){
+    if(nowPlay!==""){
       playerData.forEach(i => i.style.animation = "");
       playerData.forEach(i => i.style.borderColor = "white");
       if(nowPlay === userIndex){
