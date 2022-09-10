@@ -536,7 +536,7 @@ function cardType(cSArr){
   isFourOfaKind(cSArr, cSSArr, cSNArr),
   isFlush      (cSArr, cSSArr, cSNArr)
   ];
-
+  if(cTBArr[5])cTBArr[2]=false;
   for(let i=0 ; i<6; i++){
     if(cTBArr[i])cTString += cTSArr[i];
   }
