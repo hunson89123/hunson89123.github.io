@@ -552,6 +552,7 @@ function playCards(){
       handCardsSelectedArr[i] = false;
     }
   }
+  cardSelectStr = "";
 }
 
 //還原初始變數
