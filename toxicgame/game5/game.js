@@ -467,7 +467,7 @@ function cardSelected(){
 //顯示當前選牌狀態
 function showSelectedState(){
    // handState.innerHTML = handCardState(cardSelectStr);
-}
+ }
 
 //卡牌圖片=>出牌提示
 function handCardState(cardSelectStr){
@@ -512,6 +512,7 @@ function passOrPlay(){
       update(ref(db),updates);
     });
     handState.innerHTML = "";
+    playCards();
   }else{
     handState.innerHTML = "錯誤的出牌!";
   }
@@ -544,7 +545,13 @@ function cardType(cSArr){
 }
 //出牌
 function playCards(){
-
+  //卡片選取字串
+  for(let i=0 ; i<13 ; i++){
+    if(handCardsSelectedArr[i]){
+      handCards[i].hidden =true;
+      handCardsSelectedArr[i] = false;
+    }
+  }
 }
 
 //還原初始變數
