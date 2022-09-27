@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
 	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100&display=swap" rel="stylesheet">
 	<title>Hunson's Lab - 關於本站</title>
 </head>
+
 <body class="outer">
 	<div class="div">
 		<p style="color:#FFFFFB;">Hunson's Lab</p>
@@ -18,18 +20,19 @@
 		<h3 id="last" style="color: #121212; background: white;">最後更新時間：
 			<span id="lastModified"></span>
 		</h3><br>
-		
+
 		<script type="text/javascript">
 			var x = new Date(document.lastModified);
 			var s = document.getElementById('lastModified');
-			s.innerHTML =  x.getFullYear()-1911+"/"+
-			String(x.getMonth()+1).padStart(2,'0')+"/"+
-			String(x.getDate()).padStart(2,'0')+" "+
-			String(x.getHours()).padStart(2,'0')+":"+
-			String(x.getMinutes()).padStart(2,'0')+":"+
-			String(x.getSeconds()).padStart(2,'0');
+			s.innerHTML = x.getFullYear() - 1911 + "/" +
+				String(x.getMonth() + 1).padStart(2, '0') + "/" +
+				String(x.getDate()).padStart(2, '0') + " " +
+				String(x.getHours()).padStart(2, '0') + ":" +
+				String(x.getMinutes()).padStart(2, '0') + ":" +
+				String(x.getSeconds()).padStart(2, '0');
 		</script>
 		<h1>開發紀錄</h1><br>
+		<h3>111/09/27 製作game6(完成棋盤與棋子)</h3><br>
 		<h3>111/09/10 製作game5(完成出牌手牌部分動畫、修正預選牌未顯示錯誤)</h3><br>
 		<h3>111/09/09 製作game5(修正順子判定、遊戲上方狀態顯示錯誤)</h3><br>
 		<h3>111/09/08 製作game5(新增牌型判定、過/出牌按鈕)</h3><br>
@@ -54,4 +57,5 @@
 		<h3>111/01/16 完成主頁、遊戲、工具、關於首頁</h3><br>
 	</div>
 </body>
+
 </html>

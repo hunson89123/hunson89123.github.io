@@ -141,7 +141,18 @@ td {
     justify-items: left;
   }
 
-  .hand {
+  .chess {
+    width: 56px;
+    height: 56px;
     cursor: none;
+  }
+
+  table {
+    width: 280px;
+  }
+
+  td {
+    width: 70px;
+    height: 70px;
   }
 }
