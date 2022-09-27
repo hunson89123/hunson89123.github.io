@@ -1,0 +1,147 @@
+body {
+  margin: 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #08192d;
+  color: white;
+}
+
+h1 {
+  font-size: 100px;
+  color: white;
+  margin: 50px;
+}
+
+p {
+  font-size: 2em;
+  line-height: 1em;
+  font-family: 'Noto Serif TC', serif;
+}
+
+table {
+  border-collapse: collapse;
+  width: 400px;
+}
+
+td {
+  border: 5px solid white;
+  border-collapse: collapse;
+  width: 100px;
+  height: 100px;
+}
+
+.chess {
+  width: 80px;
+  height: 80px;
+  background-color: #409038;
+  border-radius: 50%;
+  display: block;
+  text-align: center;
+  margin: 0px auto;
+  box-shadow: 5px 5px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes flyIn {
+  from {
+    opacity: 0;
+  }
+
+  from {
+    transform: translateY(-50%);
+  }
+
+  to {
+    transform: translateY(0%);
+    ;
+  }
+}
+
+@keyframes bg1 {
+  from {
+    background: #08192d;
+  }
+
+  to {
+    background-color: #0e2e53;
+  }
+}
+
+@keyframes bg2 {
+  from {
+    background-color: #0e2e53;
+  }
+
+  to {
+    background-color: #144379;
+  }
+}
+
+@keyframes boxYellow {
+  from {
+    box-shadow: none;
+    border-color: white;
+  }
+
+  to {
+    box-shadow: 0 0 20px yellow;
+    border-color: yellow;
+  }
+}
+
+@keyframes boxGreen {
+  from {
+    box-shadow: none;
+    border-color: white;
+  }
+
+  to {
+    box-shadow: 0 0 20px #00C700;
+    border-color: #00C700;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+
+  h1 {
+    font-size: 80px;
+    margin: 10px;
+  }
+
+  button {
+    max-width: 300px;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.5em;
+  }
+
+  button:hover {
+    background-color: #005FCB;
+  }
+
+  #gameArea {
+    justify-items: left;
+  }
+
+  .hand {
+    cursor: none;
+  }
+}
