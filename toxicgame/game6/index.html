@@ -8,22 +8,16 @@
   <link href="style.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script type="module" src="game.js"></script>
+  <script src="game.js"></script>
   <script src="cardType.js"></script>
 
 </head>
 
-<body>
+<body onload="initGame();">
   <!-- <div id="loading">登入中請稍候...</div> -->
   <span id="gameState"></span>
   <div id="gameArea">
     <!-- <a id="play" class="startGame" onclick="editUserName()">點此開始遊戲</a> -->
-    <script type="module">
-      import { editUserName } from "./game.js";
-      window.editUserName = () => {
-        editUserName();
-      }
-    </script>
     <table>
       <tr>
         <td><span id="00" class="chess"></span></td>

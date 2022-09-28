@@ -23,11 +23,12 @@ p {
 
 table {
   border-collapse: collapse;
+  border-radius: 100%;
   width: 400px;
 }
 
 td {
-  border: 5px solid white;
+  border: 2px solid #1b4478;
   border-collapse: collapse;
   width: 100px;
   height: 100px;
@@ -36,12 +37,17 @@ td {
 .chess {
   width: 80px;
   height: 80px;
-  background-color: #409038;
+  /* background-color: #3470c2; */
+  border: 2px solid #3470c2;
   border-radius: 50%;
-  display: block;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  font-family: 'DFKai-SB', serif;
+  align-items: center;
+  font-size: 3em;
   margin: 0px auto;
-  box-shadow: 5px 5px rgba(0, 0, 0, 0.5);
+  user-select: none;
+  /* box-shadow: 5px 5px rgba(0, 0, 0, 0.5); */
   cursor: pointer;
 }
 
@@ -145,6 +151,7 @@ td {
     width: 56px;
     height: 56px;
     cursor: none;
+    font-size: 2em;
   }
 
   table {
