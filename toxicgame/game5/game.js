@@ -560,7 +560,7 @@ function playCards() {
   for (var i = 0; i < cardSelectArr.length; i++) {
     var c = document.createElement('img');
     c.src = "./cards/" + cardSelectArr[i] + ".png";
-    c.style.height = "100%";
+    c.style.height = "50%";
     playCardsArea.appendChild(c);
   }
   // playCardsArea.innerHTML = cardSelectStr;
