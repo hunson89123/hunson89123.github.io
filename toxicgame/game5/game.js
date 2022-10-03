@@ -569,6 +569,7 @@ function playCards() {
 
 //將卡牌顯示於牌桌上
 function showTableCards() {
+  playCardsArea.innerHTML = "";
   get(child(dbRef, 'rooms/' + userRoom + '/tableCards')).then((snapshot) => {
     cardSelectArr = snapshot.val();
   });
