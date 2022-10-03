@@ -367,6 +367,7 @@ function inGame() {
 function playerDataCards() {
   onValue(ref(db, 'rooms/' + userRoom + '/nowPlay'), (snapshot) => {
     nowPlay = snapshot.val();
+    showTableCards();
     if (nowPlay !== "") {
       playerData.forEach(i => i.style.animation = "");
       playerData.forEach(i => i.style.borderColor = "white");
@@ -390,7 +391,7 @@ function playerDataCards() {
         playCard.hidden = true;
       }
       isFirst = false;
-      showTableCards();
+
     }
   });
 }
@@ -569,17 +570,20 @@ function playCards() {
 
 //將卡牌顯示於牌桌上
 function showTableCards() {
+
   playCardsArea.innerHTML = "";
   get(child(dbRef, 'rooms/' + userRoom + '/tableCards')).then((snapshot) => {
     cardSelectArr = snapshot.val();
   });
-
-  for (var i = 0; i < cardSelectArr.length; i++) {
-    var c = document.createElement('img');
-    c.src = "./cards/" + cardSelectArr[i] + ".png";
-    c.style.height = "50%";
-    if (i > 0) c.style.marginLeft = "-50px"
-    playCardsArea.appendChild(c);
+  playerDataCards[0].innerHTML = cardSelectArr;
+  if (cardSelectArr > 0 && cardSelectArr[0] != "") {
+    for (var i = 0; i < cardSelectArr.length; i++) {
+      var c = document.createElement('img');
+      c.src = "./cards/" + cardSelectArr[i] + ".png";
+      c.style.height = "50%";
+      if (i > 0) c.style.marginLeft = "-50px"
+      playCardsArea.appendChild(c);
+    }
   }
 }
 //還原初始變數
