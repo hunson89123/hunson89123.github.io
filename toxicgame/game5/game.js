@@ -298,6 +298,7 @@ function startQueue() {
                   set(ref(db, 'rooms/' + userRoom), {
                     cards: cardsTmp,
                     nowPlay: "",
+                    tableCards: "",
                   });
                   isDeal = true;
                 }
@@ -555,8 +556,22 @@ function playCards() {
     }
   }
 
+  //將出牌輸入至資料庫
+  var updates = {};
+  updates['rooms/' + userRoom + '/tableCards'] = cardSelectArr;
+  update(ref(db), updates);
 
-  //將卡牌顯示於牌桌上
+  cardSelectStr = "";
+
+  showTableCards();
+}
+
+//將卡牌顯示於牌桌上
+function showTableCards() {
+  get(child(dbRef, 'rooms/' + userRoom + '/tableCards')).then((snapshot) => {
+    cardSelectArr = snapshot.val();
+  });
+
   for (var i = 0; i < cardSelectArr.length; i++) {
     var c = document.createElement('img');
     c.src = "./cards/" + cardSelectArr[i] + ".png";
@@ -564,11 +579,7 @@ function playCards() {
     if (i > 0) c.style.marginLeft = "-50px"
     playCardsArea.appendChild(c);
   }
-  // playCardsArea.innerHTML = cardSelectStr;
-
-  cardSelectStr = "";
 }
-
 //還原初始變數
 function recoveryVar() {
   // isCardType = false;
