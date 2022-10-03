@@ -390,6 +390,7 @@ function playerDataCards() {
         playCard.hidden = true;
       }
       isFirst = false;
+      showTableCards();
     }
   });
 }
