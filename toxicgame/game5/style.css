@@ -5,23 +5,23 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background:#08192d;
+  background: #08192d;
   color: white;
 }
 
-h1{
+h1 {
   font-size: 100px;
   color: white;
   margin: 50px;
 }
 
-p{
+p {
   font-size: 2em;
   line-height: 1em;
   font-family: 'Noto Serif TC', serif;
 }
 
-.startGame{
+.startGame {
   font-family: 'Noto Serif TC', serif;
   font-size: 2em;
   animation: fadeIn .8s infinite alternate;
@@ -31,7 +31,7 @@ p{
   cursor: pointer;
 }
 
-.queueArea ul{
+.queueArea ul {
   font-family: 'Noto Serif TC', serif;
   font-size: 2em;
   color: yellow;
@@ -42,7 +42,8 @@ p{
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-#gameData{
+
+#gameData {
   font-family: 'Noto Serif TC', serif;
   font-size: 1.2em;
   position: absolute;
@@ -50,7 +51,7 @@ p{
   bottom: 5%;
 }
 
-#gameState{
+#gameState {
   font-family: 'Noto Serif TC', serif;
   font-size: 1.2em;
   position: absolute;
@@ -58,7 +59,7 @@ p{
   top: 5%;
 }
 
-#loading{
+#loading {
   font-family: 'Noto Serif TC', serif;
   font-size: 2em;
   background-color: #121212;
@@ -71,7 +72,7 @@ p{
   z-index: 10;
 }
 
-#gameArea{
+#gameArea {
   width: 100vw;
   height: 100vh;
   align-items: center;
@@ -79,7 +80,7 @@ p{
   display: flex;
 }
 
-#handArea{
+#handArea {
   float: inline-end;
   width: 100vw;
   height: 40vh;
@@ -91,16 +92,16 @@ p{
   align-items: flex-end;
 }
 
-#handState{
- font-family: 'Noto Serif TC', serif;
- font-size: 1.5em;
- text-align: center;
- width: 100vw;
- top: 0;
- position: absolute;
+#handState {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 1.5em;
+  text-align: center;
+  width: 100vw;
+  top: 0;
+  position: absolute;
 }
 
-#playerDataArea{
+#playerDataArea {
   position: absolute;
   display: none;
   bottom: 40vh;
@@ -110,7 +111,18 @@ p{
   align-items: center;
 }
 
-.playPass{
+#playCardsArea {
+  background-color: #173c6b;
+  width: 70%;
+  height: 55%;
+  position: absolute;
+  z-index: -1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.playPass {
   font-family: 'Noto Serif TC', serif;
   font-size: 1.5em;
   position: absolute;
@@ -119,14 +131,14 @@ p{
   cursor: pointer;
 }
 
-.hand{
+.hand {
   bottom: 0;
   position: absolute;
   cursor: pointer;
   height: 15vh;
 }
 
-.playerData{
+.playerData {
   font-family: 'Noto Serif TC', serif;
   font-size: 1em;
   position: absolute;
@@ -139,74 +151,105 @@ p{
   white-space: nowrap;
 }
 
-@keyframes fadeIn{
-  from{ opacity: 0; }
-  to{opacity: 1;}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
-@keyframes fadeOut{
-  to{ opacity: 0; }
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
 }
 
-@keyframes flyIn{
-  from{ opacity: 0; }
-  from{  transform: translateY(-50%); }
-  to { transform: translateY(0%);   ;}
+@keyframes flyIn {
+  from {
+    opacity: 0;
+  }
+
+  from {
+    transform: translateY(-50%);
+  }
+
+  to {
+    transform: translateY(0%);
+    ;
+  }
 }
 
-@keyframes bg1{
-  from {background:#08192d;}
-  to{ background-color: #0e2e53;}
+@keyframes bg1 {
+  from {
+    background: #08192d;
+  }
+
+  to {
+    background-color: #0e2e53;
+  }
 }
 
-@keyframes bg2{
-  from{ background-color: #0e2e53;}
-  to{background-color: #144379;}
+@keyframes bg2 {
+  from {
+    background-color: #0e2e53;
+  }
+
+  to {
+    background-color: #144379;
+  }
 }
 
-@keyframes boxYellow{
-  from{ 
+@keyframes boxYellow {
+  from {
     box-shadow: none;
     border-color: white;
   }
-  to{
+
+  to {
     box-shadow: 0 0 20px yellow;
     border-color: yellow;
   }
 }
 
-@keyframes boxGreen{
-  from{
+@keyframes boxGreen {
+  from {
     box-shadow: none;
     border-color: white;
   }
-  to{
+
+  to {
     box-shadow: 0 0 20px #00C700;
     border-color: #00C700;
   }
 }
-@media only screen and (max-width: 600px){
 
-  h1{
+@media only screen and (max-width: 600px) {
+
+  h1 {
     font-size: 80px;
     margin: 10px;
   }
 
-  button{
+  button {
     max-width: 300px;
     font-family: 'Noto Serif TC', serif;
     font-size: 1.5em;
   }
 
-  button:hover{
-    background-color:#005FCB;
+  button:hover {
+    background-color: #005FCB;
   }
 
-  #gameArea{
+  #gameArea {
     justify-items: left;
   }
 
-  .hand{
+  .hand {
     cursor: none;
   }
 }

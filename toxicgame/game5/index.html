@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="utf-8">
@@ -11,53 +12,56 @@
   <script src="cardType.js"></script>
 
 </head>
+
 <body>
   <div id="loading">登入中請稍候...</div>
   <span id="gameState"></span>
   <div id="gameArea">
     <a id="play" class="startGame" onclick="editUserName()">點此開始遊戲</a>
     <script>;
-    
-  </script>
-  <script type="module">
-    import { editUserName } from "./game.js";
-    window.editUserName=()=>{
-      editUserName();
-    }
-  </script>
-  <div id="queueArea" class="queueArea" hidden>
-    <p id="queuePlayer1" >--</p>
-    <p id="queuePlayer2" >--</p>
-    <p id="queuePlayer3" >--</p>
-    <p id="queuePlayer4" >--</p>
-  </div>
-  <div id="playerDataArea">
-    <div id="playerData1" style="bottom: 0;" class="playerData"></div>
-    <div id="playerData2" style="right: 0;"  class="playerData"></div>
-    <div id="playerData3" style="top: 0"     class="playerData"></div>
-    <div id="playerData4" style="left: 0;"   class="playerData"></div>
-    <a id="pass" style="left:50px" class="playPass">PASS</a>
-    <a id="playCard" style="right:50px" class="playPass">出牌</a>
-  </div>
-  <div id="gameData">線上玩家：0 | 遊戲房間：0</div>
 
-  
-  <div id="handArea">
-    <div id="handState">請點選卡牌</div>
-    <img src="./cards/back.png" id= "hand1" class="hand"></img>
-    <img src="./cards/back.png" id= "hand2" class="hand"></img>
-    <img src="./cards/back.png" id= "hand3" class="hand"></img>
-    <img src="./cards/back.png" id= "hand4" class="hand"></img>
-    <img src="./cards/back.png" id= "hand5" class="hand"></img>
-    <img src="./cards/back.png" id= "hand6" class="hand"></img>
-    <img src="./cards/back.png" id= "hand7" class="hand"></img>
-    <img src="./cards/back.png" id= "hand8" class="hand"></img>
-    <img src="./cards/back.png" id= "hand9" class="hand"></img>
-    <img src="./cards/back.png" id="hand10" class="hand"></img>
-    <img src="./cards/back.png" id="hand11" class="hand"></img>
-    <img src="./cards/back.png" id="hand12" class="hand"></img>
-    <img src="./cards/back.png" id="hand13" class="hand"></img>
+    </script>
+    <script type="module">
+      import { editUserName } from "./game.js";
+      window.editUserName = () => {
+        editUserName();
+      }
+    </script>
+    <div id="queueArea" class="queueArea" hidden>
+      <p id="queuePlayer1">--</p>
+      <p id="queuePlayer2">--</p>
+      <p id="queuePlayer3">--</p>
+      <p id="queuePlayer4">--</p>
+    </div>
+    <div id="playerDataArea">
+      <div id="playerData1" style="bottom: 0;" class="playerData"></div>
+      <div id="playerData2" style="right: 0;" class="playerData"></div>
+      <div id="playerData3" style="top: 0" class="playerData"></div>
+      <div id="playerData4" style="left: 0;" class="playerData"></div>
+      <div id="playCardsArea"></div>
+      <a id="pass" style="left:50px" class="playPass">PASS</a>
+      <a id="playCard" style="right:50px" class="playPass">出牌</a>
+    </div>
+    <div id="gameData">線上玩家：0 | 遊戲房間：0</div>
+
+
+    <div id="handArea">
+      <div id="handState">請點選卡牌</div>
+      <img src="./cards/back.png" id="hand1" class="hand"></img>
+      <img src="./cards/back.png" id="hand2" class="hand"></img>
+      <img src="./cards/back.png" id="hand3" class="hand"></img>
+      <img src="./cards/back.png" id="hand4" class="hand"></img>
+      <img src="./cards/back.png" id="hand5" class="hand"></img>
+      <img src="./cards/back.png" id="hand6" class="hand"></img>
+      <img src="./cards/back.png" id="hand7" class="hand"></img>
+      <img src="./cards/back.png" id="hand8" class="hand"></img>
+      <img src="./cards/back.png" id="hand9" class="hand"></img>
+      <img src="./cards/back.png" id="hand10" class="hand"></img>
+      <img src="./cards/back.png" id="hand11" class="hand"></img>
+      <img src="./cards/back.png" id="hand12" class="hand"></img>
+      <img src="./cards/back.png" id="hand13" class="hand"></img>
+    </div>
   </div>
-</div>
 </body>
+
 </html>

@@ -16,8 +16,8 @@ const firebaseConfig = {
 };
 
 //初始化遊戲元素
-const vw = window.innerWidth ;
-const vh = window.innerHeight ;
+const vw = window.innerWidth;
+const vh = window.innerHeight;
 const gameStateBar = document.getElementById('gameState');
 const handArea = document.getElementById('handArea');
 const gameData = document.getElementById('gameData');
@@ -26,15 +26,16 @@ const handState = document.getElementById('handState');
 const playerDataArea = document.getElementById('playerDataArea');
 const pass = document.getElementById('pass');
 const playCard = document.getElementById('playCard');
-let queuePlayers =[];
+const playCardsArea = document.getElementById('playCardsArea');
+let queuePlayers = [];
 let handCards = [];
 let playerData = [];
 
 //初始化遊戲資料變數
-const suits = ['c' , 'd' , 'h' , 's'];
-const number = [3,4,5,6,7,8,9,10,11,12,13,1,2];
-let numOfUser = 0,numOfRoom = 0;
-let userID = 0,userName = '',userRoom = 0,userIndex = 0;
+const suits = ['c', 'd', 'h', 's'];
+const number = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 1, 2];
+let numOfUser = 0, numOfRoom = 0;
+let userID = 0, userName = '', userRoom = 0, userIndex = 0;
 let allReady = false;
 let cards = [];
 let cardsTmp = [];
@@ -42,6 +43,7 @@ let userCards = [];
 let playerNames = [];
 let handCardsSelectedArr = new Array(13).fill(false);
 let cardSelectStr = "";
+let cardSelectArr = [];
 let host = false;
 let haveC3 = false;
 let isDeal = false;
@@ -61,106 +63,106 @@ const infFade = "fadeIn .8s infinite alternate";
 
 
 //初始化遊戲元素陣列
-function initGameEle(){
-  queuePlayers= [ 
-  document.getElementById('queuePlayer1'),
-  document.getElementById('queuePlayer2'),
-  document.getElementById('queuePlayer3'),
-  document.getElementById('queuePlayer4') 
+function initGameEle() {
+  queuePlayers = [
+    document.getElementById('queuePlayer1'),
+    document.getElementById('queuePlayer2'),
+    document.getElementById('queuePlayer3'),
+    document.getElementById('queuePlayer4')
   ];
 
   handCards = [
-  document.getElementById('hand1'),
-  document.getElementById('hand2'),
-  document.getElementById('hand3'),
-  document.getElementById('hand4'),
-  document.getElementById('hand5'),
-  document.getElementById('hand6'),
-  document.getElementById('hand7'),
-  document.getElementById('hand8'),
-  document.getElementById('hand9'),
-  document.getElementById('hand10'),
-  document.getElementById('hand11'),
-  document.getElementById('hand12'),
-  document.getElementById('hand13')
+    document.getElementById('hand1'),
+    document.getElementById('hand2'),
+    document.getElementById('hand3'),
+    document.getElementById('hand4'),
+    document.getElementById('hand5'),
+    document.getElementById('hand6'),
+    document.getElementById('hand7'),
+    document.getElementById('hand8'),
+    document.getElementById('hand9'),
+    document.getElementById('hand10'),
+    document.getElementById('hand11'),
+    document.getElementById('hand12'),
+    document.getElementById('hand13')
   ];
 
   playerData = [
-  document.getElementById('playerData1'),
-  document.getElementById('playerData2'),
-  document.getElementById('playerData3'),
-  document.getElementById('playerData4')
+    document.getElementById('playerData1'),
+    document.getElementById('playerData2'),
+    document.getElementById('playerData3'),
+    document.getElementById('playerData4')
   ];
   //產生52張牌
-  for(let i=0 ; i<52 ; i++){
-    cards[i] = suits[i%4] + number[parseInt(i/4)];
+  for (let i = 0; i < 52; i++) {
+    cards[i] = suits[i % 4] + number[parseInt(i / 4)];
     cardsTmp[i] = i;
   }
 
   //新增出牌過牌點擊事件
-  pass.onclick = function(){
-    isPass=true;
+  pass.onclick = function () {
+    isPass = true;
     passOrPlay();
   };
 
-  playCard.onclick = function(){
-    isPass =false;
+  playCard.onclick = function () {
+    isPass = false;
     passOrPlay();
   };
 }
 
 //查詢遊戲資訊(玩家人數|遊戲房間)
-function readGameData(){
-  onValue(ref(db, 'players'),(snapshot) => {
+function readGameData() {
+  onValue(ref(db, 'players'), (snapshot) => {
     numOfUser = Object.keys(snapshot.val()).length;
-    numOfRoom = Math.ceil(numOfUser/4);
+    numOfRoom = Math.ceil(numOfUser / 4);
     //登入中請稍候
-    if(numOfUser != 0 && !isLoading){
+    if (numOfUser != 0 && !isLoading) {
       isLoading = true;
       const loading = document.getElementById('loading');
       loading.style.animation = "fadeOut .8s forwards";
-      setTimeout(function() {
+      setTimeout(function () {
         loading.parentNode.removeChild(loading);
       }, 800);
     }
 
-    gameData.innerHTML="線上玩家："+numOfUser+" | 遊戲房間："+numOfRoom;
-    set(ref(db,'gameData'),{
+    gameData.innerHTML = "線上玩家：" + numOfUser + " | 遊戲房間：" + numOfRoom;
+    set(ref(db, 'gameData'), {
       numOfUser: numOfUser,
       numOfRoom: numOfRoom,
     });
 
     //指定玩家房間編號
-    const updates ={};
-    if(userRoom == 0){
-      updates['players/'+userID+'/room'] = numOfRoom;
+    const updates = {};
+    if (userRoom == 0) {
+      updates['players/' + userID + '/room'] = numOfRoom;
       userRoom = numOfRoom;
-      update(ref(db),updates);
+      update(ref(db), updates);
     }
   })
 
 
   //偵測鍵盤是否按下Enter
-  window.addEventListener('keydown',function(e){
-    if(e.key == "Enter")
-      if(numOfUser != 0)
+  window.addEventListener('keydown', function (e) {
+    if (e.key == "Enter")
+      if (numOfUser != 0)
         editUserName();
-    },false);
+  }, false);
 }
 
 //登入驗證(給ID)
-function loginCheck(){
+function loginCheck() {
 
 
   //輸入資料進db
   const auth = getAuth();
-  onAuthStateChanged(auth,(user) => {
+  onAuthStateChanged(auth, (user) => {
     if (user) {
       const uid = user.uid;
-      const urf = ref(db,`players/${uid}`);
+      const urf = ref(db, `players/${uid}`);
       // userName = "玩家"+uid.substring(0,4);
       userID = uid;
-      set(urf,{
+      set(urf, {
         index: "",
         time: "",
         name: userName,
@@ -177,15 +179,15 @@ function loginCheck(){
   });
 
 
-  
+
 
   //匿名登入
   signInAnonymously(auth)
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log(errorCode,errorMessage);
-  });
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode, errorMessage);
+    });
 
 }
 
@@ -193,9 +195,9 @@ function loginCheck(){
 loginCheck();
 
 //修改名字
-export function editUserName(){
-  let newName = prompt("請輸入玩家名稱","");
-  if(newName != "" && newName != null){
+export function editUserName() {
+  let newName = prompt("請輸入玩家名稱", "");
+  if (newName != "" && newName != null) {
     const updates = {};
     updates['players/' + userID + '/name'] = newName;
     userName = newName;
@@ -205,14 +207,14 @@ export function editUserName(){
 }
 
 //進入列隊畫面
-function startQueue(){
+function startQueue() {
   initGameEle();
   //進入列隊畫面淡出效果
-  if(userName != ""){
+  if (userName != "") {
     var play = document.getElementById('play');
-    if(play!=null){
+    if (play != null) {
       play.parentNode.removeChild(play);
-      queueArea.hidden = false; 
+      queueArea.hidden = false;
       queueArea.style.animation = "flyIn .5s";
       document.body.style.animation = "bg1 1s forwards";
       gameStateBar.style.animation = infFade;
@@ -222,11 +224,11 @@ function startQueue(){
     //給定玩家登入時/房間
     get(child(dbRef, 'players')).then((snapshot) => {
       var time = new Date().getTime();
-      snapshot.forEach(function(child){
+      snapshot.forEach(function (child) {
         const updates = {};
-        if(child.key == userID){
-          updates['players/'+child.key+'/time'] = time;
-          update(ref(db),updates);
+        if (child.key == userID) {
+          updates['players/' + child.key + '/time'] = time;
+          update(ref(db), updates);
 
           //給定玩家房間編號
           // userRoom = numOfRoom;
@@ -236,7 +238,7 @@ function startQueue(){
 
     //取得所有玩家遊戲名稱
     var cdStartGame;
-    onValue(ref(db, 'players'),(snapshot) => {
+    onValue(ref(db, 'players'), (snapshot) => {
       let index = 0;
       //初始化列隊列表(全--及限制字長)
       queuePlayers.forEach(i => i.innerHTML = "--");
@@ -250,21 +252,21 @@ function startQueue(){
       // white-space: nowrap;
       //依據進入列隊時間排序
       const sortedList = query(ref(db, 'players'), orderByChild('time'));
-      get(sortedList).then((snapshot) =>{
-        snapshot.forEach(function(child){
+      get(sortedList).then((snapshot) => {
+        snapshot.forEach(function (child) {
           let playerName = child.val().name;
           let playerId = child.key;
           let playerRoom = child.val().room;
           const updates = {};
 
-          if(playerName != "" && playerRoom == userRoom){
+          if (playerName != "" && playerRoom == userRoom) {
 
             //指派第一位為室長
-            if(index == 0) updates['players/'+child.key+'/host'] = true;
-            else updates['players/'+child.key+'/host'] = false;
-            update(ref(db),updates);
-            if(playerId === userID){
-              queuePlayers[index].innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+child.val().name+"</span>";
+            if (index == 0) updates['players/' + child.key + '/host'] = true;
+            else updates['players/' + child.key + '/host'] = false;
+            update(ref(db), updates);
+            if (playerId === userID) {
+              queuePlayers[index].innerHTML = "<span style=\"color:yellow;font-weight:bold\" >" + child.val().name + "</span>";
               //指派玩家順序
               // console.log("["+index+"==>"+playerId.substr(0,3),":",userID.substr(0,3)+"]");
               userIndex = index;
@@ -273,53 +275,53 @@ function startQueue(){
               queuePlayers[index].innerHTML = playerName;
             //產生玩家資料卡
             var playerCardStr = playerName + "<br>🂢 13";
-            if(userIndex%2==1)playerData[(userIndex+index+2)%4].innerHTML = playerCardStr;
-            else playerData[(userIndex+index)%4].innerHTML = playerCardStr;
+            if (userIndex % 2 == 1) playerData[(userIndex + index + 2) % 4].innerHTML = playerCardStr;
+            else playerData[(userIndex + index) % 4].innerHTML = playerCardStr;
             playerNames[index] = playerName;
             index++;
           }
         });
-        if(index % 4 == 0 ){
-          gameStateBar.style.animation="";
-            // var cd = 5;
-            var cd =1;
-            //檢測到計時是否存在
-            if(!cdStartGame){
-                //判斷是否為室長並洗牌將牌輸入進Fb(先暗發，同時發易出現bug)
-                get(child(dbRef, 'players')).then((snapshot) => {
-                  snapshot.forEach(function(child){
-                    if(child.key == userID){
-                      host = child.val().host;
-                    }
-                    if(host && !isDeal){
-                      cardsTmp = shuffle(cardsTmp);
-                      set(ref(db,'rooms/'+userRoom),{
-                        cards: cardsTmp,
-                        nowPlay: "",
-                      });
-                      isDeal = true;
-                    }
+        if (index % 4 == 0) {
+          gameStateBar.style.animation = "";
+          // var cd = 5;
+          var cd = 1;
+          //檢測到計時是否存在
+          if (!cdStartGame) {
+            //判斷是否為室長並洗牌將牌輸入進Fb(先暗發，同時發易出現bug)
+            get(child(dbRef, 'players')).then((snapshot) => {
+              snapshot.forEach(function (child) {
+                if (child.key == userID) {
+                  host = child.val().host;
+                }
+                if (host && !isDeal) {
+                  cardsTmp = shuffle(cardsTmp);
+                  set(ref(db, 'rooms/' + userRoom), {
+                    cards: cardsTmp,
+                    nowPlay: "",
                   });
-                });
+                  isDeal = true;
+                }
+              });
+            });
 
-                cdStartGame = setInterval(function() {
-                  if(cd>0){
-                    gameStateBar.innerHTML = "遊戲將於"+cd+"秒後開始!";  
-                  }else if (cd == 0){
-                    clearInterval(cdStartGame);
-                    inGame();
-                  }
-                  cd--;
-                }, 1000);
+            cdStartGame = setInterval(function () {
+              if (cd > 0) {
+                gameStateBar.innerHTML = "遊戲將於" + cd + "秒後開始!";
+              } else if (cd == 0) {
+                clearInterval(cdStartGame);
+                inGame();
               }
-            }
-          })
+              cd--;
+            }, 1000);
+          }
+        }
+      })
     });
   }
 }
 
 //進入遊戲
-function inGame(){
+function inGame() {
 
   //給定卡牌選卡動畫及事件
   cardSelected();
@@ -341,159 +343,159 @@ function inGame(){
   cardShufDealSort();
 
   //指定卡牌位置及間距
-  let coverW = (vw > 600)?1:2;
+  let coverW = (vw > 600) ? 1 : 2;
   const cw = handCards[0].offsetWidth;
   //上排卡
-  for(let i =0 ;i<7 ;i++){
+  for (let i = 0; i < 7; i++) {
     handCards[i].style.bottom = 15 + "vh";
-    if(i > 0) {
-      handCards[i].style.left =  (handCards[i-1].getBoundingClientRect().left + cw/coverW) +"px";
+    if (i > 0) {
+      handCards[i].style.left = (handCards[i - 1].getBoundingClientRect().left + cw / coverW) + "px";
     }
-    else handCards[i].style.left = (vw - (cw/coverW*6+cw))/2 +"px";
+    else handCards[i].style.left = (vw - (cw / coverW * 6 + cw)) / 2 + "px";
   }
   //下排卡
-  for(let i =7 ;i < 13; i++){
-    if(i > 7) {
-      handCards[i].style.left =  (handCards[i-1].getBoundingClientRect().left + cw/coverW) +"px";
+  for (let i = 7; i < 13; i++) {
+    if (i > 7) {
+      handCards[i].style.left = (handCards[i - 1].getBoundingClientRect().left + cw / coverW) + "px";
     }
-    else handCards[i].style.left = (vw - (cw/coverW*5+cw))/2 +"px";
+    else handCards[i].style.left = (vw - (cw / coverW * 5 + cw)) / 2 + "px";
   }
   playerDataCards();
 }
 //玩家資料卡顯示
-function playerDataCards(){
-  onValue(ref(db, 'rooms/'+userRoom+'/nowPlay'),(snapshot) => {
+function playerDataCards() {
+  onValue(ref(db, 'rooms/' + userRoom + '/nowPlay'), (snapshot) => {
     nowPlay = snapshot.val();
-    if(nowPlay!==""){
+    if (nowPlay !== "") {
       playerData.forEach(i => i.style.animation = "");
       playerData.forEach(i => i.style.borderColor = "white");
-      if(nowPlay === userIndex){
+      if (nowPlay === userIndex) {
         recoveryVar();
         gameStateBar.innerHTML = "輪到你出牌了!";
         handState.innerHTML = "請點選卡牌";
         handCardState(cardSelectStr);
         playerData[0].style.animation = "boxYellow .8s infinite alternate";
-          //若無持有梅花三則可PASS，反之持有但並非第一回合則可PASS
-          if(!haveC3)pass.hidden = false;
-          else if(!isFirst)pass.hidden = false;
-          else pass.hidden = true;
-          playCard.hidden = false;
-        }else{
-          var nowPlayIndex = (userIndex%2==1)?(userIndex+nowPlay+2)%4:(userIndex+nowPlay)%4;
-          playerData[nowPlayIndex].style.animation = "boxGreen .8s infinite alternate";
-          if(isFirst)gameStateBar.innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+playerNames[nowPlay]+"</span> 持有♣3，出牌中...";
-          else gameStateBar.innerHTML = "<span style=\"color:yellow;font-weight:bold\" >"+playerNames[nowPlay]+"</span> 出牌中...";
-          pass.hidden = true;
-          playCard.hidden = true;
-        }
-        isFirst = false;
+        //若無持有梅花三則可PASS，反之持有但並非第一回合則可PASS
+        if (!haveC3) pass.hidden = false;
+        else if (!isFirst) pass.hidden = false;
+        else pass.hidden = true;
+        playCard.hidden = false;
+      } else {
+        var nowPlayIndex = (userIndex % 2 == 1) ? (userIndex + nowPlay + 2) % 4 : (userIndex + nowPlay) % 4;
+        playerData[nowPlayIndex].style.animation = "boxGreen .8s infinite alternate";
+        if (isFirst) gameStateBar.innerHTML = "<span style=\"color:yellow;font-weight:bold\" >" + playerNames[nowPlay] + "</span> 持有♣3，出牌中...";
+        else gameStateBar.innerHTML = "<span style=\"color:yellow;font-weight:bold\" >" + playerNames[nowPlay] + "</span> 出牌中...";
+        pass.hidden = true;
+        playCard.hidden = true;
       }
-    });
+      isFirst = false;
+    }
+  });
 }
 //卡牌洗發
-function cardShufDealSort(){
+function cardShufDealSort() {
   //從Fb取得牌
   get(child(dbRef, 'rooms')).then((snapshot) => {
-    snapshot.forEach(function(child){
+    snapshot.forEach(function (child) {
 
 
-      if(child.key == userRoom)
+      if (child.key == userRoom)
         cardsTmp = child.val().cards;
       //發牌、理牌
-      userCards = cardsTmp.slice((userIndex)*13,(userIndex)*13+13);
-      userCards.sort(function(a,b){return a-b});
+      userCards = cardsTmp.slice((userIndex) * 13, (userIndex) * 13 + 13);
+      userCards.sort(function (a, b) { return a - b });
 
       const updates = {};
-      updates['players/'+userID+'/hand'] = userCards;
-      updates['players/'+userID+'/index'] = userIndex;
+      updates['players/' + userID + '/hand'] = userCards;
+      updates['players/' + userID + '/index'] = userIndex;
 
       //檢查誰持有梅花三
-      for(let i=0 ; i<13 ; i++){
-        if(userCards[i] == 0)haveC3 = true;
-        handCards[i].src = "./cards/"+cards[userCards[i]]+".png";
+      for (let i = 0; i < 13; i++) {
+        if (userCards[i] == 0) haveC3 = true;
+        handCards[i].src = "./cards/" + cards[userCards[i]] + ".png";
       }
 
-      if(haveC3){
-        updates['rooms/'+userRoom+'/nowPlay'] = userIndex;
-      }else  handState.innerHTML = "";
-      update(ref(db),updates);
+      if (haveC3) {
+        updates['rooms/' + userRoom + '/nowPlay'] = userIndex;
+      } else handState.innerHTML = "";
+      update(ref(db), updates);
 
     });
   });
 
-  
+
 }
 
 //卡片選取
-function cardSelected(){
+function cardSelected() {
   var bodyRect = document.body.getBoundingClientRect();
   const handCardsImg = document.getElementsByTagName("img");
-  const cardSelected = e =>{
+  const cardSelected = e => {
     var cardRect = e.target.getBoundingClientRect();
     var handAreaRect = handArea.getBoundingClientRect();
     var offset = handAreaRect.bottom - cardRect.bottom;
     cardSelectStr = "";
 
-      //卡片選取動畫
-      for(let i = 0; i<13 ; i++){
-        if(e.target.id == handCards[i].id){
-          e.target.style.outlineOffset = "-3px";
-          if(handCardsSelectedArr[i]){
-            e.target.style.bottom = offset - 20 + "px";
-            e.target.style.filter = "";
-          }else{
-            e.target.style.bottom = offset +  20 + "px";
-            e.target.style.filter = "drop-shadow(0 10px 0  rgba(0, 0, 0, 0.7))";
-          }
-          handCardsSelectedArr[i] = !handCardsSelectedArr[i];
+    //卡片選取動畫
+    for (let i = 0; i < 13; i++) {
+      if (e.target.id == handCards[i].id) {
+        e.target.style.outlineOffset = "-3px";
+        if (handCardsSelectedArr[i]) {
+          e.target.style.bottom = offset - 20 + "px";
+          e.target.style.filter = "";
+        } else {
+          e.target.style.bottom = offset + 20 + "px";
+          e.target.style.filter = "drop-shadow(0 10px 0  rgba(0, 0, 0, 0.7))";
         }
+        handCardsSelectedArr[i] = !handCardsSelectedArr[i];
       }
-
-      //卡片選取字串
-      for(let i=0 ; i<13 ; i++){
-        if(handCardsSelectedArr[i])
-          cardSelectStr += cards[userCards[i]] + " ";
-      }
-      cardSelectStr = cardSelectStr.slice(0,-1);
-      handCardState(cardSelectStr);
     }
 
+    //卡片選取字串
+    for (let i = 0; i < 13; i++) {
+      if (handCardsSelectedArr[i])
+        cardSelectStr += cards[userCards[i]] + " ";
+    }
+    cardSelectStr = cardSelectStr.slice(0, -1);
+    handCardState(cardSelectStr);
+  }
+
   //加入卡牌點擊事件
-  for(let hCI of handCardsImg){
+  for (let hCI of handCardsImg) {
     hCI.addEventListener("click", cardSelected);
   }
 }
 
 //顯示當前選牌狀態
-function showSelectedState(){
-   // handState.innerHTML = handCardState(cardSelectStr);
- }
+function showSelectedState() {
+  // handState.innerHTML = handCardState(cardSelectStr);
+}
 
 //卡牌圖片=>出牌提示
-function handCardState(cardSelectStr){
-  if(nowPlay == userIndex){
-    let cardSelectArr = cardSelectStr.split(" ");
+function handCardState(cardSelectStr) {
+  if (nowPlay == userIndex) {
+    cardSelectArr = cardSelectStr.split(" ");
     let cTStr = cardType(cardSelectArr);
 
     //轉換顯示花色及JQK
-    cardSelectStr=cardSelectStr.replace(/c/g,'♣');
-    cardSelectStr=cardSelectStr.replace(/d/g,'♦');
-    cardSelectStr=cardSelectStr.replace(/h/g,'♥');
-    cardSelectStr=cardSelectStr.replace(/s/g,'♠');
-    cardSelectStr=cardSelectStr.replace(/11/g,'J');
-    cardSelectStr=cardSelectStr.replace(/12/g,'Q');
-    cardSelectStr=cardSelectStr.replace(/13/g,'K');
+    cardSelectStr = cardSelectStr.replace(/c/g, '♣');
+    cardSelectStr = cardSelectStr.replace(/d/g, '♦');
+    cardSelectStr = cardSelectStr.replace(/h/g, '♥');
+    cardSelectStr = cardSelectStr.replace(/s/g, '♠');
+    cardSelectStr = cardSelectStr.replace(/11/g, 'J');
+    cardSelectStr = cardSelectStr.replace(/12/g, 'Q');
+    cardSelectStr = cardSelectStr.replace(/13/g, 'K');
 
     //手牌選取狀態顯示
-    if(cardSelectStr != ""){
-      if(cTStr!=""){
+    if (cardSelectStr != "") {
+      if (cTStr != "") {
         isCardType = true;
-        handState.innerHTML = "選取卡牌："+cTStr;
-      }else{
+        handState.innerHTML = "選取卡牌：" + cTStr;
+      } else {
         isCardType = false;
         handState.innerHTML = "";
       }
-    }else{ 
+    } else {
       isCardType = false;
       handState.innerHTML = "請點選卡牌";
     }
@@ -501,25 +503,25 @@ function handCardState(cardSelectStr){
 }
 
 //出牌過牌
-function passOrPlay(){
-  if(isPass || isCardType){
-    get(child(dbRef, 'rooms/'+userRoom+'/nowPlay')).then((snapshot) => {
+function passOrPlay() {
+  if (isPass || isCardType) {
+    get(child(dbRef, 'rooms/' + userRoom + '/nowPlay')).then((snapshot) => {
       var np = snapshot.val();
-      if(np<3)np++;
+      if (np < 3) np++;
       else np = 0;
       const updates = {};
-      updates[ 'rooms/'+userRoom+'/nowPlay'] = np;
-      update(ref(db),updates);
+      updates['rooms/' + userRoom + '/nowPlay'] = np;
+      update(ref(db), updates);
     });
     handState.innerHTML = "";
     playCards();
-  }else{
+  } else {
     handState.innerHTML = "錯誤的出牌!";
   }
 
 }
 //辨別出牌牌型
-function cardType(cSArr){
+function cardType(cSArr) {
   var cTSArr = ["單張", "對子", "順子", "葫蘆", "鐵支", "同花順"];
   var cTBArr = [];
   var cSSArr = []; //花色
@@ -529,34 +531,45 @@ function cardType(cSArr){
   cSArr.forEach(c => cSSArr.push(c[0]));
   cSArr.forEach(c => cSNArr.push(c.substr(1)));
   cTBArr = [
-  isSingle     (cSArr, cSSArr, cSNArr),
-  isPair       (cSArr, cSSArr, cSNArr),
-  isStraight   (cSArr, cSSArr, cSNArr),
-  isFullHouse  (cSArr, cSSArr, cSNArr),
-  isFourOfaKind(cSArr, cSSArr, cSNArr),
-  isFlush      (cSArr, cSSArr, cSNArr)
+    isSingle(cSArr, cSSArr, cSNArr),
+    isPair(cSArr, cSSArr, cSNArr),
+    isStraight(cSArr, cSSArr, cSNArr),
+    isFullHouse(cSArr, cSSArr, cSNArr),
+    isFourOfaKind(cSArr, cSSArr, cSNArr),
+    isFlush(cSArr, cSSArr, cSNArr)
   ];
-  if(cTBArr[5])cTBArr[2]=false;
-  for(let i=0 ; i<6; i++){
-    if(cTBArr[i])cTString += cTSArr[i];
+  if (cTBArr[5]) cTBArr[2] = false;
+  for (let i = 0; i < 6; i++) {
+    if (cTBArr[i]) cTString += cTSArr[i];
   }
-  console.log(cSSArr+":"+cSNArr);
+  console.log(cSSArr + ":" + cSNArr);
   return cTString;
 }
 //出牌
-function playCards(){
+function playCards() {
   //卡片選取字串
-  for(let i=0 ; i<13 ; i++){
-    if(handCardsSelectedArr[i]){
-      handCards[i].hidden =true;
+  for (let i = 0; i < 13; i++) {
+    if (handCardsSelectedArr[i]) {
+      handCards[i].hidden = true;
       handCardsSelectedArr[i] = false;
     }
   }
+
+
+  //將卡牌顯示於牌桌上
+  for (var i = 0; i < cardSelectArr.length; i++) {
+    var c = document.createElement('img');
+    c.src = "/cards/" + cardSelectArr[i] + ".png";
+    c.style.height = "100%";
+    playCardsArea.appendChild(c);
+  }
+  // playCardsArea.innerHTML = cardSelectStr;
+
   cardSelectStr = "";
 }
 
 //還原初始變數
-function recoveryVar(){
+function recoveryVar() {
   // isCardType = false;
 }
 //YatesShuffle演算法
