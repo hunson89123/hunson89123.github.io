@@ -561,6 +561,7 @@ function playCards() {
     var c = document.createElement('img');
     c.src = "./cards/" + cardSelectArr[i] + ".png";
     c.style.height = "50%";
+    if (i > 0) c.style.marginLeft = "-50px"
     playCardsArea.appendChild(c);
   }
   // playCardsArea.innerHTML = cardSelectStr;
