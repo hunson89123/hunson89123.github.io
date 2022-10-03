@@ -559,7 +559,7 @@ function playCards() {
   //將卡牌顯示於牌桌上
   for (var i = 0; i < cardSelectArr.length; i++) {
     var c = document.createElement('img');
-    c.src = "/cards/" + cardSelectArr[i] + ".png";
+    c.src = "./cards/" + cardSelectArr[i] + ".png";
     c.style.height = "100%";
     playCardsArea.appendChild(c);
   }
