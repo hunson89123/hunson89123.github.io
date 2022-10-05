@@ -575,7 +575,7 @@ function showTableCards() {
   get(child(dbRef, 'rooms/' + userRoom + '/tableCards')).then((snapshot) => {
     cardSelectArr = snapshot.val();
   });
-  playerDataCards[0].innerHTML = cardSelectArr;
+  // playerData[0].innerHTML = cardSelectArr;
   if (cardSelectArr > 0 && cardSelectArr[0] != "") {
     for (var i = 0; i < cardSelectArr.length; i++) {
       var c = document.createElement('img');
