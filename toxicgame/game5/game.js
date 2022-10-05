@@ -109,6 +109,8 @@ function initGameEle() {
     isPass = false;
     passOrPlay();
   };
+
+  showTableCards();
 }
 
 //查詢遊戲資訊(玩家人數|遊戲房間)
@@ -367,7 +369,6 @@ function inGame() {
 function playerDataCards() {
   onValue(ref(db, 'rooms/' + userRoom + '/nowPlay'), (snapshot) => {
     nowPlay = snapshot.val();
-    showTableCards();
     if (nowPlay !== "") {
       playerData.forEach(i => i.style.animation = "");
       playerData.forEach(i => i.style.borderColor = "white");
@@ -570,21 +571,25 @@ function playCards() {
 
 //將卡牌顯示於牌桌上
 function showTableCards() {
+  console.log(userRoom);
 
-  playCardsArea.innerHTML = "";
-  get(child(dbRef, 'rooms/' + userRoom + '/tableCards')).then((snapshot) => {
+
+  onValue(ref(db, 'rooms/' + userRoom + '/tableCards'), (snapshot) => {
     cardSelectArr = snapshot.val();
-  });
-  // playerData[0].innerHTML = cardSelectArr;
-  if (cardSelectArr > 0 && cardSelectArr[0] != "") {
-    for (var i = 0; i < cardSelectArr.length; i++) {
-      var c = document.createElement('img');
-      c.src = "./cards/" + cardSelectArr[i] + ".png";
-      c.style.height = "50%";
-      if (i > 0) c.style.marginLeft = "-50px"
-      playCardsArea.appendChild(c);
+    console.log(snapshot.val());
+    playCardsArea.innerHTML = "";
+
+    if (cardSelectArr.length > 0 && cardSelectArr[0] != "") {
+      console.log('fuck');
+      for (var i = 0; i < cardSelectArr.length; i++) {
+        var c = document.createElement('img');
+        c.src = "./cards/" + cardSelectArr[i] + ".png";
+        c.style.height = "50%";
+        if (i > 0) c.style.marginLeft = "-50px"
+        playCardsArea.appendChild(c);
+      }
     }
-  }
+  });
 }
 //還原初始變數
 function recoveryVar() {
