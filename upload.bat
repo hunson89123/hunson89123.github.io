@@ -1,3 +1,3 @@
 git add --all
-git commit -m "some change..."
+git commit -m "%date% %time%"
 git push -u origin master
