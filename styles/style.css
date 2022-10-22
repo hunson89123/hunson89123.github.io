@@ -1,8 +1,10 @@
-html,body {
-  height: 100%;
-  margin: 0 auto;
-  background: #08192D;
+html,
+body {
+  background: #08192D !important;
 }
+
+
+/* 
 
 .div {
   margin: 0 auto;
@@ -13,33 +15,37 @@ html,body {
   transform: translate(-50%, -50%)
 }
 
-.div p{
+.div a {
+  margin: 0 auto;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 2em;
+  font-style: bold;
+} */
+
+
+.title {
   line-height: 1em;
   font-family: 'Noto Serif TC', serif;
   font-size: 4em;
   font-style: bold;
+  color: white;
+  text-align: center;
+  width: 100%;
 }
 
-.div a{
-  margin: 0 auto;
-  /*font-family: Microsoft JhengHei;*/
-  font-family: 'Noto Serif TC', serif;
-  font-size: 2em;
-  font-style: bold;
-}
-
-@media screen and (max-width: 600px){
-  .div p{
+/* 
+@media screen and (max-width: 600px) {
+  .div p {
     line-height: 1em;
     font-family: 'Noto Serif TC', serif;
     font-size: 3em;
     font-style: bold;
   }
 
-  .div a{
+  .div a {
     margin: 0 auto;
     font-family: 'Noto Serif TC', serif;
     font-size: 1.5em;
     font-style: bold;
   }
-}
+} */
