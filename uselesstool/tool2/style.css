@@ -8,8 +8,6 @@ body {
   /* background:#08192d; */
 }
 
-.div {}
-
 .div p {
   line-height: 1em;
   font-family: 'Noto Serif TC', serif;
@@ -26,13 +24,22 @@ body {
   color: #000000;
   background: aqua;
   display: inline-block;
-  margin: 20px;
 }
 
-.box {
-  width: 800px;
-  vertical-align: middle;
+#roomTitle {
+  color: #000000;
+  background-color: orange;
   text-align: center;
+  font-size: 2em;
+  line-height: 2em;
+}
+
+#members {
+  color: #000000;
+  background-color: mediumseagreen;
+  text-align: left;
+  white-space: pre-wrap;
+  width: 50vw;
 }
 
 h1 {

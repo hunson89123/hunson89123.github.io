@@ -9,12 +9,13 @@
 </head>
 
 <body>
-  <div class="div">
-    <!-- <form> -->
+  <div>
     <input type="file" id="myFile" name="filename">
-    <input type="submit" onclick="gogo()">
-    <!-- </form> -->
-    <pre id="result" class="card"></pre>
+    <pre id="result" class="card">←點擊"選擇檔案"選擇LINE聊天紀錄txt檔</pre>
+    <button id="submit" type="button" onclick="submitFile()" disabled>分析聊天!</button>
+    <br>
+    <div id="roomTitle">--</div>
+    <div id="members">--</div>
   </div>
   <script src="script.js"></script>
 </body>
