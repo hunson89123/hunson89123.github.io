@@ -36,9 +36,10 @@ body {
 
 #members {
   color: #000000;
-  background-color: mediumseagreen;
-  text-align: left;
+  background-color: turquoise;
+  text-align: center;
   white-space: pre-wrap;
+  font-size: 1.5em;
   width: 50vw;
 }
 

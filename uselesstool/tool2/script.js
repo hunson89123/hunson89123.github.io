@@ -41,6 +41,6 @@ function submitFile() {
     // members.textContent += content[i].split('\t')[1] + '\n'
 
   }
-  members.textContent = memberList;
+  members.textContent = '群組成員共 ' + memberList.length + ' 位:\n' + memberList;
   console.log(memberList)
 }
