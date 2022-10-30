@@ -23,7 +23,7 @@ Array.from(weekBtn).forEach((element, index) => {
         btnStatSwitch(currentWeek);
     });
 
-    var reportWeb = new File([], "/reports/" + element.textContent);
+    var reportWeb = new File([], "./reports/" + element.textContent + "/index.html");
     if (reportWeb.size != 0)
         btn.classList.remove("disabled")
 });
@@ -35,7 +35,7 @@ function btnStatSwitch(currentBtn) {
     });
     if (element.textContent != "上一週" && element.textContent != "下一週") {
         element.classList.add("active")
-        reportArea.src = "/reports/" + element.textContent
+        reportArea.src = "./reports/" + element.textContent + "/index.html"
     }
 }
 
