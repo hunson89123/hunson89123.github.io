@@ -1,41 +1,26 @@
-const weekBtn = document.getElementsByClassName('page-link');
-const weekName = 'W5'
-const lastWeek = weekBtn.length - 2;
-const reportArea = document.getElementById('reportArea');
-let currentWeek = 1;
-Array.from(weekBtn).forEach((element, index) => {
-
-    element.addEventListener("click", function () {
-
-        if (index == 0) {
-            if (currentWeek > 1) currentWeek--;
-        } else if (index == weekBtn.length - 1) {
-            if (currentWeek < weekBtn.length) currentWeek++;
-        } else {
-            currentWeek = index;
-        }
-
-        if (currentWeek == 1) weekBtn[0].classList.add("disabled");
-        else weekBtn[0].classList.remove("disabled");
-        if (currentWeek == lastWeek) weekBtn[lastWeek + 1].classList.add("disabled");
-        else weekBtn[lastWeek + 1].classList.remove("disabled");
-
-        btnStatSwitch(currentWeek);
-    });
-
-    var reportWeb = new File([], "./reports/" + element.textContent + "/index.html");
-    if (reportWeb.size != 0)
-        btn.classList.remove("disabled")
-});
-
-function btnStatSwitch(currentBtn) {
-    const element = weekBtn[currentBtn];
-    Array.from(weekBtn).forEach(btn => {
-        btn.classList.remove("active")
-    });
-    if (element.textContent != "上一週" && element.textContent != "下一週") {
-        element.classList.add("active")
-        reportArea.src = "./reports/" + element.textContent + "/index.html"
-    }
+const showSelect = document.getElementById('select');
+const showResult = document.getElementById('result');
+var point = 0;
+var totle = 0;
+function selected(btn) {
+    if (btn.id == 'A') point = 20;
+    else if (btn.id == 'J' || btn.id == 'Q' || btn.id == 'K') point = 10;
+    else point = parseInt(btn.id);
+    showSelect.innerHTML = "<span class='text-danger'>" + btn.id + "</span> 加" + point + "分";
+}
+function plus() {
+    totle += point;
+    point = 0;
+    update();
 }
 
+function clr() {
+    point = 0;
+    totle = 0;
+    update();
+}
+
+function update() {
+    showResult.innerHTML = "<b style='font-size: 100px'>" + totle + "</b>";
+    showSelect.innerHTML = "-";
+}

@@ -19,61 +19,78 @@
 
 <body class="container bg-dark">
     <div class="d-flex flex-column h-100">
-        <div class="text-warning d-flex justify-content-center align-items-center display-1 h-75" id="res">
-            <b>0</b>
+        <div class="text-warning d-flex justify-content-center align-items-center display-1 h-75" id="result">
+            <b style="font-size: 100px">0</b>
         </div>
         <div class="text-warning d-flex justify-content-center align-items-center h-25" id="enterArea">
-            <div class="    ">
+            <div>
+                <div class="d-flex">
+                    <div id="select" class="text-center w-100">-</div>
+                </div>
+                <div class="d-flex">
+                    <button onclick="clr()" class="btn btn-danger w-100 m-2">C</button>
+                </div>
                 <table class="table table-borderless">
                     <tr>
                         <td>
-                            <button style="width: 100%" class="btn btn btn-lg btn-outline-danger">A</button>
+                            <button id="A" style="width: 100%" onclick="selected(this)"
+                                class="btn btn btn-outline-light text-danger">A</button>
                         </td>
                         <td>
-                            <div style="width: 100%" class="btn btn-lg btn-outline-danger">2</div>
+                            <div id="2" style="width: 100%" onclick="selected(this)"
+                                class="btn btn-outline-light text-danger">2</div>
                         </td>
                         <td>
-                            <div style="width: 100%" class="btn btn-lg btn-outline-danger">3</div>
+                            <div id="3" style="width: 100%" onclick="selected(this)"
+                                class="btn btn-outline-light text-danger">3</div>
                         </td>
                         <td>
-                            <div style="width: 100%" class="btn btn-lg btn-outline-danger">4</div>
+                            <div id="4" style="width: 100%" onclick="selected(this)"
+                                class="btn btn-outline-light text-danger">4</div>
                         </td>
                         <td>
-                            <div style="width: 100%" class="btn btn-lg btn-outline-danger">5</div>
+                            <div id="5" style="width: 100%" onclick="selected(this)"
+                                class="btn btn-outline-light text-danger">5</div>
                         </td>
 
                         <td>
-                            <div style="width: 100%" class="btn btn-lg btn-outline-danger">6</div>
+                            <div id="6" style="width: 100%" onclick="selected(this)"
+                                class="btn btn-outline-light text-danger">6</div>
                         </td>
                         <td>
-                            <div style="width: 100%" class="btn btn-lg btn-outline-danger">7</div>
+                            <div id="7" style="width: 100%" onclick="selected(this)"
+                                class="btn btn-outline-light text-danger">7</div>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <div style="width: 100%" class="btn btn-lg btn-outline-danger">8</div>
+                            <div id="8" style="width: 100%" onclick="selected(this)"
+                                class="btn btn-outline-light text-danger">8</div>
                         </td>
                         <td>
-                            <div style="width: 100%" class="btn btn-lg btn-outline-danger">9</div>
+                            <div id="9" style="width: 100%" onclick="selected(this)"
+                                class="btn btn-outline-light text-danger">9</div>
                         </td>
                         <td>
-                            <div style="width: 100%" class="btn btn-lg btn-outline-danger">10</div>
+                            <div id="10" style="width: 100%" onclick="selected(this)"
+                                class="btn btn-outline-light text-danger">10</div>
                         </td>
                         <td>
-                            <div style="width: 100%" class="btn btn-lg btn-outline-danger">J</div>
+                            <div id="J" style="width: 100%" onclick="selected(this)"
+                                class="btn btn-outline-light text-danger">J</div>
                         </td>
                         <td>
-                            <div style="width: 100%" class="btn btn-lg btn-outline-danger">Q</div>
+                            <div id="Q" style="width: 100%" onclick="selected(this)"
+                                class="btn btn-outline-light text-danger">Q</div>
                         </td>
                         <td>
-                            <div style="width: 100%" class="btn btn-lg btn-outline-danger">K</div>
+                            <div id="K" style="width: 100%" onclick="selected(this)"
+                                class="btn btn-outline-light text-danger">K</div>
                         </td>
                         <td rowspan="2">
-                            <div style="width: 100%" class="btn btn-lg btn-success">+</div>
+                            <div style="width: 100%" onclick="plus()" class="btn btn-success">+</div>
                         </td>
                     </tr>
-
-
                 </table>
             </div>
         </div>
