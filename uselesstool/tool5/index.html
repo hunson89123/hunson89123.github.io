@@ -22,24 +22,26 @@
 
         #num {
             position: relative;
-            width: 10vw;
+            width: 16vw;
             margin-top: 40vw;
-            margin-left: 35vw;
+            margin-left: 32vw;
             font-size: larger;
+            text-align: center;
         }
 
         #confirm {
-            width: 10vw;
-            margin-left: 35vw;
+            width: 16vw;
+            margin-left: 32vw;
         }
 
         .trapeziumN {
             position: absolute;
             margin-left: 15vw;
             width: 50vw;
-            border-top: 5vw solid rgb(63, 46, 4);
+            border-top: 8vw solid rgb(63, 46, 4);
             border-left: 25px solid transparent;
             border-right: 25px solid transparent;
+
         }
 
         .trapeziumE {
@@ -47,7 +49,7 @@
             margin-top: 15vw;
             right: 10vw;
             height: 50vw;
-            border-right: 5vw solid rgb(63, 46, 4);
+            border-right: 8vw solid rgb(63, 46, 4);
             border-top: 25px solid transparent;
             border-bottom: 25px solid transparent;
         }
@@ -57,7 +59,7 @@
             margin-top: 15vw;
             left: 10vw;
             height: 50vw;
-            border-left: 5vw solid rgb(63, 46, 4);
+            border-left: 8vw solid rgb(63, 46, 4);
             border-top: 25px solid transparent;
             border-bottom: 25px solid transparent;
         }
@@ -67,9 +69,18 @@
             margin-top: 75vw;
             margin-left: 15vw;
             width: 50vw;
-            border-bottom: 5vw solid rgb(63, 46, 4);
+            border-bottom: 8vw solid rgb(63, 46, 4);
             border-left: 25px solid transparent;
             border-right: 25px solid transparent;
+            color: aqua;
+        }
+
+        .dealer {
+            position: absolute;
+            margin-left: 20vw;
+            margin-top: 2vw;
+            color: red;
+            font-size: larger;
         }
     </style>
 </head>
@@ -77,10 +88,12 @@
 <body class="container bg-dark">
     <div class="d-flex flex-column h-100 justify-content-center align-items-center">
         <div id="table" class="div d-flex flex-column">
-            <div id="pN" class="trapeziumN"></div>
-            <div id="pE" class="trapeziumE"></div>
-            <div id="pW" class="trapeziumW"></div>
-            <div id="pS" class="trapeziumS"></div>
+            <div id="pN" class="trapeziumN">莊</div>
+            <div id="pE" class="trapeziumE">莊</div>
+            <div id="pW" class="trapeziumW">莊</div>
+            <div id="pS" class="trapeziumS">
+                <div class="dealer">莊</div>
+            </div>
             <input id="num" type="number" min="1" max="18"><br>
             <button id="confirm" class="btn btn-primary">計算</button>
         </div>
