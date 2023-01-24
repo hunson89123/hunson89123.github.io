@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+
+    <title>麻將工具</title>
+    <style>
+        body {
+            height: 100vh;
+        }
+
+        #table {
+            width: 80vw;
+            height: 80vw;
+        }
+
+        #num {
+            position: relative;
+            width: 10vw;
+            margin-top: 40vw;
+            margin-left: 35vw;
+            font-size: larger;
+        }
+
+        #confirm {
+            width: 10vw;
+            margin-left: 35vw;
+        }
+
+        .trapeziumN {
+            position: absolute;
+            margin-left: 15vw;
+            width: 50vw;
+            border-top: 5vw solid rgb(63, 46, 4);
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+        }
+
+        .trapeziumE {
+            position: absolute;
+            margin-top: 15vw;
+            right: 10vw;
+            height: 50vw;
+            border-right: 5vw solid rgb(63, 46, 4);
+            border-top: 25px solid transparent;
+            border-bottom: 25px solid transparent;
+        }
+
+        .trapeziumW {
+            position: absolute;
+            margin-top: 15vw;
+            left: 10vw;
+            height: 50vw;
+            border-left: 5vw solid rgb(63, 46, 4);
+            border-top: 25px solid transparent;
+            border-bottom: 25px solid transparent;
+        }
+
+        .trapeziumS {
+            position: absolute;
+            margin-top: 75vw;
+            margin-left: 15vw;
+            width: 50vw;
+            border-bottom: 5vw solid rgb(63, 46, 4);
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+        }
+    </style>
+</head>
+
+<body class="container bg-dark">
+    <div class="d-flex flex-column h-100 justify-content-center align-items-center">
+        <div id="table" class="div d-flex flex-column">
+            <div id="pN" class="trapeziumN"></div>
+            <div id="pE" class="trapeziumE"></div>
+            <div id="pW" class="trapeziumW"></div>
+            <div id="pS" class="trapeziumS"></div>
+            <input id="num" type="number" min="1" max="18"><br>
+            <button id="confirm" class="btn btn-primary">計算</button>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous">
+        </script>
+    <script src="script.js"></script>
+</body>
+
+</html>
