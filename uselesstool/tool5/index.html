@@ -23,7 +23,7 @@
         #num {
             position: relative;
             width: 16vw;
-            margin-top: 40vw;
+            margin-top: 35vw;
             margin-left: 32vw;
             font-size: larger;
             text-align: center;
@@ -32,6 +32,7 @@
         #confirm {
             width: 16vw;
             margin-left: 32vw;
+            font-size: 36px;
         }
 
         .trapeziumN {
@@ -86,13 +87,14 @@
 </head>
 
 <body class="container bg-dark">
-    <div class="d-flex flex-column h-100 justify-content-center align-items-center">
+    <div class="d-flex flex-column h-100 p-5 justify-content-top align-items-center">
         <div id="table" class="div d-flex flex-column">
+
             <div id="pN" class="trapeziumN click" onclick="sDealer(this)"></div>
             <div id="pE" class="trapeziumE click" onclick="sDealer(this)"></div>
             <div id="pW" class="trapeziumW click" onclick="sDealer(this)"></div>
             <div id="pS" class="trapeziumS click" onclick="sDealer(this)"></div>
-            <input id="num" type="number" min="1" max="18"><br>
+            <input id="num" type="number" min="1" max="18" onfocus="this.value=''"><br>
             <button id="confirm" class="btn btn-primary" onclick="calcu()">計算</button>
         </div>
     </div>

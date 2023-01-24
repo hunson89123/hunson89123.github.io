@@ -1,5 +1,6 @@
 const num = document.getElementById('num');
 const confirm = document.getElementById('confirm');
+const result = document.getElementById('result');
 const mArr = ['pN', 'pE', 'pS', 'pW'];
 const pOffColor = "rgb(63, 46, 4)";
 const pOnColor = "rgb(255, 200, 4";
@@ -11,12 +12,13 @@ var sPlayer = 0;
 var counting = false;
 var timer = 0;
 function calcu() {
-    if (!counting) {
-        number = parseInt(num.value);
+    number = parseInt(num.value);
+    if (!counting && number > 0) {
         num.innerHTML = number;
         timer = 0;
         sPlayer = 0;
         countingTimer();
+        confirm.innerHTML = "--";
     }
 }
 
@@ -32,6 +34,7 @@ function countingTimer() {
         } else {
             counting = false;
             confirm.disabled = false;
+            confirm.innerHTML = getResult(number);
             return;
         }
         countingTimer();
@@ -116,4 +119,23 @@ function clearColor() {
         if (i != dealer) setColor(cPlayer, pOffColor);
         else setColor(cPlayer, dOffColor);
     }
+}
+
+function getResult(n) {
+    var result = "";
+    switch (n % 4) {
+        case 0:
+            result = "下家";
+            break;
+        case 1:
+            result = "自己";
+            break;
+        case 2:
+            result = "上家";
+            break;
+        case 3:
+            result = "對家";
+            break;
+    }
+    return result;
 }
