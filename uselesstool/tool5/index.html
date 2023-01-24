@@ -49,6 +49,7 @@
             margin-top: 15vw;
             right: 10vw;
             height: 50vw;
+
             border-right: 8vw solid rgb(63, 46, 4);
             border-top: 25px solid transparent;
             border-bottom: 25px solid transparent;
@@ -72,15 +73,14 @@
             border-bottom: 8vw solid rgb(63, 46, 4);
             border-left: 25px solid transparent;
             border-right: 25px solid transparent;
-            color: aqua;
+        }
+
+        .click {
+            cursor: pointer;
         }
 
         .dealer {
-            position: absolute;
-            margin-left: 20vw;
-            margin-top: 2vw;
-            color: red;
-            font-size: larger;
+            border-color: brown;
         }
     </style>
 </head>
@@ -88,14 +88,12 @@
 <body class="container bg-dark">
     <div class="d-flex flex-column h-100 justify-content-center align-items-center">
         <div id="table" class="div d-flex flex-column">
-            <div id="pN" class="trapeziumN">莊</div>
-            <div id="pE" class="trapeziumE">莊</div>
-            <div id="pW" class="trapeziumW">莊</div>
-            <div id="pS" class="trapeziumS">
-                <div class="dealer">莊</div>
-            </div>
+            <div id="pN" class="trapeziumN click" onclick="sDealer(this)"></div>
+            <div id="pE" class="trapeziumE click" onclick="sDealer(this)"></div>
+            <div id="pW" class="trapeziumW click" onclick="sDealer(this)"></div>
+            <div id="pS" class="trapeziumS click" onclick="sDealer(this)"></div>
             <input id="num" type="number" min="1" max="18"><br>
-            <button id="confirm" class="btn btn-primary">計算</button>
+            <button id="confirm" class="btn btn-primary" onclick="calcu()">計算</button>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
