@@ -94,23 +94,25 @@ function getColor(m) {
 }
 
 function setDealer(m) {
-    switch (m.id) {
-        case mArr[0]:
-            dealer = 0;
-            break;
-        case mArr[1]:
-            dealer = 1;
-            break;
-        case mArr[2]:
-            dealer = 2;
-            break;
-        case mArr[3]:
-            dealer = 3;
-            break;
+    if (!counting) {
+        switch (m.id) {
+            case mArr[0]:
+                dealer = 0;
+                break;
+            case mArr[1]:
+                dealer = 1;
+                break;
+            case mArr[2]:
+                dealer = 2;
+                break;
+            case mArr[3]:
+                dealer = 3;
+                break;
+        }
+        clearColor(m);
+        setColor(m, dOnColor);
+        sPlayer = dealer;
     }
-    clearColor(m);
-    setColor(m, dOnColor);
-    sPlayer = dealer;
 }
 
 function clearColor() {
