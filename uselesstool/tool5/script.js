@@ -3,9 +3,11 @@ const confirm = document.getElementById('confirm');
 const result = document.getElementById('result');
 const mArr = ['pN', 'pE', 'pS', 'pW'];
 const pOffColor = "rgb(63, 46, 4)";
-const pOnColor = "rgb(255, 200, 4";
+const pOnColor = "rgb(255, 200, 4)";
 const dOffColor = "rgb(63, 23, 4)";
 const dOnColor = "rgb(255, 20, 4)"
+const pShadow = "drop-shadow(0px 0px 50px rgb(255, 200, 4))"
+const dShadow = "drop-shadow(0px 0px 50px rgb(255, 20, 4))"
 var number = 0;
 var dealer = 0;
 var sPlayer = 0;
@@ -50,6 +52,7 @@ function sDealer(m) {
 function lightOn(m) {
     clearColor();
     setColor(m, (getColor(m) == pOffColor || getColor(m) == dOnColor) ? pOnColor : dOnColor);
+    m.style.filter = (getColor(m) == pOffColor || getColor(m) == dOnColor) ? dShadow : pShadow;
 }
 
 function lightOff(m) {
@@ -111,6 +114,7 @@ function setDealer(m) {
         }
         clearColor(m);
         setColor(m, dOnColor);
+        m.style.filter = dShadow;
         sPlayer = dealer;
     }
 }
@@ -118,8 +122,11 @@ function setDealer(m) {
 function clearColor() {
     for (var i = 0; i < 4; i++) {
         var cPlayer = document.getElementById(mArr[i]);
-        if (i != dealer) setColor(cPlayer, pOffColor);
-        else setColor(cPlayer, dOffColor);
+        if (i != dealer)
+            setColor(cPlayer, pOffColor);
+        else
+            setColor(cPlayer, dOffColor);
+        cPlayer.style.filter = "";
     }
 }
 
