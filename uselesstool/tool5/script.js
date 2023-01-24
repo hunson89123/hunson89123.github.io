@@ -24,16 +24,18 @@ function countingTimer() {
     timer = setTimeout(function () {
         if (sPlayer < number) {
             counting = true;
-            sPlayer++;
+            var cPlayer = document.getElementById(mArr[3 - ((sPlayer + (3 - dealer)) % 4)]);
+            lightOn(cPlayer);
             num.value = number - sPlayer;
+            confirm.disabled = true;
+            sPlayer++;
         } else {
             counting = false;
+            confirm.disabled = false;
             return;
         }
-        var cPlayer = document.getElementById(mArr[3 - sPlayer % 4]);
-        lightOn(cPlayer);
         countingTimer();
-    }, sPlayer * 25)
+    }, sPlayer * 10)
 
 }
 function sDealer(m) {
@@ -44,7 +46,7 @@ function sDealer(m) {
 
 function lightOn(m) {
     clearColor();
-    setColor(m, (getColor(m) == pOffColor) ? pOnColor : dOnColor);
+    setColor(m, (getColor(m) == pOffColor || getColor(m) == dOnColor) ? pOnColor : dOnColor);
 }
 
 function lightOff(m) {
@@ -89,8 +91,6 @@ function getColor(m) {
 }
 
 function setDealer(m) {
-    clearColor(m);
-    setColor(m, dOnColor);
     switch (m.id) {
         case mArr[0]:
             dealer = 0;
@@ -105,12 +105,15 @@ function setDealer(m) {
             dealer = 3;
             break;
     }
-    // sPlayer = dealer;
+    clearColor(m);
+    setColor(m, dOnColor);
+    sPlayer = dealer;
 }
 
 function clearColor() {
     for (var i = 0; i < 4; i++) {
         var cPlayer = document.getElementById(mArr[i]);
-        setColor(cPlayer, pOffColor);
+        if (i != dealer) setColor(cPlayer, pOffColor);
+        else setColor(cPlayer, dOffColor);
     }
 }
