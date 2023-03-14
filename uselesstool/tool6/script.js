@@ -1,19 +1,20 @@
 const sheetId = '1X9JMLp7ga207v7mmqCY91eak0lnRl8OYYydPJLb_sdk';
 const base = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?`;
-const sheetName = 'dataEat';
+const sheetName = ['dataEat', 'dataCurriculum'];
 const query = encodeURIComponent('Select *')
-const url = `${base}&sheet=${sheetName}&tq=${query}`
+const url = `${base}&sheet=${sheetName[0]}&tq=${query}`
 const data = []
 document.addEventListener('DOMContentLoaded', init)
 const output_h = document.getElementById('output_h')
 const output_b = document.getElementById('output_b')
+const dropdownMenu = document.getElementById('dm')
 function init() {
     fetch(url)
         .then(res => res.text())
         .then(rep => {
             //Remove additional text and extract only JSON:
             const jsonData = JSON.parse(rep.substring(47).slice(0, -2));
-            console.log(rep)
+            console.log(jsonData)
             const colz = [];
             const tr = document.createElement('tr');
             //Extract column labels
@@ -24,6 +25,7 @@ function init() {
                     const th = document.createElement('th');
                     th.innerText = column;
                     tr.appendChild(th);
+                    console.log(column)
                 }
             })
             output_h.appendChild(tr);

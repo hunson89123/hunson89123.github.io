@@ -14,9 +14,23 @@
     <title>麻將工具</title>
 </head>
 
-<body class="container bg-dark d-flex flex-column justify-content-center align-items-center">
-    <h1 class="text-center mt-5 text-light "><b>吃啥呢表單管理</b></h1>
-    <table id="output" class="table table-dark">
+<body class="container bg-dark d-flex flex-column flex-wrap justify-content-center align-items-center">
+    <h1 class="text-center mt-5 text-light "><b>吃啥呢表單檢視器</b></h1>
+    <div class="d-flex justify-content-center align-items-center">
+        <span class="text-light fs-5">請選擇資料表：</span>
+        <div name="dd" class="dropdown">
+            <button class="btn btn-outline-light dropdown-toggle" type="button" id="dropdownMenuButton1"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                dataEat
+            </button>
+            <ul id="dm" class="dropdown-menu">
+                <!-- <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li> -->
+            </ul>
+        </div>
+    </div>
+    <table id="output" class="table table-dark table-hover">
         <thead id="output_h"></thead>
         <tbody id="output_b"></tbody>
     </table>
