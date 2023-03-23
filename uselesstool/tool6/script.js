@@ -1,4 +1,4 @@
-const sheetId = '1X9JMLp7ga207v7mmqCY91eak0lnRl8OYYydPJLb_sdk';
+const sheetId = '1f7uWyeLwEJvDdf0yP8hrHo63Nlx9d2rOfRdHwP6scF4';
 const base = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?`;
 const sheetName = ['dataEat', 'dataCurriculum'];
 const query = encodeURIComponent('Select *')
