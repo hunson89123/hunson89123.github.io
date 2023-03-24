@@ -14,7 +14,7 @@ function init() {
         .then(rep => {
             //Remove additional text and extract only JSON:
             const jsonData = JSON.parse(rep.substring(47).slice(0, -2));
-            console.log(jsonData)
+            // console.log(jsonData)
             const colz = [];
             const tr = document.createElement('tr');
             //Extract column labels
@@ -25,7 +25,7 @@ function init() {
                     const th = document.createElement('th');
                     th.innerText = column;
                     tr.appendChild(th);
-                    console.log(column)
+                    // console.log(column)
                 }
             })
             output_h.appendChild(tr);
@@ -33,7 +33,7 @@ function init() {
             jsonData.table.rows.forEach((rowData) => {
                 const row = {};
                 colz.forEach((ele, ind) => {
-                    row[ele] = (rowData.c[ind] != null) ? rowData.c[ind].v : '';
+                    row[ele] = (rowData.c[ind] != null) ? rowData.c[ind].f : '';
                 })
                 data.push(row);
             })
@@ -53,4 +53,11 @@ function processRows(json) {
         })
         output_b.appendChild(tr);
     })
+}
+
+function GoogleDate(JSdate) {
+    var D = new Date(JSdate);
+    // console.log(D);
+    var Null = new Date(Date.UTC(1899, 11, 30, 0, 0, 0, 0)); // the starting value for Google
+    return ((D.getTime() - Null.getTime()) / 60000 - D.getTimezoneOffset()) / 1440;
 }
