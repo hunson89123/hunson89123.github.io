@@ -1,6 +1,6 @@
 const sheetId = '1f7uWyeLwEJvDdf0yP8hrHo63Nlx9d2rOfRdHwP6scF4';
 const base = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?`;
-const sheetName = ['dataEat', 'dataCurriculum'];
+const sheetName = ['2023/03', '2023/04'];
 const query = encodeURIComponent('Select *')
 const url = `${base}&sheet=${sheetName[0]}&tq=${query}`
 const data = []
@@ -8,13 +8,15 @@ document.addEventListener('DOMContentLoaded', init)
 const output_h = document.getElementById('output_h')
 const output_b = document.getElementById('output_b')
 const dropdownMenu = document.getElementById('dm')
+const total_t = document.getElementById('total_t')
+const total_m = document.getElementById('total_m')
 function init() {
     fetch(url)
         .then(res => res.text())
         .then(rep => {
             //Remove additional text and extract only JSON:
             const jsonData = JSON.parse(rep.substring(47).slice(0, -2));
-            // console.log(jsonData)
+            console.log(jsonData)
             const colz = [];
             const tr = document.createElement('tr');
             //Extract column labels
@@ -38,6 +40,8 @@ function init() {
                 data.push(row);
             })
             processRows(data);
+            total_t.innerHTML = jsonData.table.rows[1].c[4].f
+            total_m.innerHTML = jsonData.table.rows[1].c[5].f
         })
 }
 
