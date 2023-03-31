@@ -15,22 +15,15 @@
 </head>
 
 <body class="container bg-dark d-flex flex-column flex-wrap justify-content-center align-items-center">
-    <h1 class="text-center mt-5 text-light "><b>打工薪資紀錄簿</b></h1>
+    <span class="d-flex align-items-center h2 text-center mt-5 text-light ">
+        <button class="btn btn-light btn-lg dropdown-toggle" type="button" id="dropdownMenuButton1"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="h2"><b>三月</b></span>
+        </button><b class="ms-2">打工薪資紀錄簿</b>
+    </span>
     <div class="d-flex justify-content-center align-items-center">
-        <p class="text-light me-5">總時數：<span id="total_t"></span>小時</p>
-        <p class="text-light">總薪資：<span id="total_m"></span></p>
-        <!-- <span class="text-light fs-5">請選擇資料表：</span> -->
-        <!-- <div name="dd" class="dropdown">
-            <button class="btn btn-outline-light dropdown-toggle" type="button" id="dropdownMenuButton1"
-                data-bs-toggle="dropdown" aria-expanded="false">
-                dataEat
-            </button>
-            <ul id="dm" class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-            </ul>
-        </div> -->
+        <p class="text-light me-5">總時數：<span><b class="text-warning h4" id="total_t"></b></span>小時</p>
+        <p class="text-light">總薪資：<span><b class="text-warning h4" id="total_m"></b></span></p>
     </div>
     <table id="output" class="table table-dark table-hover">
         <thead id="output_h"></thead>
