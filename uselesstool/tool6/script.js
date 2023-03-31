@@ -10,6 +10,11 @@ const output_b = document.getElementById('output_b')
 const dropdownMenu = document.getElementById('dm')
 const total_t = document.getElementById('total_t')
 const total_m = document.getElementById('total_m')
+const total_d = document.getElementById('total_d')
+const month = document.getElementById('month')
+const start_y = 2023
+const start_m = 3
+const today = new Date();
 function init() {
     fetch(url)
         .then(res => res.text())
@@ -41,8 +46,10 @@ function init() {
             })
             processRows(data);
             total_t.innerHTML = jsonData.table.rows[1].c[4].f
-            total_m.innerHTML = jsonData.table.rows[1].c[5].f
+            total_m.innerHTML = jsonData.table.rows[4].c[4].f
+            total_d.innerHTML = jsonData.table.rows[7].c[4].f
         })
+    month.innerHTML = "<b>" + sheetName[today.getFullYear() - start_y + today.getMonth() - start_m + 1] + "</b>"
 }
 
 function processRows(json) {
@@ -57,11 +64,4 @@ function processRows(json) {
         })
         output_b.appendChild(tr);
     })
-}
-
-function GoogleDate(JSdate) {
-    var D = new Date(JSdate);
-    // console.log(D);
-    var Null = new Date(Date.UTC(1899, 11, 30, 0, 0, 0, 0)); // the starting value for Google
-    return ((D.getTime() - Null.getTime()) / 60000 - D.getTimezoneOffset()) / 1440;
 }

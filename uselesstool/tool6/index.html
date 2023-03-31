@@ -16,14 +16,15 @@
 
 <body class="container bg-dark d-flex flex-column flex-wrap justify-content-center align-items-center">
     <span class="d-flex align-items-center h2 text-center mt-5 text-light ">
-        <button class="btn btn-light btn-lg dropdown-toggle" type="button" id="dropdownMenuButton1"
+        <button class="btn btn-outline-light btn-lg dropdown-toggle" type="button" id="dropdownMenuButton1"
             data-bs-toggle="dropdown" aria-expanded="false">
-            <span class="h2"><b>三月</b></span>
+            <span class="h2" id="month"><b>三月</b></span>
         </button><b class="ms-2">打工薪資紀錄簿</b>
     </span>
     <div class="d-flex justify-content-center align-items-center">
-        <p class="text-light me-5">總時數：<span><b class="text-warning h4" id="total_t"></b></span>小時</p>
-        <p class="text-light">總薪資：<span><b class="text-warning h4" id="total_m"></b></span></p>
+        <p class="text-light">總時數：<span><b class="text-warning h4" id="total_t"></b></span>小時</p>
+        <p class="text-light ms-3">總薪資：<span><b class="text-warning h4" id="total_m"></b></span>元</p>
+        <p class="text-light ms-3">總天數：<span><b class="text-warning h4" id="total_d"></b></span>天</p>
     </div>
     <table id="output" class="table table-dark table-hover">
         <thead id="output_h"></thead>
