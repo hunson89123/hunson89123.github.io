@@ -1,10 +1,15 @@
 const sheetId = '1f7uWyeLwEJvDdf0yP8hrHo63Nlx9d2rOfRdHwP6scF4';
 const base = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?`;
-const sheetName = ['2023/03', '2023/04'];
+const sheetName = ['2023/03', '2023/04', '2023/05', '2023/06', '2023/07', '2023/08', '2023/09', '2023/10', '2023/11', '2023/12', '2024/01'];
 const query = encodeURIComponent('Select *')
-const url = `${base}&sheet=${sheetName[0]}&tq=${query}`
+const start_y = 2023
+const start_m = 3
+const today = new Date();
+var month_index = today.getFullYear() - start_y + today.getMonth() - start_m + 1
+var url = `${base}&sheet=${sheetName[month_index]}&tq=${query}`
 const data = []
 document.addEventListener('DOMContentLoaded', init)
+const table = document.getElementById('output')
 const output_h = document.getElementById('output_h')
 const output_b = document.getElementById('output_b')
 const dropdownMenu = document.getElementById('dm')
@@ -12,9 +17,8 @@ const total_t = document.getElementById('total_t')
 const total_m = document.getElementById('total_m')
 const total_d = document.getElementById('total_d')
 const month = document.getElementById('month')
-const start_y = 2023
-const start_m = 3
-const today = new Date();
+const dd_month = document.getElementById('dd_month')
+
 function init() {
     fetch(url)
         .then(res => res.text())
@@ -49,7 +53,10 @@ function init() {
             total_m.innerHTML = jsonData.table.rows[4].c[4].f
             total_d.innerHTML = jsonData.table.rows[7].c[4].f
         })
-    month.innerHTML = "<b>" + sheetName[today.getFullYear() - start_y + today.getMonth() - start_m + 1] + "</b>"
+    month.innerHTML = "<b>" + sheetName[month_index] + "</b>"
+    for (var i = 0; i < month_index + 1; i++) {
+        dd_month.innerHTML += '<li><a class="dropdown-item" href="#" id="' + i + '" onClick="ddOnChange(this.id)">' + sheetName[i] + '</a></li>'
+    }
 }
 
 function processRows(json) {
@@ -64,4 +71,20 @@ function processRows(json) {
         })
         output_b.appendChild(tr);
     })
+}
+
+function ddOnChange(ddi) {
+    console.log(month_index + "," + ddi)
+    month.innerHTML = "<b>" + sheetName[ddi] + "</b>";
+    month_index = ddi
+    url = base + "&sheet=" + sheetName[ddi] + "&tq=" + query;
+    clearData();
+    init();
+}
+
+function clearData() {
+    console.log('clear!')
+    output_h.innerHTML = "";
+    output_b.innerHTML = "";
+    dd_month.innerHTML = "";
 }
