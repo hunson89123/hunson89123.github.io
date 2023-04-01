@@ -5,9 +5,10 @@ const query = encodeURIComponent('Select *')
 const start_y = 2023
 const start_m = 3
 const today = new Date();
+var current_month_index = today.getFullYear() - start_y + today.getMonth() - start_m + 1
 var month_index = today.getFullYear() - start_y + today.getMonth() - start_m + 1
 var url = `${base}&sheet=${sheetName[month_index]}&tq=${query}`
-const data = []
+let data = []
 document.addEventListener('DOMContentLoaded', init)
 const table = document.getElementById('output')
 const output_h = document.getElementById('output_h')
@@ -54,7 +55,7 @@ function init() {
             total_d.innerHTML = jsonData.table.rows[7].c[4].f
         })
     month.innerHTML = "<b>" + sheetName[month_index] + "</b>"
-    for (var i = 0; i < month_index + 1; i++) {
+    for (var i = 0; i < current_month_index + 1; i++) {
         dd_month.innerHTML += '<li><a class="dropdown-item" href="#" id="' + i + '" onClick="ddOnChange(this.id)">' + sheetName[i] + '</a></li>'
     }
 }
@@ -83,8 +84,12 @@ function ddOnChange(ddi) {
 }
 
 function clearData() {
-    console.log('clear!')
     output_h.innerHTML = "";
     output_b.innerHTML = "";
     dd_month.innerHTML = "";
+    data = [];
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
