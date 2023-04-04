@@ -8,6 +8,7 @@ const today = new Date();
 var current_month_index = today.getFullYear() - start_y + today.getMonth() - start_m + 1
 var month_index = today.getFullYear() - start_y + today.getMonth() - start_m + 1
 var url = `${base}&sheet=${sheetName[month_index]}&tq=${query}`
+var isInit = false;
 let data = []
 document.addEventListener('DOMContentLoaded', init)
 const table = document.getElementById('output')
@@ -54,7 +55,8 @@ function init() {
             total_t.innerHTML = jsonData.table.rows[1].c[4].f
             total_m.innerHTML = jsonData.table.rows[4].c[4].f
             total_d.innerHTML = jsonData.table.rows[7].c[4].f
-            dayCount.innerHTML = "DAY" + jsonData.table.rows[13].c[4].f
+            if (!isInit) dayCount.innerHTML = "DAY" + jsonData.table.rows[13].c[4].f
+            isInit = true;
         })
     month.innerHTML = "<b>" + sheetName[month_index] + "</b>"
     for (var i = 0; i < current_month_index + 1; i++) {
