@@ -19,6 +19,7 @@ const total_m = document.getElementById('total_m')
 const total_d = document.getElementById('total_d')
 const month = document.getElementById('month')
 const dd_month = document.getElementById('dd_month')
+const dayCount = document.getElementById('dayCount')
 
 function init() {
     fetch(url)
@@ -53,6 +54,7 @@ function init() {
             total_t.innerHTML = jsonData.table.rows[1].c[4].f
             total_m.innerHTML = jsonData.table.rows[4].c[4].f
             total_d.innerHTML = jsonData.table.rows[7].c[4].f
+            dayCount.innerHTML = "DAY" + jsonData.table.rows[13].c[4].f
         })
     month.innerHTML = "<b>" + sheetName[month_index] + "</b>"
     for (var i = 0; i < current_month_index + 1; i++) {
@@ -61,16 +63,30 @@ function init() {
 }
 
 function processRows(json) {
+    var r = 0;
+    var next = false;
     json.forEach((row) => {
         const tr = document.createElement('tr');
         const keys = Object.keys(row);
-
+        var d = 0;
+        var haveData = false;
         keys.forEach((key) => {
             const td = document.createElement('td');
             td.textContent = row[key];
-            tr.appendChild(td);
+            if (td.textContent != "") haveData = true;
+            if (d === 0) {
+                if (Date.parse("2023/" + td.textContent) > Date.parse(new Date().toString()) && !next) {
+                    tr.classList = "text-warning h5";
+                    next = true;
+                } else if (Date.parse("2023/" + td.textContent) > Date.parse(new Date().toString()) && next) {
+                    tr.classList = "text-secondary";
+                }
+            }
+            if (haveData) tr.appendChild(td);
+            d++;
         })
         output_b.appendChild(tr);
+        r++;
     })
 }
 
@@ -87,9 +103,8 @@ function clearData() {
     output_h.innerHTML = "";
     output_b.innerHTML = "";
     dd_month.innerHTML = "";
+    total_m.innerHTML = "--,---"
+    total_t.innerHTML = "--.--"
+    total_d.innerHTML = "--"
     data = [];
-}
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
 }
