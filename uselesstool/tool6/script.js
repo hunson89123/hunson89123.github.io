@@ -77,10 +77,10 @@ function processRows(json) {
             td.textContent = row[key];
             if (td.textContent != "") haveData = true;
             if (d === 0) {
-                if (Date.parse("2023/" + td.textContent) > Date.parse(new Date().toString()) && !next) {
+                if (Date.parse("2023/" + td.textContent) > Date.parse(today.toString()) && !next) {
                     tr.classList = "text-warning h5";
                     next = true;
-                } else if (Date.parse("2023/" + td.textContent) > Date.parse(new Date().toString()) && next) {
+                } else if (Date.parse("2023/" + td.textContent) > Date.parse(today.toString()) && next) {
                     tr.classList = "text-secondary";
                 }
             }
