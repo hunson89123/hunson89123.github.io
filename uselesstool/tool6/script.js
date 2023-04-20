@@ -72,13 +72,14 @@ function processRows(json) {
         const keys = Object.keys(row);
         var d = 0;
         var haveData = false;
+
         keys.forEach((key) => {
             const td = document.createElement('td');
             td.textContent = row[key];
             if (td.textContent != "") haveData = true;
             if (d === 0) {
                 if (Date.parse("2023/" + td.textContent) > Date.parse(today.toString()) && !next) {
-                    tr.classList = "text-warning h5";
+                    tr.classList = "text-warning";
                     next = true;
                 } else if (Date.parse("2023/" + td.textContent) > Date.parse(today.toString()) && next) {
                     tr.classList = "text-secondary";
