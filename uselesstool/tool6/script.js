@@ -78,10 +78,11 @@ function processRows(json) {
             td.textContent = row[key];
             if (td.textContent != "") haveData = true;
             if (d === 0) {
-                if (Date.parse("2023/" + td.textContent) > Date.parse(today.toString()) && !next) {
+                console.log("DataDate:" + Date.parse("2023/" + td.textContent));
+                console.log("TodayDate:" + Date.parse(today.toString()));
+                if (Date.parse("2023/" + td.textContent) === Date.parse(today.toString())) {
                     tr.classList = "text-warning";
-                    next = true;
-                } else if (Date.parse("2023/" + td.textContent) > Date.parse(today.toString()) && next) {
+                } else if (Date.parse("2023/" + td.textContent) > Date.parse(today.toString())) {
                     tr.classList = "text-secondary";
                 }
             }
