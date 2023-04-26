@@ -5,6 +5,7 @@ const query = encodeURIComponent('Select *')
 const start_y = 2023
 const start_m = 3
 const today = new Date();
+const nextDay = today.setDate(today.getDate() + 1);
 var current_month_index = today.getFullYear() - start_y + today.getMonth() - start_m + 1
 var month_index = today.getFullYear() - start_y + today.getMonth() - start_m + 1
 var url = `${base}&sheet=${sheetName[month_index]}&tq=${query}`
@@ -70,6 +71,7 @@ function processRows(json) {
     json.forEach((row) => {
         const tr = document.createElement('tr');
         const keys = Object.keys(row);
+        const oneDay = 24 * 60 * 60 * 1000;
         var d = 0;
         var haveData = false;
 
@@ -79,9 +81,12 @@ function processRows(json) {
             if (td.textContent != "") haveData = true;
             if (d === 0) {
                 console.log("DataDate:" + Date.parse("2023/" + td.textContent));
-                console.log("TodayDate:" + Date.parse(today.toString()));
+                console.log("TodayDate:" + nextDay);
                 if (Date.parse("2023/" + td.textContent) === Date.parse(today.toString())) {
                     tr.classList = "text-warning";
+                } else if (nextDay - Date.parse("2023/" + td.textContent) < oneDay && nextDay - Date.parse("2023/" + td.textContent) > 0) {
+                    tr.classList = "text-warning text-opacity-50";
+                    next = true;
                 } else if (Date.parse("2023/" + td.textContent) > Date.parse(today.toString())) {
                     tr.classList = "text-secondary";
                 }
