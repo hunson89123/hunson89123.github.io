@@ -5,6 +5,7 @@ const query = encodeURIComponent('Select *')
 const start_y = 2023
 const start_m = 3
 const today = new Date();
+const todayDate = new Date(today.toDateString())
 const nextDay = today.setDate(today.getDate() + 1);
 var current_month_index = today.getFullYear() - start_y + today.getMonth() - start_m + 1
 var month_index = today.getFullYear() - start_y + today.getMonth() - start_m + 1
@@ -55,7 +56,7 @@ function init() {
             processRows(data);
             total_t.innerHTML = jsonData.table.rows[1].c[4].f
             total_m.innerHTML = jsonData.table.rows[4].c[4].f
-            total_d.innerHTML = jsonData.table.rows[7].c[4].f
+            total_d.innerHTML = jsonData.table.rows[10].c[4].f
             if (!isInit) dayCount.innerHTML = "DAY" + jsonData.table.rows[13].c[4].f
             isInit = true;
         })
@@ -80,9 +81,9 @@ function processRows(json) {
             td.textContent = row[key];
             if (td.textContent != "") haveData = true;
             if (d === 0) {
-                console.log("DataDate:" + Date.parse("2023/" + td.textContent));
-                console.log("TodayDate:" + nextDay);
-                if (Date.parse("2023/" + td.textContent) === Date.parse(today.toString())) {
+                console.log("DataDate:" + Date.parse("2023/" + td.textContent) + "[" + td.textContent + "]");
+                console.log("TodayDate:" + Date.parse(todayDate));
+                if (Date.parse("2023/" + td.textContent) === Date.parse(todayDate)) {
                     tr.classList = "text-warning";
                 } else if (nextDay - Date.parse("2023/" + td.textContent) < oneDay && nextDay - Date.parse("2023/" + td.textContent) > 0) {
                     tr.classList = "text-warning text-opacity-50";
