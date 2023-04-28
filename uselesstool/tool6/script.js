@@ -61,7 +61,8 @@ function init() {
             isInit = true;
         })
     month.innerHTML = "<b>" + sheetName[month_index] + "</b>"
-    for (var i = 0; i < current_month_index + 1; i++) {
+    var haveNextMonth = (today.getUTCDate() > 27) ? 2 : 1;
+    for (var i = 0; i < current_month_index + haveNextMonth; i++) {
         dd_month.innerHTML += '<li><a class="dropdown-item" href="#" id="' + i + '" onClick="ddOnChange(this.id)">' + sheetName[i] + '</a></li>'
     }
 }
@@ -74,15 +75,16 @@ function processRows(json) {
         const keys = Object.keys(row);
         const oneDay = 24 * 60 * 60 * 1000;
         var d = 0;
-        var haveData = false;
+
 
         keys.forEach((key) => {
             const td = document.createElement('td');
+            var haveData = false;
             td.textContent = row[key];
-            if (td.textContent != "") haveData = true;
+            if (td.textContent != "" && td.textContent != 0) haveData = true;
             if (d === 0) {
-                console.log("DataDate:" + Date.parse("2023/" + td.textContent) + "[" + td.textContent + "]");
-                console.log("TodayDate:" + Date.parse(todayDate));
+                // console.log("DataDate:" + Date.parse("2023/" + td.textContent) + "[" + td.textContent + "]");
+                // console.log("TodayDate:" + Date.parse(todayDate));
                 if (Date.parse("2023/" + td.textContent) === Date.parse(todayDate)) {
                     tr.classList = "text-warning";
                 } else if (nextDay - Date.parse("2023/" + td.textContent) < oneDay && nextDay - Date.parse("2023/" + td.textContent) > 0) {
