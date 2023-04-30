@@ -6,7 +6,7 @@ const start_y = 2023
 const start_m = 3
 const today = new Date();
 const todayDate = new Date(today.toDateString())
-const nextDay = today.setDate(today.getDate() + 1);
+const nextDay = new Date().setDate(today.getDate() + 1);
 var current_month_index = today.getFullYear() - start_y + today.getMonth() - start_m + 1
 var month_index = today.getFullYear() - start_y + today.getMonth() - start_m + 1
 var url = `${base}&sheet=${sheetName[month_index]}&tq=${query}`
@@ -61,7 +61,8 @@ function init() {
             isInit = true;
         })
     month.innerHTML = "<b>" + sheetName[month_index] + "</b>"
-    var haveNextMonth = (today.getUTCDate() > 27) ? 2 : 1;
+    var haveNextMonth = (today.getDate() > 27) ? 2 : 1;
+    console.log(today);
     for (var i = 0; i < current_month_index + haveNextMonth; i++) {
         dd_month.innerHTML += '<li><a class="dropdown-item" href="#" id="' + i + '" onClick="ddOnChange(this.id)">' + sheetName[i] + '</a></li>'
     }
