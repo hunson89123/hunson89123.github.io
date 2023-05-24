@@ -61,7 +61,7 @@ function init() {
             isInit = true;
         })
     month.innerHTML = "<b>" + sheetName[month_index] + "</b>"
-    var haveNextMonth = (today.getDate() > 27) ? 2 : 1;
+    var haveNextMonth = (today.getDate() >= 25) ? 2 : 1;
     console.log(today);
     for (var i = 0; i < current_month_index + haveNextMonth; i++) {
         dd_month.innerHTML += '<li><a class="dropdown-item" href="#" id="' + i + '" onClick="ddOnChange(this.id)">' + sheetName[i] + '</a></li>'
