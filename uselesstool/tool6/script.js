@@ -7,8 +7,8 @@ const start_m = 3
 const today = new Date();
 const todayDate = new Date(today.toDateString())
 const nextDay = new Date().setDate(today.getDate() + 1);
-var current_month_index = today.getFullYear() - start_y + today.getMonth() - start_m + 1
-var month_index = today.getFullYear() - start_y + today.getMonth() - start_m + 1
+var current_month_index = 4;
+var month_index = 4;
 var url = `${base}&sheet=${sheetName[month_index]}&tq=${query}`
 var isInit = false;
 let data = []
@@ -57,10 +57,10 @@ function init() {
             total_t.innerHTML = jsonData.table.rows[1].c[4].f
             total_m.innerHTML = jsonData.table.rows[4].c[4].f
             total_d.innerHTML = jsonData.table.rows[10].c[4].f
-            if (!isInit) dayCount.innerHTML = "D-" + jsonData.table.rows[13].c[4].f + "/75"
+            if (!isInit) dayCount.innerHTML = "D-" + getTwoDateDiff(todayDate, new Date('2023/07/12'));
             isInit = true;
         })
-    month.innerHTML = "<b>" + sheetName[sheetName.length - 1] + "</b>"
+    month.innerHTML = "<b>" + sheetName[month_index] + "</b>"
     // var haveNextMonth = (today.getDate() >= 25) ? 2 : 1;
     // console.log(today);
     for (var i = 0; i < sheetName.length; i++) {
@@ -104,7 +104,6 @@ function processRows(json) {
 }
 
 function ddOnChange(ddi) {
-    console.log(month_index + "," + ddi)
     month.innerHTML = "<b>" + sheetName[ddi] + "</b>";
     month_index = ddi
     url = base + "&sheet=" + sheetName[ddi] + "&tq=" + query;
@@ -120,4 +119,8 @@ function clearData() {
     total_t.innerHTML = "--.--"
     total_d.innerHTML = "--"
     data = [];
+}
+
+function getTwoDateDiff(a, b) {
+    return (a.getTime() - b.getTime()) / (1000 * 3600 * 24);
 }

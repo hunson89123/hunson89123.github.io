@@ -1,51 +1,28 @@
 html,
 body {
-  background: #08192D !important;
+  background-color: #121212;
+  height: 100vh;
+  width: 100vw;
 }
-
-
-/* 
-
-.div {
-  margin: 0 auto;
-  position: absolute;
-  text-align: center;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-
-.div a {
-  margin: 0 auto;
-  font-family: 'Noto Serif TC', serif;
-  font-size: 2em;
-  font-style: bold;
-} */
-
 
 .title {
   line-height: 1em;
-  font-family: 'Noto Serif TC', serif;
+  font-family: 'Consolas', serif;
   font-size: 4em;
-  font-style: bold;
   color: white;
   text-align: center;
-  width: 100%;
+  text-shadow: 0px 0px 10px #F0F0F0;
 }
 
-/* 
-@media screen and (max-width: 600px) {
-  .div p {
-    line-height: 1em;
-    font-family: 'Noto Serif TC', serif;
-    font-size: 3em;
-    font-style: bold;
-  }
+a:link,
+a:visited {
+  color: #F0F0F0;
+  text-decoration: none;
+}
 
-  .div a {
-    margin: 0 auto;
-    font-family: 'Noto Serif TC', serif;
-    font-size: 1.5em;
-    font-style: bold;
-  }
-} */
+.a_text {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 2em;
+  color: #F0F0F0;
+  text-shadow: 0px 0px 10px #F0F0F0;
+}
