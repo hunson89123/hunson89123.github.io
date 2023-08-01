@@ -1,6 +1,6 @@
 const sheetId = '1f7uWyeLwEJvDdf0yP8hrHo63Nlx9d2rOfRdHwP6scF4';
 const base = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?`;
-const sheetName = ['2023/03', '2023/04', '2023/05', '2023/06', '2023/07', '2023/08', '2023/09', '2023/10', '2023/11', '2023/12', '2024/01'];
+const sheetName = ['2023/03', '2023/04', '2023/05', '2023/06', '2023/07'];
 const query = encodeURIComponent('Select *')
 const start_y = 2023
 const start_m = 3
@@ -57,13 +57,13 @@ function init() {
             total_t.innerHTML = jsonData.table.rows[1].c[4].f
             total_m.innerHTML = jsonData.table.rows[4].c[4].f
             total_d.innerHTML = jsonData.table.rows[10].c[4].f
-            if (!isInit) dayCount.innerHTML = "DAY" + jsonData.table.rows[13].c[4].f
+            if (!isInit) dayCount.innerHTML = "D-" + jsonData.table.rows[13].c[4].f + "/75"
             isInit = true;
         })
-    month.innerHTML = "<b>" + sheetName[month_index] + "</b>"
-    var haveNextMonth = (today.getDate() >= 25) ? 2 : 1;
-    console.log(today);
-    for (var i = 0; i < current_month_index + haveNextMonth; i++) {
+    month.innerHTML = "<b>" + sheetName[sheetName.length - 1] + "</b>"
+    // var haveNextMonth = (today.getDate() >= 25) ? 2 : 1;
+    // console.log(today);
+    for (var i = 0; i < sheetName.length; i++) {
         dd_month.innerHTML += '<li><a class="dropdown-item" href="#" id="' + i + '" onClick="ddOnChange(this.id)">' + sheetName[i] + '</a></li>'
     }
 }

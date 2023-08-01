@@ -16,12 +16,12 @@
 
 <body class="container bg-dark d-flex flex-column flex-wrap justify-content-center align-items-center">
     <div class="bg-dark d-flex flex-column justify-content-center align-items-center w-100 sticky-top">
-        <span class="d-flex align-items-center h2 text-center mt-5 text-light ">
+        <span class="d-flex flex-column align-items-center h2 text-center mt-5 text-light ">
+            <b class="ms-2">薪資紀錄簿<span id="dayCount" class="text-warning">D-</span></b>
             <button class="btn btn-outline-light btn-lg dropdown-toggle" type="button" id="dropdownMenuButton1"
                 data-bs-toggle="dropdown" aria-expanded="false">
                 <span class="h2" id="month"><b>----/--</b></span>
             </button>
-            <b class="ms-2">薪資紀錄簿<span id="dayCount" class="text-warning">DAY--</span></b>
             <ul id="dd_month" class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
 
             </ul>
@@ -32,8 +32,8 @@
             <p class="col text-light">日均時數<br><span><b class="text-warning h4" id="total_d"></b></span>小時/天</p>
         </div>
     </div>
-    <table id="output" class="table table-dark">
-        <thead id="output_h"></thead>
+    <table id="output" class="table table-dark table-responsive">
+        <thead class="sticky-top" id="output_h" style="z-index: -1;"></thead>
         <tbody id="output_b"></tbody>
     </table>
     <script src="script.js"></script>
