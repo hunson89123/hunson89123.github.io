@@ -1,8 +1,9 @@
-html,body {
+html,
+body {
   height: 100%;
   margin: 0 auto;
   /*background-image: radial-gradient(ellipse at center top,#2C5364,#0F2027 87%);*/
-  background: #08192d;
+  background: #121212;
 }
 
 .div {
@@ -14,14 +15,14 @@ html,body {
   transform: translate(-50%, -50%)
 }
 
-.div p{
+.div p {
   line-height: 1em;
   font-family: 'Noto Serif TC', serif;
   font-size: 4em;
   font-style: bold;
 }
 
-.div a{
+.div a {
   margin: 0 auto;
   /*font-family: Microsoft JhengHei;*/
   font-family: 'Noto Serif TC', serif;
@@ -29,15 +30,15 @@ html,body {
   font-style: bold;
 }
 
-@media screen and (max-width: 600px){
-  .div p{
+@media screen and (max-width: 600px) {
+  .div p {
     line-height: 1em;
     font-family: 'Noto Serif TC', serif;
     font-size: 3em;
     font-style: bold;
   }
 
-  .div a{
+  .div a {
     margin: 0 auto;
     font-family: 'Noto Serif TC', serif;
     font-size: 1.5em;
