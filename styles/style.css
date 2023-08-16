@@ -7,7 +7,7 @@ body {
 
 .title {
   line-height: 1em;
-  font-family: 'Consolas';
+  font-family: 'Consolas', serif;
   font-size: 4em;
   color: white;
   text-align: center;
@@ -29,12 +29,10 @@ a:visited {
 
 @media screen and (max-width: 600px) {
   .title {
-    font-family: 'Consolas';
     font-size: 3em;
   }
 
   .a_text {
-    font-family: 'Noto Serif TC', serif;
     font-size: 1.5em;
   }
 }
