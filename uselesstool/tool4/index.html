@@ -9,104 +9,48 @@
         integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
 
-    <title>撿紅點分數計算機</title>
+    <title>ROOM</title>
     <style>
         body {
             height: 100vh;
+            display: flex;
+            justify-content: center;
         }
 
-        table {
-            table-layout: fixed;
-        }
-
-        button {
+        .or {
             width: 100%;
             text-align: center;
+            border-bottom: 1px solid gray;
+            line-height: 0.1em;
+            margin: 20px 0px 20px;
+        }
+
+        .or span {
+            background: white;
+            padding: 0 10px;
+        }
+
+        .area {
+            max-width: 30%;
         }
     </style>
 </head>
 
-<body class="container bg-dark">
-    <div class="d-flex flex-column h-100">
-        <div class="text-warning d-flex justify-content-center align-items-center display-1 h-50" id="result">
-            <b style="font-size: 100px">0</b>
+<body class="container">
+    <div class="d-flex flex-column justify-content-center align-item-center h-100 area">
+        <div class="input-group">
+            <input id="joinID" type="text" class="form-control" placeholder="輸入房間編號...">
+            <button type="button" class="btn btn-outline-dark">加入</button>
         </div>
-        <div class="text-warning d-flex justify-content-center align-items-end h-50" id="enterArea">
-            <div>
-                <div class="d-flex">
-                    <div id="select" class="text-center w-100">-</div>
-                </div>
-                <div class="d-flex">
-                    <button onclick="clr()" class="btn btn-danger w-100 m-2">C</button>
-                </div>
-                <table class="table table-borderless">
-                    <tr>
-                        <td>
-                            <button id="A" onclick="selected(this)"
-                                class="btn btn-outline-light btn-lg text-danger text-center">A</button>
-                        </td>
-                        <td>
-                            <button id="2" onclick="selected(this)"
-                                class="btn btn-outline-light btn-lg text-danger text-center">2</button>
-                        </td>
-                        <td>
-                            <button id="3" onclick="selected(this)"
-                                class="btn btn-outline-light btn-lg text-danger text-center">3</button>
-                        </td>
-                        <td>
-                            <button id="4" onclick="selected(this)"
-                                class="btn btn-outline-light btn-lg text-danger text-center">4</button>
-                        </td>
-                        <td>
-                            <button id="5" onclick="selected(this)"
-                                class="btn btn-outline-light btn-lg text-danger text-center">5</button>
-                        </td>
+        <div class="or"><span>或</span></div>
+        <button type="button" class="btn btn-dark" onclick="createRoom(this)">創建房間</button>
+        <script>
 
-                        <td>
-                            <button id="6" onclick="selected(this)"
-                                class="btn btn-outline-light btn-lg text-danger text-center">6</button>
-                        </td>
-                        <td>
-                            <button id="7" onclick="selected(this)"
-                                class="btn btn-outline-light btn-lg text-danger text-center">7</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <button id="8" onclick="selected(this)"
-                                class="btn btn-outline-light btn-lg text-danger text-center">8</button>
-                        </td>
-                        <td>
-                            <button id="9" onclick="selected(this)"
-                                class="btn btn-outline-light btn-lg text-danger text-center">9</button>
-                        </td>
-                        <td>
-                            <button id="10" onclick="selected(this)"
-                                class="text-left btn btn-outline-light btn-lg text-danger text-center">10</button>
-                        </td>
-                        <td>
-                            <button id="J" onclick="selected(this)"
-                                class="btn btn-outline-light btn-lg text-danger text-center">J</button>
-                        </td>
-                        <td>
-                            <button id="Q" onclick="selected(this)"
-                                class="btn btn-outline-light btn-lg text-danger text-center">Q</button>
-                        </td>
-                        <td>
-                            <button id="K" onclick="selected(this)"
-                                class="btn btn-outline-light btn-lg text-danger text-center">K</button>
-                        </td>
-                    </tr>
-                </table>
-                <div class="d-flex">
-                    <button onclick="plus()" class="btn btn-success m-2">+</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous">
         </script>
+
+    </div>
+
+
     <script src="script.js"></script>
 </body>
 
