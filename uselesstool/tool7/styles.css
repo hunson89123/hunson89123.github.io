@@ -1,0 +1,17 @@
+body {
+    margin: 0px;
+}
+
+.contain {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    margin-top: 10vh;
+    background-color: #121212;
+}
+
+#demoMap {
+
+    height: 50vh;
+    width: 50vh;
+}
