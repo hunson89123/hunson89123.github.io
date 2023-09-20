@@ -12,6 +12,6 @@ body {
 
 #map {
 
-    height: 80vh;
-    width: 45vh;
+    height: 100%;
+    width: 100%;
 }
