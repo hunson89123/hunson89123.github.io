@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <script src="https://cdn.jsdelivr.net/npm/ol@v8.1.0/dist/ol.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.1.0/ol.css">
     <link rel="stylesheet" href="./styles.css">
@@ -13,12 +14,59 @@
 </head>
 
 <body>
-    <div class="contain">
-        <div id="map"></div>
-        <div id="userLoc"></div>
-    </div>
-    <script src="./script.js"></script>
+    <div id="map">
 
+    </div>
+    <div id="groupInfoCard">
+        <div class="infoCardContent">
+            <table>
+                <tr>
+                    <th>單位名稱：</th>
+                    <td id="groupName"></td>
+                </tr>
+                <tr>
+                    <th>上課地址：</th>
+                    <td id="groupAddress"></td>
+                </tr>
+                <tr>
+                    <th>聯絡電話：</th>
+                    <td id="groupPhoneNumber"></td>
+                </tr>
+                <tr>
+                    <th><b>開課資訊：</b></th>
+                </tr>
+            </table>
+            <table id="classInfo">
+                <thead>
+                    <tr>
+                        <th>課程名稱</th>
+                        <th>開訓期間</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>測試班級</td>
+                        <td>1120920~1121001</td>
+                        <td><button>我要報名</button></td>
+                    </tr>
+                    <tr>
+                        <td>測試班級</td>
+                        <td>1120920~1121001</td>
+                        <td><button>我要報名</button></td>
+                    </tr>
+                    <tr>
+                        <td>測試班級</td>
+                        <td>1120920~1121001</td>
+                        <td><button>我要報名</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="./script.js"></script>
+    <script src="./testData.js"></script>
 </body>
 
 </html>
