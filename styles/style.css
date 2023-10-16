@@ -12,6 +12,7 @@ body {
   color: white;
   text-align: center;
   text-shadow: 0px 0px 10px #F0F0F0;
+  animation: anim-float 3s ease-in-out infinite;
 }
 
 a:link,

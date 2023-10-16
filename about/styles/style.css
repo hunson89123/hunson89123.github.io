@@ -9,9 +9,6 @@ body {
 .div {
   margin: 0 auto;
   position: absolute;
-  /*top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);*/
   vertical-align: middle;
   width: 100%;
   font-family: 'Noto Serif TC', serif;
@@ -27,12 +24,7 @@ h3 {
   font-family: 'Noto Sans TC', sans-serif;
 }
 
-/*#last{  
-  margin: 8px 64px 8px 64px;
-  font-family: 'Noto Sans TC', sans-serif;
-}*/
 .div p {
-
   line-height: 1em;
   font-family: 'Noto Serif TC', serif;
   font-size: 4em;
