@@ -18,7 +18,6 @@ body {
 h1,
 h2,
 h3 {
-
   display: inline-block;
   margin: 8px 64px 8px 10%;
   font-family: 'Noto Sans TC', sans-serif;
@@ -33,7 +32,7 @@ h3 {
 
 .div a {
   margin: 0 auto;
-  /*font-family: Microsoft JhengHei;*/
+  /* font-family: Microsoft JhengHei; */
   font-family: 'Noto Serif TC', serif;
   font-size: 2em;
 }

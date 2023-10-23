@@ -29,7 +29,7 @@ function finish() {
         res_wrap.classList.add("stop");
         res_wrap.innerHTML = "<p>" + eat_res + "</p>";
         eat_res_search.innerHTML = eat_res;
-        search_a.href = "https://www.google.com/maps?q=" + eat_res;
+        search_a.href = "https://www.google.com/maps/search/" + eat_res;
         eat_search.style.display = "flex";
         document.querySelector(".res_wrap p").classList.add("res_text");
         start_btn.disabled = false;
