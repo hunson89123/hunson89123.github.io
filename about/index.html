@@ -8,30 +8,22 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Inconsolata&family=Noto+Serif+TC:wght@200&display=swap"
 		rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
 	<link href="styles/style.css" rel="stylesheet" type="text/css">
 	<title>Hunson's Lab - 關於本站</title>
 </head>
 
 <body class="outer">
 	<div class="div">
-		<p style="color:#FFFFFB;">Hunson's Lab</p>
+		<p class="title">Hunson's Lab</p>
 		<h1>關於本站</h1><br>
 		<h3>一個拿來暫時練習及發明實驗網頁遊戲、工具的地方~</h3><br>
 		<h3 id="last" style="color: #121212; background: white;">最後更新時間：
 			<span id="lastModified"></span>
 		</h3><br>
-
-		<script type="text/javascript">
-			var x = new Date(document.lastModified);
-			var s = document.getElementById('lastModified');
-			s.innerHTML = x.getFullYear() + "/" +
-				String(x.getMonth() + 1).padStart(2, '0') + "/" +
-				String(x.getDate()).padStart(2, '0') + " " +
-				String(x.getHours()).padStart(2, '0') + ":" +
-				String(x.getMinutes()).padStart(2, '0') + ":" +
-				String(x.getSeconds()).padStart(2, '0');
-		</script>
 		<h1>開發紀錄</h1><br>
+		<h3>2023/10/23 修改csnplus搜尋連結樣式、新增Google AdSense</h3><br>
 		<h3>2023/10/23 完成csnplus抽取食物後提供GoogleMap搜尋連結</h3><br>
 		<h3>2023/10/22 完成csnplus隨機抽取17種食物</h3><br>
 		<h3>2023/10/21 修正首頁標題字體手機與電腦版統一</h3><br>
@@ -81,5 +73,6 @@
 		<h3>2022/01/16 完成主頁、遊戲、工具、關於首頁</h3><br>
 	</div>
 </body>
+<script src="script.js"></script>
 
 </html>
