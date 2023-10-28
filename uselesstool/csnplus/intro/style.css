@@ -2,6 +2,8 @@ body {
     height: 100vh;
     width: 100vw;
     margin: 0px;
+    background-color: #000;
+    overflow: hidden;
 }
 
 .container {
@@ -19,6 +21,13 @@ body {
     height: 100%;
     object-fit: cover;
     filter: brightness(.3);
+    animation: bgAnim 50s ease-in-out infinite;
+}
+
+#eatext {
+    display: none;
+    color: #CECE5A;
+    animation: eatextAnim .5s ease-in-out forwards;
 }
 
 .title-wrap {
@@ -27,6 +36,15 @@ body {
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    margin-right: -40px;
+}
+
+.title-food-wrap {
+    display: none;
+    flex-direction: column;
+    margin-top: -16px;
+    height: 100px;
+    animation: textAnim 2.5s ease-in-out forwards;
 }
 
 .title {
@@ -34,24 +52,99 @@ body {
     font-weight: 900;
     font-family: 'Noto Sans TC', sans-serif;
     color: #ffffff;
-
 }
 
-.title-food {
-    animation: textAnim 1s ease-in-out infinite;
+.title-plus {
+    position: absolute;
+    width: 45px;
+    overflow: hidden;
+    margin-left: 240px;
+    display: none;
+}
+
+.title-plus span {
+    margin-left: -45px;
+    animation: textAnimRight .5s ease-in-out forwards;
+    animation-delay: .5s;
+}
+
+.title-example {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.title-example .title {
+    color: rgba(125, 125, 125, .5);
 }
 
 @keyframes textAnim {
     0% {
-        transform: translateY(120%);
-    }
-
-    50% {
         transform: translateY(0%);
     }
 
-    100% {
-        transform: translateY(-120%);
+    20% {
+        transform: translateY(-116%);
     }
 
+    40% {
+        transform: translateY(-232%);
+    }
+
+    60% {
+        transform: translateY(-348%);
+    }
+
+    80% {
+        transform: translateY(-464%);
+    }
+
+    100% {
+        transform: translateY(-580%);
+    }
+}
+
+@keyframes eatextAnim {
+    0% {
+        transform: translateY(100%);
+    }
+
+    100% {
+        transform: translateY(0%);
+    }
+}
+
+@keyframes textAnimLeft {
+    0% {
+        transform: translateX(0%);
+    }
+
+    100% {
+        transform: translateX(-18%);
+    }
+}
+
+@keyframes textAnimRight {
+    0% {
+        transform: translateX(0%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes bgAnim {
+    0% {
+        scale: 1;
+    }
+
+    50% {
+        scale: 1.1;
+    }
+
+    100% {
+        scale: 1;
+    }
 }
