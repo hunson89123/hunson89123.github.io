@@ -1,4 +1,5 @@
 const eat_list = ["炒飯", "鍋燒意麵", "牛肉麵", "肉燥飯", "壽司", "定食", "速食", "拉麵", "咖哩飯", "雞肉飯", "涼麵", "水餃", "雞肉飯", "鍋貼", "豬排飯", "牛排", "火鍋"];
+const bg_img = document.querySelector(".bg-img");
 const res_wrap = document.querySelector(".res_wrap");
 const start_btn = document.querySelector(".start_btn")
 const locate_btn = document.querySelector(".locate_btn")
@@ -7,6 +8,7 @@ const eat_search = document.querySelector(".search_area .eat_search");
 const eat_res_search = document.querySelector("#eat_res_search");
 const emo_press = "👇", emo_loading = "🔎";
 var eat_res = "🍴";
+// bg_img.src = "https://source.unsplash.com/random/1920x1080/?food";
 //按下[開始]
 function start() {
     if (res_wrap.classList.contains("stop")) res_wrap.classList.remove("stop");
