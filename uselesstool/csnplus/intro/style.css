@@ -152,7 +152,16 @@ body {
         transform: translateY(-116%);
     }
 
+    25% {
+        transform: translateY(-116%);
+
+    }
+
     40% {
+        transform: translateY(-232%);
+    }
+
+    45% {
         transform: translateY(-232%);
     }
 
@@ -160,7 +169,15 @@ body {
         transform: translateY(-348%);
     }
 
+    65% {
+        transform: translateY(-348%);
+    }
+
     80% {
+        transform: translateY(-464%);
+    }
+
+    85% {
         transform: translateY(-464%);
     }
 
