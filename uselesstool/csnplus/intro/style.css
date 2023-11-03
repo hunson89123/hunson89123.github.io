@@ -57,7 +57,7 @@ body {
 
 .title {
     font-size: 5em;
-    font-weight: 900;
+    font-weight: bold;
     font-family: 'Noto Sans TC', sans-serif;
     color: #ffffff;
 }
