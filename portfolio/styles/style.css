@@ -91,7 +91,36 @@ body {
     z-index: 1;
 }
 
-@media (max-width: 768px) {}
+@media screen and (max-width: 768px) {
+    .title {
+        font-size: 2.5em;
+    }
+
+    .svg {
+        height: 60px;
+        width: 60px;
+    }
+
+    .portfolio_wrap a {
+        width: 320px;
+        max-width: 80%;
+    }
+
+    .portfolio_item {
+        height: 70px;
+    }
+
+    .portfolio_item .itemTitle {
+        font-size: 1.5em;
+        padding-left: 60px;
+    }
+
+    .portfolio_item .subTitle {
+        font-size: 1em;
+        padding-left: 60px;
+    }
+
+}
 
 @keyframes anim-float {
     0% {

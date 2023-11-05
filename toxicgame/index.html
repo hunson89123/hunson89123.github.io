@@ -5,32 +5,35 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="styles/style.css" rel="stylesheet" type="text/css">
-	<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC&display=swap" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inconsolata&family=Noto+Serif+TC:wght@200&display=swap"
+		rel="stylesheet">
 	<title>Hunson's Game</title>
 </head>
 
-<body class="outer">
-	<div class="div">
-		<p style="color:#FFFFFB;">Hunson's Game</p>
-		<script>
-			function game_instr(gameN, ctrlP, ctrlM) {
-				if (confirm("/*" + gameN + "*/\n電腦版：" + ctrlP + "\n手機版：" + ctrlM)) {
-					return true;
-				} else {
-					return false;
-				}
-			}
-		</script>
-		<a style="color:#FFFFFB;" href="./game1" ;
-			onclick="return game_instr('射球遊戲','↑↓←→控制方向/空白鍵發射球','滑動控制方向/點擊發射球');">射球遊戲</a><br>
-		<a style="color:#FFFFFB;" href="./game2" ; onclick="return game_instr('恐龍遊戲','空白鍵跳躍','點擊跳躍');">恐龍遊戲</a><br>
-		<a style="color:#878787;" href="./game3" ;
+<body class="container">
+	<p class="title">Hunson's Game</p>
+	<div>
+
+		<a href="./game1" ; onclick="return game_instr('射球遊戲','↑↓←→控制方向/空白鍵發射球','滑動控制方向/點擊發射球');">射球遊戲</a><br>
+		<a href="./game2" ; onclick="return game_instr('恐龍遊戲','空白鍵跳躍','點擊跳躍');">恐龍遊戲</a><br>
+		<a class="unfinished" href="./game3" ;
 			onclick="return game_instr('消磚遊戲','點擊開始/滑鼠控制檔板','點擊開始/滑動控制檔板');">消磚遊戲</a><br>
-		<a style="color:#FFFFFB;" href="./game4" ;
-			onclick="return game_instr('道具合成','點擊選擇第一/二件道具','點擊選擇第一/二件道具');">道具合成</a><br>
-		<a style="color:#878787;" href="./game5" ; onclick="return game_instr('卡牌遊戲','用滑鼠點','用手指點');">卡牌遊戲</a><br>
-		<a style="color:#878787;" href="./game6" ; onclick="return game_instr('暗棋遊戲','用滑鼠點','用手指點');">暗棋遊戲</a><br>
+		<a href="./game4" ; onclick="return game_instr('道具合成','點擊選擇第一/二件道具','點擊選擇第一/二件道具');">道具合成</a><br>
+		<a class="unfinished" href="./game5" ; onclick="return game_instr('卡牌遊戲','用滑鼠點','用手指點');">卡牌遊戲</a><br>
+		<a class="unfinished" href="./game6" ; onclick="return game_instr('暗棋遊戲','用滑鼠點','用手指點');">暗棋遊戲</a><br>
 	</div>
 </body>
+<script src="../scripts/title.js"></script>
+<script>
+	function game_instr(gameN, ctrlP, ctrlM) {
+		if (confirm("/*" + gameN + "*/\n電腦版：" + ctrlP + "\n手機版：" + ctrlM)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+</script>
 
 </html>
