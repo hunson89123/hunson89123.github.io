@@ -29,7 +29,7 @@ body {
 
 .infoCardContent {
     width: 100%;
-    margin-top: 40px;
+    margin-top: 41px;
     padding: 30px;
     padding-top: 0px;
     overflow: auto;
@@ -181,7 +181,6 @@ td {
     width: 100%;
     position: relative;
     border: 1px solid #ddd;
-    border-radius: 5px;
     overflow: hidden;
 }
 
@@ -201,5 +200,11 @@ td {
     html {
         overflow: auto !important;
         max-height: 100% !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .classInfoItem {
+        grid-template-columns: 80% 20%;
     }
 }
