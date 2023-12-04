@@ -1,0 +1,33 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #000;
+}
+
+#game-board {
+    position: relative;
+    width: 400px;
+    height: 600px;
+    border: 2px solid #fff;
+}
+
+.bubble {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: #00f;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.player {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: #f00;
+    border-radius: 50%;
+    cursor: pointer;
+}
