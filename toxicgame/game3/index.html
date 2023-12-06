@@ -1,33 +1,138 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-	<meta charset="utf-8">
-	</meta>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Breakout Game</title>
 	<style>
-		html,
 		body {
-			width: 100%;
-			height: 100%;
 			margin: 0;
-		}
-
-		canvas {
-			background-color: white;
-			display: block;
-			position: absolute;
-			touch-action: none;
+			overflow: hidden;
 		}
 	</style>
-	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2168463429469949"
-		crossorigin="anonymous"></script>
-	<title>Hunson's Game - 消磚遊戲</title>
 </head>
 
 <body>
-	<canvas id="myCanvas"></canvas>
-	<script src="drawString.js"></script>
-	<script src="script.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			// Set up scene
+			const scene = new THREE.Scene();
+			const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+			const renderer = new THREE.WebGLRenderer();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document.body.appendChild(renderer.domElement);
+
+			// Set up paddle
+			const paddleGeometry = new THREE.BoxGeometry(2, 0.2, 0.2);
+			const paddleMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+			const paddle = new THREE.Mesh(paddleGeometry, paddleMaterial);
+			paddle.position.y = -3;
+			scene.add(paddle);
+
+			// Set up ball
+			const ballGeometry = new THREE.SphereGeometry(0.2, 32, 32);
+			const ballMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+			const ball = new THREE.Mesh(ballGeometry, ballMaterial);
+			ball.position.y = -2.8;
+			ball.position.z = -0.5;
+
+			// 初始化球的運動方向
+			ball.direction = { x: 0.05, y: -0.05 };
+
+			scene.add(ball);
+
+
+			// Set up bricks
+			const brickGeometry = new THREE.BoxGeometry(1.5, 0.5, 0.2);
+			const brickMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+
+			for (let i = 0; i < 5; i++) {
+				for (let j = -4; j < 4; j++) {
+					const brick = new THREE.Mesh(brickGeometry, brickMaterial);
+					brick.position.x = j * 1.7;
+					brick.position.y = 3 - i * 1.1;
+					scene.add(brick);
+				}
+			}
+
+			// Set up camera position
+			camera.position.z = 5;
+
+			// Handle window resize
+			window.addEventListener('resize', function () {
+				const newWidth = window.innerWidth;
+				const newHeight = window.innerHeight;
+
+				camera.aspect = newWidth / newHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize(newWidth, newHeight);
+			});
+
+			// Handle paddle movement
+			window.addEventListener('mousemove', function (event) {
+				const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+				paddle.position.x = mouseX * 5;
+			});
+
+			// Set up animation
+			function animate() {
+				requestAnimationFrame(animate);
+				ball.position.y -= 0.02;
+
+				// Check collision with paddle
+				if (ball.position.y < paddle.position.y + 0.2 &&
+					ball.position.y > paddle.position.y - 0.2 &&
+					ball.position.x < paddle.position.x + 1 &&
+					ball.position.x > paddle.position.x - 1) {
+					ball.position.y = paddle.position.y + 0.2;
+					ball.direction.y = -ball.direction.y;
+				}
+				// Check collision with bricks
+				scene.children.forEach(function (object) {
+					if (object.type === 'Mesh' && object !== paddle && object !== ball) {
+						const brick = object;
+
+						if (ball.position.y < brick.position.y + 0.25 &&
+							ball.position.y > brick.position.y - 0.25 &&
+							ball.position.x < brick.position.x + 0.75 &&
+							ball.position.x > brick.position.x - 0.75) {
+							scene.remove(brick);
+							ball.position.y = brick.position.y + 0.25;
+							ball.direction.y = -ball.direction.y;
+						}
+					}
+				});
+
+				// Reverse the direction of the ball when it hits the walls
+				if (ball.position.x < -2.5 || ball.position.x > 2.5) {
+					ball.direction.x = -ball.direction.x;
+				}
+
+				// Reverse the direction of the ball when it hits the top or bottom
+				if (ball.position.y > 2.5 || ball.position.y < -3) {
+					ball.direction.y = -ball.direction.y;
+				}
+
+				// Remove the ball if it falls off the screen
+				if (ball.position.y < -4) {
+					scene.remove(ball);
+				}
+
+				// Update the ball's position
+				ball.position.x += ball.direction.x;
+				ball.position.y += ball.direction.y;
+				// Render scene
+				renderer.render(scene, camera);
+
+
+			}
+
+			animate();
+		});
+	</script>
 </body>
 
 </html>
