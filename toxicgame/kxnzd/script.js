@@ -3,6 +3,8 @@
 // 創建 PIXI 應用，指定畫布大小
 const app = new PIXI.Application({
     backgroundColor: 0x1099bb,
+    autoResize: true,
+    resolution: devicePixelRatio
 });
 
 let DPR = window.devicePixelRatio;
@@ -14,16 +16,7 @@ window.addEventListener('resize', resizeCanvas);
 
 // 視窗大小變化時的處理函數
 function resizeCanvas() {
-    DPR = window.devicePixelRatio;
-    // 更新畫布大小
-    app.renderer.resize(window.innerWidth / DPR, window.innerHeight / DPR);
-    // 創建黑色邊框
-    const border = new PIXI.Graphics();
-    border.lineStyle(20, 0xFF0000); // 使用黑色線條
-    border.drawRect(1, 1, app.screen.width - 2, app.screen.height - 2); // 略小於舞台大小以形成邊框
-
-    // 添加邊框到舞台
-    //app.stage.addChild(border);
+    app.renderer.resize(window.innerWidth, window.innerHeight);
 }
 
 // 初始調用一次 resizeCanvas，確保畫布大小與視窗大小一致
@@ -57,8 +50,8 @@ function onScreenClick(event) {
         // 設置精靈的初始位置
         bunny.x = app.screen.width / 2;
         bunny.y = app.screen.height;
-        bunny.scale.x = 5 / (DPR * 10);
-        bunny.scale.y = 5 / (DPR * 10);
+        bunny.scale.x = 1 / (DPR * 10);
+        bunny.scale.y = 1 / (DPR * 10);
 
         // 將精靈添加到舞台
         app.stage.addChild(bunny);
@@ -71,7 +64,7 @@ function onScreenClick(event) {
         const length = Math.sqrt(directionX * directionX + directionY * directionY);
 
         // 設置速度
-        const speed = 30;
+        const speed = 10;
 
         // 計算速度向量
         const velocityX = (directionX / length) * speed;
