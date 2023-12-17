@@ -3,12 +3,9 @@
 // 創建 PIXI 應用，指定畫布大小
 const app = new PIXI.Application({
     backgroundColor: 0x1099bb,
-    autoResize: true,
-    resolution: devicePixelRatio
 });
 
 let DPR = window.devicePixelRatio;
-console.log("DPR:" + DPR + ",Width:" + window.innerWidth);
 // 添加 PIXI 渲染器到 HTML 文檔中的容器
 document.body.appendChild(app.view);
 // 監聽視窗大小變化事件
@@ -50,8 +47,7 @@ function onScreenClick(event) {
         // 設置精靈的初始位置
         bunny.x = app.screen.width / 2;
         bunny.y = app.screen.height;
-        bunny.scale.x = 1 / (DPR * 10);
-        bunny.scale.y = 1 / (DPR * 10);
+        bunny.scale.set(0.1 * window.devicePixelRatio);
 
         // 將精靈添加到舞台
         app.stage.addChild(bunny);
