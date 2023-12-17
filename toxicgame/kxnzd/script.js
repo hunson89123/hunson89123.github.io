@@ -14,6 +14,17 @@ window.addEventListener('resize', resizeCanvas);
 // 視窗大小變化時的處理函數
 function resizeCanvas() {
     app.renderer.resize(window.innerWidth, window.innerHeight);
+
+    // 添加 PIXI 渲染器到 HTML 文檔中的容器
+    document.body.appendChild(app.view);
+
+    // 創建黑色邊框
+    const border = new PIXI.Graphics();
+    border.lineStyle(20, 0xff0000); // 使用黑色線條
+    border.drawRect(1, 1, app.screen.width - 2, app.screen.height - 2); // 略小於舞台大小以形成邊框
+
+    // 添加邊框到舞台
+    app.stage.addChild(border);
 }
 
 // 初始調用一次 resizeCanvas，確保畫布大小與視窗大小一致
