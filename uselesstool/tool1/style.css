@@ -1,7 +1,9 @@
-html,body {
+html,
+body {
   height: 100%;
   margin: 0 auto;
-  background:#08192d;
+  background: #121212;
+  user-select: none;
 }
 
 .div {
@@ -13,35 +15,39 @@ html,body {
   transform: translate(-50%, -50%)
 }
 
-.div p{
+.div p {
   line-height: 1em;
   font-family: 'Noto Serif TC', serif;
   font-size: 5em;
   font-style: bold;
 }
 
-.div a{
+.div a {
   margin: 0 auto;
   font-family: 'Noto Serif TC', serif;
 }
 
 .card {
   color: #FFFFFF;
-  background: #08192d;
   display: inline-block;
   margin: 20px;
   width: 120px;
   height: 150px;
 }
 
-.box{
+.box {
   width: 800px;
   vertical-align: middle;
   text-align: center;
 }
 
-h1{
+h1 {
   line-height: 0.5em;
   font-family: 'Noto Serif TC', serif;
   font-size: 4em;
+}
+
+canvas {
+  display: block;
+  z-index: 9999;
 }
