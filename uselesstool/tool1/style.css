@@ -36,18 +36,23 @@ body {
 }
 
 .box {
-  width: 800px;
+  width: 100vw;
   vertical-align: middle;
   text-align: center;
 }
 
-h1 {
+h1,
+h2 {
   line-height: 0.5em;
   font-family: 'Noto Serif TC', serif;
-  font-size: 4em;
 }
 
 canvas {
   display: block;
   z-index: 9999;
+}
+
+.timer {
+  font-size: 4em;
+  font-family: 'Orbitron', sans-serif;
 }

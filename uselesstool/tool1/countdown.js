@@ -1,8 +1,8 @@
 var today = new Date();
-var nxtYear = today.getFullYear()+1;
-var happyNewYear = new Date("Jan 1, "+ nxtYear +" 00:00:00")
-document.getElementById('title').textContent = "距離 "+ nxtYear + " 年剩下";
-var x = setInterval(function(){
+var nxtYear = today.getFullYear() + 1;
+var happyNewYear = new Date("Jan 1, " + nxtYear + " 00:00:00")
+document.getElementById('title').textContent = "距離 " + nxtYear + " 年剩下";
+var x = setInterval(function () {
   var now = new Date().getTime();
   var cuntTime = happyNewYear - now;
   var days = Math.floor(cuntTime / (1000 * 60 * 60 * 24));
@@ -13,4 +13,4 @@ var x = setInterval(function(){
   document.getElementById('hours').textContent = hours;
   document.getElementById('minutes').textContent = minutes;
   document.getElementById('seconds').textContent = seconds;
-},0);
+}, 0);

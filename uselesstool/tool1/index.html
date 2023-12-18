@@ -5,7 +5,10 @@
   <meta charset="utf-8">
   <title>Hunson's Tool - 跨年倒數</title>
   <link href="style.css" rel="stylesheet" type="text/css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2168463429469949"
     crossorigin="anonymous"></script>
 
@@ -16,26 +19,27 @@
     <p id="title" style="color:#FFFFFB;"></p>
     <div class="box">
       <div class="card">
-        <h1 id="days"></h1>
-        <h1>天</h1>
+        <h1 id="days" class="timer"></h1>
+        <h2>天</h2>
       </div>
       <div class="card">
-        <h1 id="hours"></h1>
-        <h1>時</h1>
+        <h1 id="hours" class="timer"></h1>
+        <h2>時</h2>
       </div>
       <div class="card">
-        <h1 id="minutes"></h1>
-        <h1>分</h1>
+        <h1 id="minutes" class="timer"></h1>
+        <h2>分</h2>
       </div>
       <div class="card">
-        <h1 id="seconds"></h1>
-        <h1>秒</h1>
+        <h1 id="seconds" class="timer"></h1>
+        <h2>秒</h2>
       </div>
     </div>
   </div>
   <script src="countdown.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/pixi.js@7.x/dist/pixi.min.js"></script>
   <script src="https://unpkg.com/gsap@3.9.0/dist/gsap.min.js"></script>
+  <script src="https://unpkg.com/@pixi/sound/dist/pixi-sound.js"></script>
   <script src="firework.js"></script>
 </body>
 

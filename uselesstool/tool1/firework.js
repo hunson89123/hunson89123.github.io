@@ -2,12 +2,12 @@ const app = new PIXI.Application({
     width: window.innerWidth,
     height: window.innerHeight,
     backgroundColor: 0x121212,
-    resolution: window.devicePixelRatio || 1,
 });
 
 document.body.appendChild(app.view);
 
-function getRandomColor(baseColor, variation = 30) {
+//variation為色相角度範圍大小，角度越大隨機到的顏色差異越大
+function getRandomColor(baseColor, variation = 87) {
     const hueVariation = Math.random() * variation - variation / 2;
     const finalHue = (baseColor + hueVariation) % 360;
     return PIXI.utils.string2hex(`hsl(${finalHue}, 100%, 50%)`);
@@ -19,8 +19,8 @@ function launchFirework(x, y) {
 
     for (let i = 0; i < particleCount; i++) {
         const particle = new PIXI.Graphics();
-        const size = Math.random() * 3;
-        const length = Math.random() * 100 + 10;
+        const size = Math.random() * 3;//煙火粒子效果寬度
+        const length = Math.random() * 100 + 10;//煙火粒子效果長度
 
         particle.lineStyle({
             width: size,
@@ -58,24 +58,64 @@ function launchFirework(x, y) {
             },
         });
     }
+    //播放音效
+    PIXI.sound.Sound.from({
+        url: 'explode' + (Math.floor(Math.random() * 8) + 1) + '.wav',
+        preload: true,
+        loaded: function (err, sound) {
+            sound.volume = Math.random() * 3;//隨機音量
+            sound.play({
+                start: .5,
+                filters: [
+                    new PIXI.sound.filters.StereoFilter((x / window.innerWidth) * 2 - 1),//聲道控制(-1左1右，透過x軸除以頁面寬度來決定左右聲道)
+                ],
+            });
+            //利用延遲製造回音
+            setTimeout(function () {
+                sound.play({
+                    volume: .1,
+                    filters: [
+                        new PIXI.sound.filters.StereoFilter((x / window.innerWidth) * 2 - 1),
+                    ],
+                });
+            }, 100);
+        }
+    });
 }
 
-app.stage.interactive = true; // 啟用舞台的交互性
+function launchFireworkOnMove(event) {
+    const x = event.clientX;
+    const y = event.clientY;
+    launchFirework(x, y);
+}
 
 window.addEventListener("pointerdown", (event) => {
-    // 在這裡處理點擊事件
-    const x = event.x;
-    const y = event.y;
+    const x = event.clientX;
+    const y = event.clientY;
     launchFirework(x, y);
-})
+
+    // 綁定 pointermove 事件
+    // window.addEventListener("pointermove", launchFireworkOnMove);
+});
+
+window.addEventListener("pointerup", () => {
+    // 移除 pointermove 事件
+    window.removeEventListener("pointermove", launchFireworkOnMove);
+});
 
 
 window.addEventListener('resize', () => {
     app.renderer.resize(window.innerWidth, window.innerHeight);
 });
 
-setInterval(function () {
+function animate() {
     var rndW = Math.random() * window.innerWidth;
     var rndH = Math.random() * window.innerHeight;
     launchFirework(rndW, rndH);
-}, 1000)
+    setTimeout(() => {
+        requestAnimationFrame(animate);
+    }, 1000);
+}
+
+// 開始動畫
+animate();
