@@ -14,7 +14,7 @@ window.addEventListener('resize', resizeCanvas);
 
 // 視窗大小變化時的處理函數
 function resizeCanvas() {
-    DPR = window.devicePixelRatio;
+    DPR = window.devicePixelRatio * .5;
     app.renderer.resize(window.innerWidth, window.innerHeight);
     createBackgoundBoard()
 }
@@ -52,7 +52,7 @@ function createBlock() {
 function createSquare(color) {
     const square = new PIXI.Graphics();
     square.beginFill(color);
-    square.drawRect(0, 0, 30, 30);
+    square.drawRect(0, 0, 30 * DPR, 30 * DPR);
     square.endFill();
     return square;
 }
@@ -85,8 +85,8 @@ function renderBoard() {
 function isValidMove() {
     for (let i = 0; i < currentBlock.children.length; i++) {
         const square = currentBlock.children[i];
-        const boardX = Math.floor((currentBlock.x + square.x - background.x) / 30);
-        const boardY = Math.floor((currentBlock.y + square.y - background.y) / 30);
+        const boardX = Math.floor((currentBlock.x + square.x - background.x) / (30 * DPR));
+        const boardY = Math.floor((currentBlock.y + square.y - background.y) / (30 * DPR));
         // 檢查是否超出邊界
         if (boardY >= 20) {
             return false;
@@ -97,7 +97,7 @@ function isValidMove() {
         }
 
         if (boardX >= 10) {
-            currentBlock.x = background.x + 210;
+            currentBlock.x = background.x + 210 * DPR;
         }
 
         // 檢查是否與其他方塊重疊
@@ -133,7 +133,7 @@ function update() {
         fixBlock();
         spawnNewBlock();
     }
-    moveBlock(0, 30);
+    moveBlock(0, 30 * DPR);
 
     app.renderer.render(app.stage);
     setTimeout(update, 1000);
@@ -214,13 +214,13 @@ function init() {
     document.addEventListener('keydown', (event) => {
         switch (event.key) {
             case 'ArrowLeft':
-                moveBlock(-30, 0);
+                moveBlock(-30 * DPR, 0);
                 break;
             case 'ArrowRight':
-                moveBlock(30, 0);
+                moveBlock(30 * DPR, 0);
                 break;
             case 'ArrowDown':
-                moveBlock(0, 30);
+                moveBlock(0, 30 * DPR);
                 break;
             case 'ArrowUp':
                 rotateBlock();
