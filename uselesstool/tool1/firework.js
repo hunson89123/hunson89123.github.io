@@ -1,10 +1,12 @@
 const app = new PIXI.Application({
     width: window.innerWidth,
     height: window.innerHeight,
+    backgroundAlpha: 0,
     backgroundColor: 0x121212,
+    antialias: true,
 });
 
-document.body.appendChild(app.view);
+document.getElementById("fireworkArea").appendChild(app.view);
 
 //variation為色相角度範圍大小，角度越大隨機到的顏色差異越大
 function getRandomColor(baseColor, variation = 87) {
@@ -14,7 +16,7 @@ function getRandomColor(baseColor, variation = 87) {
 }
 
 function launchFirework(x, y) {
-    const particleCount = 100;
+    const particleCount = Math.random() * 360 + 100;
     const baseColor = Math.random() * 360; // 基準色
 
     for (let i = 0; i < particleCount; i++) {
@@ -36,7 +38,7 @@ function launchFirework(x, y) {
         particle.position.y = y;
 
         const angle = Math.PI * 2 * Math.random();
-        const distance = Math.random() * 500;
+        const distance = Math.random() * 360 / 360 * 500;
         const targetX = x + Math.cos(angle) * distance;
         const targetY = y + Math.sin(angle) * distance;
 
@@ -63,7 +65,7 @@ function launchFirework(x, y) {
         url: 'explode' + (Math.floor(Math.random() * 8) + 1) + '.wav',
         preload: true,
         loaded: function (err, sound) {
-            sound.volume = Math.random() * 3;//隨機音量
+            sound.volume = (particleCount - 100) / 360 * 5;//隨機音量
             sound.play({
                 start: .5,
                 filters: [
@@ -73,12 +75,12 @@ function launchFirework(x, y) {
             //利用延遲製造回音
             setTimeout(function () {
                 sound.play({
-                    volume: .1,
+                    volume: (particleCount - 100) / 360 * .1,
                     filters: [
                         new PIXI.sound.filters.StereoFilter((x / window.innerWidth) * 2 - 1),
                     ],
                 });
-            }, 100);
+            }, (particleCount - 100) / 360 * 100);
         }
     });
 }

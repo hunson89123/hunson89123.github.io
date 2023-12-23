@@ -1,9 +1,15 @@
 html,
 body {
+  display: flex;
   height: 100%;
   margin: 0 auto;
   background: #121212;
   user-select: none;
+}
+
+@font-face {
+  font-family: font;
+  src: url(Cubic_11_1.100_R.ttf);
 }
 
 .div {
@@ -17,25 +23,28 @@ body {
 
 .div p {
   line-height: 1em;
-  font-family: 'Noto Serif TC', serif;
+  font-family: font;
   font-size: 5em;
-  font-style: bold;
 }
 
 .div a {
   margin: 0 auto;
-  font-family: 'Noto Serif TC', serif;
+  font-family: font;
 }
 
 .card {
   color: #FFFFFF;
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
   margin: 20px;
   width: 120px;
   height: 150px;
 }
 
 .box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100vw;
   vertical-align: middle;
   text-align: center;
@@ -43,16 +52,40 @@ body {
 
 h1,
 h2 {
-  line-height: 0.5em;
-  font-family: 'Noto Serif TC', serif;
+  line-height: 0.05em;
+  font-family: font;
+}
+
+h1 {
+  font-size: 3rem;
 }
 
 canvas {
-  display: block;
-  z-index: 9999;
+  display: flex;
+  box-shadow: inset 0px 0px 50px 25px black;
 }
 
 .timer {
-  font-size: 4em;
-  font-family: 'Orbitron', sans-serif;
+  font-size: 5em;
+  font-family: 'font';
+}
+
+#fireworkArea {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+/*USE HEADPHONES FOR BETTER EXPERIENCE*/
+#UHFBE {
+  width: 100%;
+  text-align: center;
+  font-family: 'font';
+  font-size: 1.5em;
+  position: absolute;
+  color: #FFFFFF;
+  bottom: 5%;
+  animation: anim-float 3s ease-in-out infinite;
 }
