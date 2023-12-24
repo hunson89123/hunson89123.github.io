@@ -62,7 +62,6 @@ h1 {
 
 canvas {
   display: flex;
-  box-shadow: inset 0px 0px 50px 25px black;
 }
 
 .timer {

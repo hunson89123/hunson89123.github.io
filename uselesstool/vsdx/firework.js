@@ -16,13 +16,13 @@ function getRandomColor(baseColor, variation = 87) {
 }
 
 function launchFirework(x, y) {
-    const particleCount = Math.random() * 360 + 100;
+    const particleCount = Math.random() * 187 + 87;
     const baseColor = Math.random() * 360; // 基準色
 
     for (let i = 0; i < particleCount; i++) {
         const particle = new PIXI.Graphics();
         const size = Math.random() * 3;//煙火粒子效果寬度
-        const length = Math.random() * 100 + 10;//煙火粒子效果長度
+        const length = Math.random() * 30 + 10;//煙火粒子效果長度
 
         particle.lineStyle({
             width: size,
@@ -38,7 +38,7 @@ function launchFirework(x, y) {
         particle.position.y = y;
 
         const angle = Math.PI * 2 * Math.random();
-        const distance = Math.random() * 360 / 360 * 500;
+        const distance = Math.random() * 360 / 360 * 300;
         const targetX = x + Math.cos(angle) * distance;
         const targetY = y + Math.sin(angle) * distance;
 
@@ -62,25 +62,24 @@ function launchFirework(x, y) {
     }
     //播放音效
     PIXI.sound.Sound.from({
-        url: 'explode' + (Math.floor(Math.random() * 8) + 1) + '.wav',
+        url: 'firework' + (Math.floor(Math.random() * 5) + 1) + '.mp3',
         preload: true,
         loaded: function (err, sound) {
-            sound.volume = (particleCount - 100) / 360 * 5;//隨機音量
+            sound.volume = (particleCount - 100) / 360 * 5;//音量隨粒子數量調整
             sound.play({
-                start: .5,
                 filters: [
                     new PIXI.sound.filters.StereoFilter((x / window.innerWidth) * 2 - 1),//聲道控制(-1左1右，透過x軸除以頁面寬度來決定左右聲道)
                 ],
             });
-            //利用延遲製造回音
-            setTimeout(function () {
-                sound.play({
-                    volume: (particleCount - 100) / 360 * .1,
-                    filters: [
-                        new PIXI.sound.filters.StereoFilter((x / window.innerWidth) * 2 - 1),
-                    ],
-                });
-            }, (particleCount - 100) / 360 * 100);
+            // //利用延遲製造回音
+            // setTimeout(function () {
+            //     sound.play({
+            //         volume: (particleCount - 100) / 360 * .1,
+            //         filters: [
+            //             new PIXI.sound.filters.StereoFilter((x / window.innerWidth) * 2 - 1),
+            //         ],
+            //     });
+            // }, (particleCount - 100) / 360 * 100);
         }
     });
 }
@@ -116,7 +115,7 @@ function animate() {
     launchFirework(rndW, rndH);
     setTimeout(() => {
         requestAnimationFrame(animate);
-    }, 1000);
+    }, Math.random() * 1000);
 }
 
 // 開始動畫
