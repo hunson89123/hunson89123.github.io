@@ -1,6 +1,4 @@
-// Riot Games API Key
-const riotAPIKey = 'RGAPI-495383cb-7896-4df5-b538-6c1358042473';
-
+require('dotenv').config();
 $('#summonerForm').submit(function (event) {
     event.preventDefault();
     const search_text = $('#search_input').val().split('#');
@@ -10,7 +8,11 @@ $('#summonerForm').submit(function (event) {
     $.ajax({
         url: `https://asia.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}?api_key=${riotAPIKey}`,
         headers: {
-            'X-Riot-Token': riotAPIKey
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+            "Accept-Language": "en-US,en;q=0.9,zh-TW;q=0.8,zh;q=0.7,zh-CN;q=0.6",
+            "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
+            "Origin": "https://developer.riotgames.com",
+            "X-Riot-Token": process.env.API_KEY
         },
         success: function (data) {
             const summonerInfo = `
