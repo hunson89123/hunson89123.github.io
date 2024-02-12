@@ -1,4 +1,3 @@
-require('dotenv').config();
 $('#summonerForm').submit(function (event) {
     event.preventDefault();
     const search_text = $('#search_input').val().split('#');
@@ -12,7 +11,7 @@ $('#summonerForm').submit(function (event) {
             "Accept-Language": "en-US,en;q=0.9,zh-TW;q=0.8,zh;q=0.7,zh-CN;q=0.6",
             "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
             "Origin": "https://developer.riotgames.com",
-            "X-Riot-Token": process.env.API_KEY
+            "X-Riot-Token": process.env.RIOTAPIKEY
         },
         success: function (data) {
             const summonerInfo = `
