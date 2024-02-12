@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Fireworks</title>
+    <style>
+        * {
+            padding: 0%;
+            margin: 0%;
+        }
+    </style>
+    <script type="module">
+        import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r125/build/three.module.js';
+        import { OrbitControls } from 'https://threejsfundamentals.org/threejs/resources/threejs/r125/examples/jsm/controls/OrbitControls.js';
+
+        let scene, camera, renderer, controls;
+
+        init();
+        animate();
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            controls = new OrbitControls(camera, renderer.domElement);
+            camera.position.z = 5;
+
+            createFirework();
+        }
+
+        function createFirework() {
+            const fireworkGeometry = new THREE.BufferGeometry();
+            const fireworkMaterial = new THREE.PointsMaterial({ size: 0.1, color: 0x00ffff });
+
+            const fireworkVertices = [];
+
+            // Add your firework trajectory points here
+            // Example: fireworkVertices.push(new THREE.Vector3(x, y, z));
+            // 在createFirework函數中
+            // 添加一個簡單的頂點
+            fireworkVertices.push(new THREE.Vector3(0, 0, 0));
+
+            fireworkGeometry.setAttribute('position', new THREE.Float32BufferAttribute(fireworkVertices, 3));
+
+
+            const firework = new THREE.Points(fireworkGeometry, fireworkMaterial);
+            scene.add(firework);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</head>
+
+<body>
+</body>
+
+</html>
