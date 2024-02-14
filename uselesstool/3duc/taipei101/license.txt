@@ -1,0 +1,11 @@
+Model Information:
+* title:	Taipei101 Submission
+* source:	https://sketchfab.com/3d-models/taipei101-submission-aa92766fd78f45619b3495b615bb9a97
+* author:	austmgive (https://sketchfab.com/austmgive)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Taipei101 Submission" (https://sketchfab.com/3d-models/taipei101-submission-aa92766fd78f45619b3495b615bb9a97) by austmgive (https://sketchfab.com/austmgive) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
