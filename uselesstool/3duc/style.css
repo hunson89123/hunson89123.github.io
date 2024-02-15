@@ -19,9 +19,29 @@ header h6 {
 }
 
 #container3D canvas {
+    z-index: -1;
     width: 100vw !important;
-    height: 100vh !important;
     position: absolute;
     top: 0;
     left: 0;
+}
+
+#info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 90%;
+    height: 10%;
+    background-color: #00000066;
+    margin: 10px;
+    padding: 10px;
+    color: white;
+}
+
+#license {
+    position: absolute;
+    bottom: 5px;
+    width: 100%;
+    color: #FFFFFF;
+    text-align: center;
 }

@@ -1,0 +1,11 @@
+Model Information:
+* title:	Taipei City
+* source:	https://sketchfab.com/3d-models/taipei-city-1deeae9f357a4c1cb9df461703006c65
+* author:	otaru (https://sketchfab.com/otaru)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Taipei City" (https://sketchfab.com/3d-models/taipei-city-1deeae9f357a4c1cb9df461703006c65) by otaru (https://sketchfab.com/otaru) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

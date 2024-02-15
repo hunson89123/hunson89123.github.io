@@ -5,63 +5,73 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, .1, 1000);
 const msg = document.getElementById('msg');
-let object;
-let objToRender = 'taipei101';
-let mousePos = { x: 0, y: 0 };
+const info = document.getElementById('info');
+var object;
 const loaders = new GLTFLoader();
 loaders.load(
-    `earth/scene.gltf`,
+    `taipei101/scene.gltf`,
     function (gltf) {
-        object = gltf.scene;
+        object = gltf.scene
         scene.add(object);
 
-        /* 處理地糗軸心置中問題 */
-        var box = new THREE.Box3().setFromObject(object);
-        box.getCenter(object.position); // this re-sets the object position
-        object.position.multiplyScalar(- 1);
+        //處理從101中心縮放
+        var bbox = new THREE.Box3().setFromObject(object);
 
-        var pivot = new THREE.Group();
-        scene.add(pivot);
-        pivot.add(object);
+        var center = new THREE.Vector3();
+        bbox.getCenter(center);
+
+        var minPoint = bbox.min;
+        var maxPoint = bbox.max;
+
+        var verticalCenter = (minPoint.z + maxPoint.z) / 2;
+        camera.position.set(minPoint.x - 50, minPoint.y, 0);
+        camera.lookAt(scene.position);
     },
     function (xhr) {
-        msg.innerText = (xhr.loaded / xhr.total * 100) + '%'
+        msg.innerText = (xhr.loaded / xhr.total * 100).toFixed(1) + "%"
     },
     function (error) {
         msg.innerText = error;
     }
 );
 
-const renderer = new THREE.WebGLRenderer({ alpha: true });
+
+
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 const controls = new OrbitControls(camera, renderer.domElement);
 
 document.getElementById("container3D").appendChild(renderer.domElement);
-camera.position.z = 15;
 
 const topLight = new THREE.DirectionalLight(0xffffff, 1);
-topLight.position.set(500, 50, 500);
+topLight.position.set(100, 100, 100);
 topLight.castShadow = true;
 scene.add(topLight);
 
-const ambientLight = new THREE.AmbientLight(0x000000, 5);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // 使用淺黃色（PeachPuff）並設置強度為0.5
 scene.add(ambientLight);
 
+var pointLight = new THREE.PointLight(0xff0000, 1000, 1000); // 白色光，強度為1，距離為100的點光源
+pointLight.position.set(2, -5, 0); // 設定光源位置，這裡假設燈光位於摩天大樓頂部的中心
+scene.add(pointLight); // 將點光源添加到場景中
+
+var pointLightHelper = new THREE.PointLightHelper(pointLight, 1); // 點光源Helper
+scene.add(pointLightHelper); // 將點光源Helper添加到場景中
 
 function animate() {
     requestAnimationFrame(animate);
+    info.innerText = "相機座標：" + camera.position.x.toFixed(1) + " / " + camera.position.y.toFixed(1) + " / " + camera.position.z.toFixed(1);
     renderer.render(scene, camera);
+
+    var amplitude = 1000; // 呼吸燈強度的振幅
+    var period = 1000; // 呼吸燈的週期，以毫秒為單位
+    var time = Date.now();
+    var intensity = Math.sin(2 * Math.PI * time / period) * amplitude + amplitude; // 此處的Math.sin函數創建了一個週期性變化
+    pointLight.intensity = intensity;
+
 }
 
-// 添加陀螺儀控制
-function handleOrientation(event) {
-    var x = event.beta;  // 在[-180, 180]之間，表示前後傾斜。
-    var y = event.gamma; // 在[-90, 90]之間，表示左右傾斜。
-    object.rotation.x = x * Math.PI / 180;
-    object.rotation.y = y * Math.PI / 180;
-}
 
-window.addEventListener("deviceorientation", handleOrientation, true);
 
 window.addEventListener("resize", function () {
     camera.aspect = window.innerWidth / window.innerHeight;
