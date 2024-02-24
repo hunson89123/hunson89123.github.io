@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Visualization - Low/High Frequency</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <input type="file" id="audioFile" accept=".mp3, .wav" />
+    <canvas id="visualizer"></canvas>
+    <div id="musicData"></div>
+    <script>
+        var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        var canvas = document.getElementById('visualizer');
+        var canvasCtx = canvas.getContext('2d');
+        var musicData = document.getElementById('musicData');
+
+        document.getElementById('audioFile').addEventListener('change', function (event) {
+            var file = event.target.files[0];
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                audioContext.decodeAudioData(event.target.result, function (buffer) {
+                    visualize(buffer);
+                    console.log(buffer);
+
+                });
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        function visualize(buffer) {
+            var source = audioContext.createBufferSource();
+            source.buffer = buffer;
+
+            var splitter = audioContext.createChannelSplitter(2);
+            var analyserLow = audioContext.createAnalyser();
+            var analyserHigh = audioContext.createAnalyser();
+
+            source.connect(splitter);
+            splitter.connect(analyserLow, 0, 0);
+            splitter.connect(analyserHigh, 1, 0);
+
+            analyserLow.fftSize = 256;
+            analyserHigh.fftSize = 256;
+
+            var bufferLengthLow = analyserLow.frequencyBinCount;
+            var bufferLengthHigh = analyserHigh.frequencyBinCount;
+            var dataArrayLow = new Uint8Array(bufferLengthLow);
+            var dataArrayHigh = new Uint8Array(bufferLengthHigh);
+
+            source.connect(audioContext.destination);
+            source.start();
+
+            draw();
+
+            function draw() {
+                requestAnimationFrame(draw);
+
+                analyserLow.getByteFrequencyData(dataArrayLow);
+                analyserHigh.getByteFrequencyData(dataArrayHigh);
+
+                canvasCtx.fillStyle = '#121212';
+                canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+                var barWidth = (canvas.width / bufferLengthLow) * 2.5;
+                var barHeight;
+                var x = 0;
+
+                canvasCtx.fillStyle = 'rgb(0, 255, 0)';
+                for (var i = 0; i < bufferLengthLow; i++) {
+                    barHeight = dataArrayLow[i];
+                    canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+                    x += barWidth + 1;
+                }
+
+                x = 0;
+                canvasCtx.fillStyle = 'rgb(255, 255, 255)';
+                for (var i = 0; i < bufferLengthHigh; i++) {
+                    barHeight = dataArrayHigh[i];
+                    canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+                    x += barWidth + 1;
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
