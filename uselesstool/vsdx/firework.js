@@ -1,13 +1,17 @@
+
+const { Sprite, Container } = PIXI;
+const { diffuseGroup, normalGroup, lightGroup, PointLight, AmbientLight } = PIXI.lights;
+const { Layer, Stage } = PIXI.layers;
+
 const app = new PIXI.Application({
     width: window.innerWidth,
     height: window.innerHeight,
-    backgroundAlpha: 0,
     backgroundColor: 0x121212,
     antialias: true,
 });
-
 document.getElementById("fireworkArea").appendChild(app.view);
 
+app.stage = new Stage();
 //variation為色相角度範圍大小，角度越大隨機到的顏色差異越大
 function getRandomColor(baseColor, variation = 87) {
     const hueVariation = Math.random() * variation - variation / 2;
@@ -71,23 +75,146 @@ function launchFirework(x, y) {
                     new PIXI.sound.filters.StereoFilter((x / window.innerWidth) * 2 - 1),//聲道控制(-1左1右，透過x軸除以頁面寬度來決定左右聲道)
                 ],
             });
-            // //利用延遲製造回音
-            // setTimeout(function () {
-            //     sound.play({
-            //         volume: (particleCount - 100) / 360 * .1,
-            //         filters: [
-            //             new PIXI.sound.filters.StereoFilter((x / window.innerWidth) * 2 - 1),
-            //         ],
-            //     });
-            // }, (particleCount - 100) / 360 * 100);
         }
     });
+
+    // let isCrackling = Math.random() >= 0.9;
+    // let isCrackling = true;
+    // if (isCrackling) {
+    //     setTimeout(function () {
+    //         const explosionContainer = new PIXI.Container();
+    //         const numParticles = 50; // 粒子數量
+
+    //         for (let i = 0; i < numParticles; i++) {
+    //             const particle = new PIXI.Graphics();
+    //             const color = 0xffffff;
+    //             const size = 5; // 粒子大小
+    //             const angle = Math.random() * Math.PI * 2; // 粒子飛行角度
+    //             const speed = Math.random() * 5 + 2; // 粒子速度
+
+    //             particle.beginFill(color);
+    //             particle.drawCircle(0, 0, size);
+    //             particle.endFill();
+
+    //             particle.x = x - Math.random() * 200 + 100;
+    //             particle.y = y - Math.random() * 200 + 100;
+
+    //             const vx = Math.cos(angle) * speed;
+    //             const vy = Math.sin(angle) * speed;
+
+    //             particle.vx = vx;
+    //             particle.vy = vy;
+
+    //             explosionContainer.addChild(particle);
+    //             app.stage.addChild(explosionContainer);
+
+    //             const duration = 1;
+
+    //             gsap.to(explosionContainer, {
+    //                 alpha: 0,
+    //                 duration: duration,
+    //                 ease: "power1.line",
+    //                 onComplete: () => {
+    //                     app.stage.removeChild(particle);
+    //                 },
+    //             });
+    //         }
+
+    //         PIXI.sound.Sound.from({
+    //             url: 'fireworkCrackling.mp3',
+    //             preload: true,
+    //             loaded: function (err, sound) {
+    //                 sound.volume = (particleCount - 100) / 360 * 5;//音量隨粒子數量調整
+    //                 sound.play({
+    //                     filters: [
+    //                         new PIXI.sound.filters.StereoFilter((x / window.innerWidth) * 2 - 1),//聲道控制(-1左1右，透過x軸除以頁面寬度來決定左右聲道)
+    //                     ],
+    //                 });
+    //             }
+    //         });
+    //     }, 800);
+    // }
+    // Create the point light
+    const light = new AmbientLight(getRandomColor(baseColor), 0.1);
+    light.x = x;
+    light.y = y;
+    light.material.uniforms.uLightHeight = 0.3;
+
+
+    // Create a background container 
+    const background = new Container();
+    background.addChild(light);
+
+    app.stage.addChild(new Layer(lightGroup), background);
+
+    const duration = 0.05; // 光源閃爍持續時間
+    gsap.to(light, {
+        alpha: 0,
+        duration: duration,
+        onComplete: () => {
+            background.removeChild(light);
+        }
+    });
+}
+
+
+function launchWillowFireworks(x, y) {
+    const container = new PIXI.Container();
+
+    const colors = [
+        0xFF0000, // 紅色
+        0xFFFF00, // 黃色
+        0x00FF00, // 綠色
+        0x0000FF, // 藍色
+        0xFF00FF, // 紫色
+        0xFFFFFF  // 白色
+    ];
+
+    const count = 50; // 煙火粒子數量
+
+    for (let i = 0; i < count; i++) {
+        const particle = new PIXI.Graphics();
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const size = Math.random() * 4 + 1; // 粒子大小
+        const speed = Math.random() * 5 + 2; // 粒子速度
+        const angle = Math.random() * Math.PI * 2; // 粒子飛行角度
+
+        particle.beginFill(color);
+        particle.drawCircle(0, 0, size);
+        particle.endFill();
+
+        particle.position.set(x, y);
+
+        const vx = Math.cos(angle) * speed;
+        const vy = Math.sin(angle) * speed;
+
+        particle.vx = vx;
+        particle.vy = vy;
+
+        const distance = Math.random() * 360 / 360 * 300;
+        const targetX = x + Math.cos(angle) * distance;
+        const targetY = y + Math.sin(angle) * distance;
+
+        container.addChild(particle);
+        app.stage.addChild(container);
+
+        gsap.to(container, {
+            x: targetX,
+            y: targetY,
+            duration: 5,
+            ease: "power1.line",
+            onComplete: () => {
+                app.stage.removeChild(container);
+            }
+        });
+    }
 }
 
 function launchFireworkOnMove(event) {
     const x = event.clientX;
     const y = event.clientY;
     launchFirework(x, y);
+
 }
 
 window.addEventListener("pointerdown", (event) => {
@@ -117,6 +244,8 @@ function animate() {
         requestAnimationFrame(animate);
     }, Math.random() * 1000);
 }
+
+
 
 // 開始動畫
 animate();
