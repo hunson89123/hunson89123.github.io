@@ -31,7 +31,7 @@ vec3 L = normalize(lightVector);
 
 // pre-multiply light color with intensity
 // then perform "N dot L" to determine our diffuse
-vec3 diffuse = uColor.rgb * uBrightness * max(dot(N, L), 0.0);
+vec3 diffuse = uColor.rgb * uBrightness * max(dot(N, L), 1.0);
 `, y = `vec2 texCoord = gl_FragCoord.xy / uViewPixels;
 texCoord.y = (1.0 - texCoord.y) * uFlipY + texCoord.y * (1.0 - uFlipY); // FBOs positions are flipped.
 `, v = `vec4 normalColor = texture2D(uNormalSampler, texCoord);

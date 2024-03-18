@@ -135,10 +135,9 @@ function launchFirework(x, y) {
     //     }, 800);
     // }
     // Create the point light
-    const light = new AmbientLight(getRandomColor(baseColor), 0.1);
+    const light = new PointLight(getRandomColor(baseColor), 1);
     light.x = x;
     light.y = y;
-    light.material.uniforms.uLightHeight = 0.3;
 
 
     // Create a background container 
@@ -147,7 +146,7 @@ function launchFirework(x, y) {
 
     app.stage.addChild(new Layer(lightGroup), background);
 
-    const duration = 0.05; // 光源閃爍持續時間
+    const duration = 1; // 光源閃爍持續時間
     gsap.to(light, {
         alpha: 0,
         duration: duration,
