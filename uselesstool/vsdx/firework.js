@@ -51,7 +51,7 @@ function launchFirework(x, y) {
 
         app.stage.addChild(particle);
 
-        const duration = 1;
+        const duration = (particleCount - 87) / 187 * 0.5 + 1;
 
         gsap.to(particle, {
             x: targetX,
@@ -135,7 +135,7 @@ function launchFirework(x, y) {
     //     }, 800);
     // }
     // Create the point light
-    const light = new PointLight(getRandomColor(baseColor), (particleCount - 87) / 100 + 0.1);
+    const light = new PointLight(getRandomColor(baseColor), (particleCount - 87) / 187 * 0.5);
     light.x = x;
     light.y = y;
 
