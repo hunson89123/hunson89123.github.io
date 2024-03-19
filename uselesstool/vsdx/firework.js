@@ -135,7 +135,7 @@ function launchFirework(x, y) {
     //     }, 800);
     // }
     // Create the point light
-    const light = new PointLight(getRandomColor(baseColor), 1);
+    const light = new PointLight(getRandomColor(baseColor), 0.1);
     light.x = x;
     light.y = y;
 
