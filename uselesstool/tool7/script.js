@@ -4,16 +4,8 @@ const bTb = document.getElementById('bTb');
 var map = L.map('map').setView(TW_center_coord, TW_center_zoomlv)//座標為臺灣地理中心
 
 
-var div = L.DomUtil.get('bTb'); // this must be an ID, not class!
-L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
-L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
-ShowHideBTB();
-map.on('move', (e) => {
-    ShowHideBTB();
-});
+var div = L.DomUtil.get('bTb');
 
-
-map.locate();
 map.on('locationfound', (e) => {
     map.flyTo(e.latlng, 17);
 });
@@ -42,6 +34,7 @@ var baselayers = {
 var overlays = {};
 L.control.layers(baselayers, overlays).addTo(map);
 baselayers['OpenStreetMap.HOT'].addTo(map);
+
 
 async function GetSheetData() {
     // Google Sheets 分享連結
@@ -74,8 +67,26 @@ async function GetSheetData() {
                 tableArray.push(rowArray);
         });
 
-        for (var i = 0; i < tableArray.length; i++) {
-            console.log(tableArray[i][16])
+        for (var i = 1; i < tableArray.length; i++) {
+            var alertContent = tableArray[i][15];
+            var areaData = tableArray[i][16].split('|');
+            var areaDesc = areaData[0].split('@')[1];
+            for (j = 1; j < areaData.length; j++) {
+                var areaDetail = areaData[j].split('@');
+                var areaType = areaDetail[0];
+                var areaContent = areaDetail[1];
+                var color = severityColor[tableArray[i][11]];
+                console.log(tableArray[i][10])
+                switch (areaType) {
+                    case 'circle':
+                        var circle = areaContent.split(' ');
+                        var alertAreaCircle = L.circle(circle[0].split(",").map(function (item) {
+                            return parseFloat(item);
+                        }), circle[1] * 1000, { color: color }).addTo(map);
+                        alertAreaCircle.bindPopup('<h2>' + areaDesc + '</h2>' + alertContent);
+                        break;
+                }
+            }
         }
     } catch (error) {
         console.error('發生錯誤:', error);
@@ -88,13 +99,7 @@ function BackToTW() {
     map.flyTo(TW_center_coord, TW_center_zoomlv);
 }
 
-function ShowHideBTB() {
-    var center = map.getCenter();
-    if (center.lat.toFixed(1) == TW_center_coord[0].toFixed(1) && center.lng.toFixed(1) == TW_center_coord[1].toFixed(1) && map.getZoom() == TW_center_zoomlv) {
-        bTb.classList.remove("visible_anim_up");
-        bTb.classList.add("hidden_anim_down");
-    } else {
-        bTb.classList.remove("hidden_anim_down");
-        bTb.classList.add("visible_anim_up");
-    }
+function GoToMy() {
+    map.locate();
+
 }
