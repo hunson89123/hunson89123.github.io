@@ -1,8 +1,9 @@
-const TW_center_coord = [23.97401041221854, 120.98201232801719];
+const TW_center_coord = [23.71537674452611, 120.99937407526494];
 const TW_center_zoomlv = 8;
 const bTb = document.getElementById('bTb');
 const loadingContainer = document.getElementById('loadingContainer');
 const loadingText = document.getElementById('loadingText');
+
 var map = L.map('map').setView(TW_center_coord, TW_center_zoomlv)//座標為臺灣地理中心
 
 
@@ -10,6 +11,12 @@ var div = L.DomUtil.get('bTb');
 
 map.on('locationfound', (e) => {
     map.flyTo(e.latlng, 17);
+    L.marker(e.latlng, {
+        icon: L.icon({
+            iconUrl: 'user.png',
+            iconSize: [36, 36]
+        })
+    }).addTo(map);
 });
 
 // 預設嚴重性顏色
@@ -20,11 +27,11 @@ severityColor['Moderate'] = '#ffff00';
 severityColor['Severe'] = '#ff8000';
 severityColor['Extreme'] = '#ff0000';
 
-document.addEventListener('keydown', (event) => {
-    var name = event.key;
-    var code = event.code;
-    if (name == 'r') changeImg();
-}, false);
+// document.addEventListener('keydown', (event) => {
+//     var name = event.key;
+//     var code = event.code;
+//     if (name == 'r') changeImg();
+// }, false);
 
 var baselayers = {
     'CartoDB_Voyager': L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'),
@@ -62,7 +69,12 @@ fetchJSON().then(json => {
 });
 
 function GetCoordinatesByGeoCode(geoCode) {
-    return geoJsonObj[geoCode]?.geometry.coordinates ?? null;
+    for (const key in geoJsonObj) {
+        if (key.startsWith(geoCode)) {
+            return geoJsonObj[key]?.geometry.coordinates ?? null;
+        }
+    }
+    return null;
 }
 
 async function GetSheetData() {
@@ -131,7 +143,6 @@ async function GetSheetData() {
                             break;
                         case 'geocode':
                             var coordinate = GetCoordinatesByGeoCode(data.value);
-
                             if (coordinate) {
                                 coordinate = coordinate.map(function (coord) {
                                     return coord.map(function (c) {
