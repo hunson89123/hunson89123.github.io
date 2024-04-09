@@ -2,12 +2,39 @@
     --max-width: 600px;
 }
 
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #00000000;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ffffff66;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #ffffff99;
+}
+
 body {
     position: relative;
     height: 100dvh;
     margin: 0px;
     overflow: hidden;
+    font-family: "Helvetica", "Arial", "LiHei Pro", "黑體-繁", "微軟正黑體", sans-serif;
 }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    line-height: 0;
+}
+
 
 #map {
     position: absolute;
@@ -108,6 +135,26 @@ button {
     border-left: 8px solid #fff;
     border-right: 8px solid #ff00;
     animation: loader .7s infinite linear;
+}
+
+#alertList {
+    position: absolute;
+    bottom: 25px;
+    left: 10px;
+    width: 30%;
+    height: 80%;
+    z-index: 1;
+    overflow: auto;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#alertList li {
+    background: #ffffff;
+    margin-bottom: 10px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    padding: 10px;
 }
 
 @keyframes loader {
