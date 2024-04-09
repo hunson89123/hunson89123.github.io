@@ -3,7 +3,7 @@ const TW_center_zoomlv = 8;
 const bTb = document.getElementById('bTb');
 const loadingContainer = document.getElementById('loadingContainer');
 const loadingText = document.getElementById('loadingText');
-
+const alertList = document.getElementById('alertList');
 var map = L.map('map').setView(TW_center_coord, TW_center_zoomlv)//座標為臺灣地理中心
 
 
@@ -107,6 +107,13 @@ async function GetSheetData() {
             if (rowArray[rowArray.length - 1].length !== 0) //檢查資料最後一欄不為空
                 tableArray.push(rowArray);
         });
+
+        tableArray.sort((a, b) => {
+            const dateA = new Date(a[2]);
+            const dateB = new Date(b[2]);
+            return dateB - dateA;
+        });
+
         for (var i = 1; i < tableArray.length; i++) {
             var alertContent = tableArray[i][15];
             var areaData = tableArray[i][16];
@@ -158,10 +165,47 @@ async function GetSheetData() {
                     }
                 }
             }
+
+            //alertList
+            var date = new Date(tableArray[i][2]);
+            var timeAgo = GetTimeAgo(date);
+            var weekdayZh = ['日', '一', '二', '三', '四', '五', '六'];
+            AddAlertListItem(`
+            <h1>${tableArray[i][9]}<h6>${timeAgo} - 
+            ${date.getFullYear()}/${String((new Date().getMonth() + 1)).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}(${weekdayZh[date.getDay()]}) 
+            ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}</h6></h1>
+            <span>${alertContent}</span>
+            `);
         }
         loadingContainer.classList.add('hidden_anim_fadeOut');
     } catch (error) {
         console.error('發生錯誤:', error);
+    }
+}
+
+function AddAlertListItem(htmlContent) {
+    var li = document.createElement("li");
+    li.innerHTML = htmlContent;
+    alertList.appendChild(li);
+}
+
+function GetTimeAgo(timestamp) {
+    var now = Date.now();
+    var difference = now - timestamp;
+
+    var seconds = Math.floor(difference / 1000);
+    var minutes = Math.floor(seconds / 60);
+    var hours = Math.floor(minutes / 60);
+    var days = Math.floor(hours / 24);
+
+    if (days > 0) {
+        return days + "天前";
+    } else if (hours > 0) {
+        return hours + "小時前";
+    } else if (minutes > 0) {
+        return minutes + "分鐘前";
+    } else {
+        return seconds + "秒前";
     }
 }
 
