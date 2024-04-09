@@ -1,6 +1,8 @@
 const TW_center_coord = [23.97401041221854, 120.98201232801719];
-const TW_center_zoomlv = 7;
+const TW_center_zoomlv = 8;
 const bTb = document.getElementById('bTb');
+const loadingContainer = document.getElementById('loadingContainer');
+const loadingText = document.getElementById('loadingText');
 var map = L.map('map').setView(TW_center_coord, TW_center_zoomlv)//座標為臺灣地理中心
 
 
@@ -33,8 +35,35 @@ var baselayers = {
 };
 var overlays = {};
 L.control.layers(baselayers, overlays).addTo(map);
-baselayers['OpenStreetMap.HOT'].addTo(map);
+baselayers['CartoDB.DarkMatter'].addTo(map);
 
+//geoJson
+var geoJsonObj = {};
+
+async function fetchJSON() {
+    const response = await fetch('VILLAGE_NLSC_1120928.json');
+    const json = await response.json();
+    return json;
+}
+
+function convertGeoJsonToObj(geoJson) {
+    const result = {};
+    geoJson.features.forEach(feature => {
+        const villCode = feature.properties.VILLCODE;
+        result[villCode] = feature;
+    });
+    return result;
+}
+
+fetchJSON().then(json => {
+    geoJson = json
+    geoJsonObj = convertGeoJsonToObj(geoJson);
+    GetSheetData();
+});
+
+function GetCoordinatesByGeoCode(geoCode) {
+    return geoJsonObj[geoCode]?.geometry.coordinates ?? null;
+}
 
 async function GetSheetData() {
     // Google Sheets 分享連結
@@ -66,34 +95,64 @@ async function GetSheetData() {
             if (rowArray[rowArray.length - 1].length !== 0) //檢查資料最後一欄不為空
                 tableArray.push(rowArray);
         });
-
         for (var i = 1; i < tableArray.length; i++) {
             var alertContent = tableArray[i][15];
-            var areaData = tableArray[i][16].split('|');
-            var areaDesc = areaData[0].split('@')[1];
-            for (j = 1; j < areaData.length; j++) {
-                var areaDetail = areaData[j].split('@');
-                var areaType = areaDetail[0];
-                var areaContent = areaDetail[1];
-                var color = severityColor[tableArray[i][11]];
-                console.log(tableArray[i][10])
-                switch (areaType) {
-                    case 'circle':
-                        var circle = areaContent.split(' ');
-                        var alertAreaCircle = L.circle(circle[0].split(",").map(function (item) {
-                            return parseFloat(item);
-                        }), circle[1] * 1000, { color: color }).addTo(map);
-                        alertAreaCircle.bindPopup('<h2>' + areaDesc + '</h2>' + alertContent);
-                        break;
+            var areaData = tableArray[i][16];
+            var color = severityColor[tableArray[i][11]]
+            const areas = [];
+
+            // 使用正則表達式來匹配並提取areaDesc和geocode
+            const regex = /areaDesc@(.*?)\|(geocode|circle)@([^|]+)/g;
+            let match;
+            let currentArea = null;
+            while ((match = regex.exec(areaData)) !== null) {
+                const areaDesc = match[1];
+                const type = match[2];
+                const value = match[3];
+
+                if (!currentArea || currentArea.areaDesc !== areaDesc) {
+                    currentArea = { areaDesc, data: [] };
+                    areas.push(currentArea);
+                }
+
+                currentArea.data.push({ type, value });
+            }
+            for (j = 0; j < areas.length; j++) {
+                var areaDesc = areas[j].areaDesc;
+                for (var k = 0; k < areas[j].data.length; k++) {
+                    var data = areas[j].data[k];
+                    switch (data.type) {
+                        case 'circle':
+                            var circle = data.value.split(' ');
+                            var alertAreaCircle = L.circle(circle[0].split(",").map(function (item) {
+                                return parseFloat(item);
+                            }), circle[1] * 1000, { fillColor: color, fillOpacity: 0.5, color: color, opacity: 0 }).addTo(map);
+                            alertAreaCircle.bindPopup('<h2>' + areaDesc + '</h2>' + alertContent);
+                            break;
+                        case 'geocode':
+                            var coordinate = GetCoordinatesByGeoCode(data.value);
+
+                            if (coordinate) {
+                                coordinate = coordinate.map(function (coord) {
+                                    return coord.map(function (c) {
+                                        return [c[1], c[0]];
+                                    })
+                                });
+                                var alertAreaPolygon = L.polygon(coordinate, { fillColor: color, fillOpacity: 0.5, color: color, opacity: 0 }).addTo(map);
+                                alertAreaPolygon.bindPopup('<h2>' + areaDesc + '</h2>' + alertContent);
+                            } else console.log(data.value + '找不到!');
+                            break;
+                        default:
+                            console.log(`無法解析${data.type}類型`);
+                    }
                 }
             }
         }
+        loadingContainer.classList.add('hidden_anim_fadeOut');
     } catch (error) {
         console.error('發生錯誤:', error);
     }
 }
-
-GetSheetData();
 
 function BackToTW() {
     map.flyTo(TW_center_coord, TW_center_zoomlv);
