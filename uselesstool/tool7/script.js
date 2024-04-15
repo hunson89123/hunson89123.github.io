@@ -4,6 +4,7 @@ const bTb = document.getElementById('bTb');
 const loadingContainer = document.getElementById('loadingContainer');
 const loadingText = document.getElementById('loadingText');
 const alertList = document.getElementById('alertList');
+var bounds = L.latLngBounds(); //儲存所有範圍標示
 var map = L.map('map').setView(TW_center_coord, TW_center_zoomlv)//座標為臺灣地理中心
 
 
@@ -114,6 +115,10 @@ async function GetSheetData() {
             return dateB - dateA;
         });
 
+        //儲存所有範圍標示
+
+        var areaL = [];
+
         for (var i = 1; i < tableArray.length; i++) {
             var alertContent = tableArray[i][15];
             var areaData = tableArray[i][16];
@@ -147,6 +152,7 @@ async function GetSheetData() {
                                 return parseFloat(item);
                             }), circle[1] * 1000, { fillColor: color, fillOpacity: 0.5, color: color, opacity: 0 }).addTo(map);
                             alertAreaCircle.bindPopup('<h2>' + areaDesc + '</h2>' + alertContent);
+                            areaL.push(alertAreaCircle);
                             break;
                         case 'geocode':
                             var coordinate = GetCoordinatesByGeoCode(data.value);
@@ -158,6 +164,7 @@ async function GetSheetData() {
                                 });
                                 var alertAreaPolygon = L.polygon(coordinate, { fillColor: color, fillOpacity: 0.5, color: color, opacity: 0 }).addTo(map);
                                 alertAreaPolygon.bindPopup('<h2>' + areaDesc + '</h2>' + alertContent);
+                                areaL.push(alertAreaPolygon);
                             } else console.log(data.value + '找不到!');
                             break;
                         default:
@@ -178,6 +185,10 @@ async function GetSheetData() {
             `);
         }
         loadingContainer.classList.add('hidden_anim_fadeOut');
+
+        areaL.forEach(function (a) {
+            bounds.extend(a.getBounds());
+        });
     } catch (error) {
         console.error('發生錯誤:', error);
     }
@@ -210,10 +221,10 @@ function GetTimeAgo(timestamp) {
 }
 
 function BackToTW() {
+    // map.fitBounds(bounds);
     map.flyTo(TW_center_coord, TW_center_zoomlv);
 }
 
 function GoToMy() {
     map.locate();
-
 }
