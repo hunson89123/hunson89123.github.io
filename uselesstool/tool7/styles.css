@@ -24,6 +24,8 @@ h6 {
     position: absolute;
     height: 100%;
     width: 100%;
+    top: 0;
+    left: 0;
     display: flex;
     justify-content: end;
     align-items: end;
@@ -138,6 +140,7 @@ button {
     margin-bottom: 10px;
     border: 2px solid rgba(0, 0, 0, 0.2);
     padding: 10px;
+    cursor: pointer;
 }
 
 @keyframes loader {
@@ -193,5 +196,9 @@ button {
 
     #alertList li {
         margin-bottom: 0;
+    }
+
+    #map {
+        height: 50%;
     }
 }
