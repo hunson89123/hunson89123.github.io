@@ -126,7 +126,7 @@ async function GetSheetData() {
             const areas = [];
 
             // 使用正則表達式來匹配並提取areaDesc和geocode
-            const regex = /areaDesc@(.*?)\|(geocode|circle)@([^|]+)/g;
+            const regex = /areaDesc@(.*?)\|(geocode|circle|polygon)@([^|]+)/g;
             let match;
             let currentArea = null;
             while ((match = regex.exec(areaData)) !== null) {
@@ -165,8 +165,17 @@ async function GetSheetData() {
                                 var alertAreaPolygon = L.polygon(coordinate, { fillColor: color, fillOpacity: 0.5, color: color, opacity: 0 }).addTo(map);
                                 alertAreaPolygon.bindPopup('<h2>' + areaDesc + '</h2>' + alertContent);
                                 areaL.push(alertAreaPolygon);
-                            } else console.log(data.value + '找不到!');
+                            }
+                            // else console.log(data.value + '找不到!');
                             break;
+                        case 'polygon':
+                            var coord = data.value.split(" ").map(function (coord) {
+                                var latLng = coord.split(",");
+                                return [parseFloat(latLng[0]), parseFloat(latLng[1])];
+                            });
+
+                            var alertPolygon = L.polygon(coord, { fillColor: color, fillOpacity: 0.5, color: color, opacity: 0 }).addTo(map);
+                            alertPolygon.bindPopup('<h2>' + areaDesc + '</h2>' + alertContent);
                         default:
                             console.log(`無法解析${data.type}類型`);
                     }
