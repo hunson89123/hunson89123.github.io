@@ -145,6 +145,11 @@ button {
     cursor: pointer;
 }
 
+.text-warning {
+    color: red;
+    font-weight: bold;
+}
+
 @keyframes loader {
     to {
         transform: rotate(360deg);
