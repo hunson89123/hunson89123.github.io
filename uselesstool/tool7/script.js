@@ -70,12 +70,13 @@ fetchJSON().then(json => {
 });
 
 function GetCoordinatesByGeoCode(geoCode) {
+    var coordinateArray = [];
     for (const key in geoJsonObj) {
         if (key.startsWith(geoCode)) {
-            return geoJsonObj[key]?.geometry.coordinates ?? null;
+            coordinateArray.push(geoJsonObj[key]?.geometry.coordinates ?? null);
         }
     }
-    return null;
+    return coordinateArray;
 }
 
 async function GetSheetData() {
@@ -123,9 +124,10 @@ async function GetSheetData() {
             var alertContent = tableArray[i][15];
             var areaData = tableArray[i][16];
             var color = severityColor[tableArray[i][11]]
+            var onMap = false;
             const areas = [];
 
-            // 使用正則表達式來匹配並提取areaDesc和geocode
+
             const regex = /areaDesc@(.*?)\|(geocode|circle|polygon)@([^|]+)/g;
             let match;
             let currentArea = null;
@@ -153,18 +155,22 @@ async function GetSheetData() {
                             }), circle[1] * 1000, { fillColor: color, fillOpacity: 0.5, color: color, opacity: 0 }).addTo(map);
                             alertAreaCircle.bindPopup('<h2>' + areaDesc + '</h2>' + alertContent);
                             areaL.push(alertAreaCircle);
+                            onMap = true;
                             break;
                         case 'geocode':
                             var coordinate = GetCoordinatesByGeoCode(data.value);
-                            if (coordinate) {
-                                coordinate = coordinate.map(function (coord) {
-                                    return coord.map(function (c) {
-                                        return [c[1], c[0]];
-                                    })
-                                });
-                                var alertAreaPolygon = L.polygon(coordinate, { fillColor: color, fillOpacity: 0.5, color: color, opacity: 0 }).addTo(map);
-                                alertAreaPolygon.bindPopup('<h2>' + areaDesc + '</h2>' + alertContent);
-                                areaL.push(alertAreaPolygon);
+                            if (coordinate.length > 0) {
+                                for (var x = 0; x < coordinate.length; x++) {
+                                    coordinate[x] = coordinate[x].map(function (coord) {
+                                        return coord.map(function (c) {
+                                            return [c[1], c[0]];
+                                        })
+                                    });
+                                    var alertAreaPolygon = L.polygon(coordinate[x], { fillColor: color, fillOpacity: 0.5, color: color, opacity: 0 }).addTo(map);
+                                    alertAreaPolygon.bindPopup('<h2>' + areaDesc + '</h2>' + alertContent);
+                                    areaL.push(alertAreaPolygon);
+                                }
+                                onMap = true;
                             }
                             // else console.log(data.value + '找不到!');
                             break;
@@ -176,6 +182,8 @@ async function GetSheetData() {
 
                             var alertPolygon = L.polygon(coord, { fillColor: color, fillOpacity: 0.5, color: color, opacity: 0 }).addTo(map);
                             alertPolygon.bindPopup('<h2>' + areaDesc + '</h2>' + alertContent);
+                            onMap = true;
+                            break;
                         default:
                             console.log(`無法解析${data.type}類型`);
                     }
@@ -185,12 +193,13 @@ async function GetSheetData() {
             //alertList
             var date = new Date(tableArray[i][2]);
             var timeAgo = GetTimeAgo(date);
-            var weekdayZh = ['日', '一', '二', '三', '四', '五', '六'];
+            var notOnMapString = (onMap) ? "" : "※此示警因地圖資料問題而無出現警示範圍在地圖上";
+            var effectiveDate = new Date(tableArray[i][13]);
+            var expiresDate = new Date(tableArray[i][14]);
             AddAlertListItem(`
-            <h1>${tableArray[i][9]}<h6>${timeAgo} - 
-            ${date.getFullYear()}/${String((new Date().getMonth() + 1)).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}(${weekdayZh[date.getDay()]}) 
-            ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}</h6></h1>
-            <span>${alertContent}</span>
+            <h1>${tableArray[i][9]}<h6>發布於${timeAgo}
+            <br>示警有效期間：${DateFormater(effectiveDate)} ~ ${DateFormater(expiresDate)}</h6></h1>
+            <span>${alertContent}</span><br><span class="text-warning">${notOnMapString}</span>
             `);
         }
         loadingContainer.classList.add('hidden_anim_fadeOut');
@@ -201,6 +210,12 @@ async function GetSheetData() {
     } catch (error) {
         console.error('發生錯誤:', error);
     }
+}
+
+function DateFormater(date) {
+    var weekdayZh = ['日', '一', '二', '三', '四', '五', '六'];
+    return `${date.getFullYear()}/${String((new Date().getMonth() + 1)).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}(${weekdayZh[date.getDay()]}) 
+    ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
 }
 
 function AddAlertListItem(htmlContent) {
