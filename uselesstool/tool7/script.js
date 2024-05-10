@@ -6,7 +6,8 @@ const loadingText = document.getElementById('loadingText');
 const alertList = document.getElementById('alertList');
 var bounds = L.latLngBounds(); //儲存所有範圍標示
 var map = L.map('map').setView(TW_center_coord, TW_center_zoomlv)//座標為臺灣地理中心
-
+var process_total = 0;
+var process_current = 0;
 
 var div = L.DomUtil.get('bTb');
 
@@ -48,11 +49,45 @@ baselayers['CartoDB.DarkMatter'].addTo(map);
 //geoJson
 var geoJsonObj = {};
 
-async function fetchJSON() {
+async function fetchJSON(progressCallback) {
     const response = await fetch('VILLAGE_NLSC_1120928.json');
-    const json = await response.json();
+    const reader = response.body.getReader();
+    const contentLength = +response.headers.get('Content-Length');
+    let receivedLength = 0;
+    let chunks = [];
+
+    while (true) {
+        const { done, value } = await reader.read();
+
+        if (done) {
+            break;
+        }
+
+        chunks.push(value);
+        receivedLength += value.length;
+
+        // 計算下載進度並呼叫進度回調函數
+        const progress = receivedLength / contentLength;
+        updateProgress(progress);
+    }
+    // 将 Uint8Array 数组连接成一个大的 Uint8Array
+    const concatenatedChunks = new Uint8Array(receivedLength);
+    let position = 0;
+    for (const chunk of chunks) {
+        concatenatedChunks.set(chunk, position);
+        position += chunk.length;
+    }
+
+    const json = JSON.parse(new TextDecoder('utf-8').decode(concatenatedChunks));
     return json;
 }
+
+// 進度條更新回調函數
+function updateProgress(progress) {
+    // 在這裡更新進度條，例如更新 DOM 中的進度條元素
+    console.log('下載進度：', progress);
+}
+
 
 function convertGeoJsonToObj(geoJson) {
     const result = {};
@@ -67,13 +102,17 @@ fetchJSON().then(json => {
     geoJson = json
     geoJsonObj = convertGeoJsonToObj(geoJson);
     GetSheetData();
-});
+})
+    // .catch(error => {
+    //     loadingText.textContent = '地圖資料下載失敗!請稍後再試!';
+    // })
+    ;
 
 function GetCoordinatesByGeoCode(geoCode) {
     var coordinateArray = [];
     for (const key in geoJsonObj) {
         if (key.startsWith(geoCode)) {
-            coordinateArray.push(geoJsonObj[key]?.geometry.coordinates ?? null);
+            coordinateArray.push(geoJsonObj[key] ?? null);
         }
     }
     return coordinateArray;
@@ -116,8 +155,9 @@ async function GetSheetData() {
             return dateB - dateA;
         });
 
-        //儲存所有範圍標示
+        process_total = tableArray.length;
 
+        //儲存所有範圍標示
         var areaL = [];
 
         for (var i = 1; i < tableArray.length; i++) {
@@ -160,16 +200,12 @@ async function GetSheetData() {
                         case 'geocode':
                             var coordinate = GetCoordinatesByGeoCode(data.value);
                             if (coordinate.length > 0) {
-                                for (var x = 0; x < coordinate.length; x++) {
-                                    coordinate[x] = coordinate[x].map(function (coord) {
-                                        return coord.map(function (c) {
-                                            return [c[1], c[0]];
-                                        })
-                                    });
-                                    var alertAreaPolygon = L.polygon(coordinate[x], { fillColor: color, fillOpacity: 0.5, color: color, opacity: 0 }).addTo(map);
-                                    alertAreaPolygon.bindPopup('<h2>' + areaDesc + '</h2>' + alertContent);
-                                    areaL.push(alertAreaPolygon);
-                                }
+                                var combinedGeoJson = fasterUnion(coordinate);
+
+                                // 在 Leaflet 中顯示合併後的多邊形
+                                var alertAreaPolygon = L.geoJSON(combinedGeoJson, { fillColor: color, fillOpacity: 0.5, color: color, opacity: 0 }).addTo(map);
+                                alertAreaPolygon.bindPopup('<h2>' + areaDesc + '</h2>' + alertContent);
+                                areaL.push(alertAreaPolygon);
                                 onMap = true;
                             }
                             // else console.log(data.value + '找不到!');
@@ -201,6 +237,8 @@ async function GetSheetData() {
             <br>示警有效期間：${DateFormater(effectiveDate)} ~ ${DateFormater(expiresDate)}</h6></h1>
             <span>${alertContent}</span><br><span class="text-warning">${notOnMapString}</span>
             `);
+            process_current++;
+            loadingText.text = `載入示警資料中...(${process_current}/${process_total})`;
         }
         loadingContainer.classList.add('hidden_anim_fadeOut');
 
@@ -210,6 +248,44 @@ async function GetSheetData() {
     } catch (error) {
         console.error('發生錯誤:', error);
     }
+}
+
+function fasterUnion(allGeometries) {
+    const mid = Math.floor(allGeometries.length / 2);
+    let group1 = allGeometries.slice(0, mid);
+    let group2 = allGeometries.slice(mid);
+
+    while (group1.length > 1) {
+        group1 = unionGroup(group1);
+    }
+    while (group2.length > 1) {
+        group2 = unionGroup(group2);
+    }
+
+    let result;
+    if (group1.length === 1 && group2.length === 1) {
+        result = turf.union(group1[0], group2[0]);
+    } else if (group1.length === 1) {
+        result = group1[0];
+    } else {
+        result = group2[0];
+    }
+
+    return result;
+}
+
+function unionGroup(group) {
+    let newGroup = [];
+    for (let i = 0; i < group.length; i += 2) {
+        let a = group[i];
+        let b = i + 1 < group.length ? group[i + 1] : null;
+        if (b) {
+            newGroup.push(turf.union(a, b));
+        } else {
+            newGroup.push(a);
+        }
+    }
+    return newGroup;
 }
 
 function DateFormater(date) {
