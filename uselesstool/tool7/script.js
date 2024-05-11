@@ -4,7 +4,7 @@ const bTb = document.getElementById('bTb');
 const loadingContainer = document.getElementById('loadingContainer');
 const loadingText = document.getElementById('loadingText');
 const alertList = document.getElementById('alertList');
-var bounds = L.latLngBounds(); //儲存所有範圍標示
+var areaL = [];
 var map = L.map('map').setView(TW_center_coord, TW_center_zoomlv)//座標為臺灣地理中心
 var process_total = 0;
 var process_current = 0;
@@ -50,7 +50,7 @@ baselayers['CartoDB.DarkMatter'].addTo(map);
 var geoJsonObj = {};
 
 async function fetchJSON(progressCallback) {
-    const response = await fetch('VILLAGE_NLSC_1120928.json');
+    const response = await fetch('village_103cap.json');
     const reader = response.body.getReader();
     const contentLength = +response.headers.get('Content-Length');
     let receivedLength = 0;
@@ -68,7 +68,7 @@ async function fetchJSON(progressCallback) {
 
         // 計算下載進度並呼叫進度回調函數
         const progress = receivedLength / contentLength;
-        updateProgress(progress);
+        updateProgress(receivedLength, contentLength);
     }
     // 将 Uint8Array 数组连接成一个大的 Uint8Array
     const concatenatedChunks = new Uint8Array(receivedLength);
@@ -83,16 +83,16 @@ async function fetchJSON(progressCallback) {
 }
 
 // 進度條更新回調函數
-function updateProgress(progress) {
+function updateProgress(r, c) {
     // 在這裡更新進度條，例如更新 DOM 中的進度條元素
-    console.log('下載進度：', progress);
+    loadingText.html = `讀取地圖資料中...(${r}/${c})`;
 }
 
 
 function convertGeoJsonToObj(geoJson) {
     const result = {};
     geoJson.features.forEach(feature => {
-        const villCode = feature.properties.VILLCODE;
+        const villCode = feature.properties.nVill103;
         result[villCode] = feature;
     });
     return result;
@@ -157,94 +157,113 @@ async function GetSheetData() {
 
         process_total = tableArray.length;
 
-        //儲存所有範圍標示
-        var areaL = [];
-
         for (var i = 1; i < tableArray.length; i++) {
             var alertContent = tableArray[i][15];
             var areaData = tableArray[i][16];
             var color = severityColor[tableArray[i][11]]
             var onMap = false;
+            var notOnMapArea = [];
+            var alertExpiresTime = new Date(tableArray[i][14]);
             const areas = [];
+            areaL.push([]);
+            if (true) {
+                // if (Date.now() < alertExpiresTime) {
+                const regex = /areaDesc@(.*?)\|(geocode|circle|polygon)@([^|]+)/g;
+                let match;
+                let currentArea = null;
+                while ((match = regex.exec(areaData)) !== null) {
+                    const areaDesc = match[1];
+                    const type = match[2];
+                    const value = match[3];
 
+                    if (!currentArea || currentArea.areaDesc !== areaDesc) {
+                        currentArea = { areaDesc, data: [] };
+                        areas.push(currentArea);
+                    }
 
-            const regex = /areaDesc@(.*?)\|(geocode|circle|polygon)@([^|]+)/g;
-            let match;
-            let currentArea = null;
-            while ((match = regex.exec(areaData)) !== null) {
-                const areaDesc = match[1];
-                const type = match[2];
-                const value = match[3];
-
-                if (!currentArea || currentArea.areaDesc !== areaDesc) {
-                    currentArea = { areaDesc, data: [] };
-                    areas.push(currentArea);
+                    currentArea.data.push({ type, value });
                 }
-
-                currentArea.data.push({ type, value });
-            }
-            for (j = 0; j < areas.length; j++) {
-                var areaDesc = areas[j].areaDesc;
-                for (var k = 0; k < areas[j].data.length; k++) {
-                    var data = areas[j].data[k];
-                    switch (data.type) {
-                        case 'circle':
-                            var circle = data.value.split(' ');
-                            var alertAreaCircle = L.circle(circle[0].split(",").map(function (item) {
-                                return parseFloat(item);
-                            }), circle[1] * 1000, { fillColor: color, fillOpacity: 0.5, color: color, opacity: 0 }).addTo(map);
-                            alertAreaCircle.bindPopup('<h2>' + areaDesc + '</h2>' + alertContent);
-                            areaL.push(alertAreaCircle);
-                            onMap = true;
-                            break;
-                        case 'geocode':
-                            var coordinate = GetCoordinatesByGeoCode(data.value);
-                            if (coordinate.length > 0) {
-                                var combinedGeoJson = fasterUnion(coordinate);
-
-                                // 在 Leaflet 中顯示合併後的多邊形
-                                var alertAreaPolygon = L.geoJSON(combinedGeoJson, { fillColor: color, fillOpacity: 0.5, color: color, opacity: 0 }).addTo(map);
-                                alertAreaPolygon.bindPopup('<h2>' + areaDesc + '</h2>' + alertContent);
-                                areaL.push(alertAreaPolygon);
+                for (j = 0; j < areas.length; j++) {
+                    var areaDesc = areas[j].areaDesc;
+                    for (var k = 0; k < areas[j].data.length; k++) {
+                        var data = areas[j].data[k];
+                        switch (data.type) {
+                            case 'circle':
+                                var circle = data.value.split(' ');
+                                var alertAreaCircle;
+                                if (circle[1] > 0) {
+                                    alertAreaCircle = L.circle(circle[0].split(",").map(function (item) {
+                                        return parseFloat(item);
+                                    }), circle[1] * 1000, { fillColor: color, fillOpacity: 0.5, color: color, weight: 1 }).addTo(map);
+                                    alertAreaCircle.bindPopup('<h3>' + areaDesc + '</h3>', { autoPan: false, autoClose: false, closeButton: false });
+                                } else {
+                                    var icon = L.divIcon({
+                                        className: 'x-icon',
+                                        html: '×',
+                                        iconSize: [20, 20]
+                                    });
+                                    alertAreaCircle = L.marker(circle[0].split(",").map(parseFloat), { icon: icon }).addTo(map);
+                                    alertAreaCircle.bindPopup(`<h3>震央(${areaDesc})</h3`, { autoPan: false, autoClose: false, closeButton: false });
+                                }
+                                areaL[i - 1].push(alertAreaCircle);
                                 onMap = true;
-                            }
-                            // else console.log(data.value + '找不到!');
-                            break;
-                        case 'polygon':
-                            var coord = data.value.split(" ").map(function (coord) {
-                                var latLng = coord.split(",");
-                                return [parseFloat(latLng[0]), parseFloat(latLng[1])];
-                            });
+                                break;
+                            case 'geocode':
+                                var coordinate = GetCoordinatesByGeoCode(data.value);
+                                if (coordinate.length > 0) {
+                                    var combinedGeoJson = fasterUnion(coordinate);
 
-                            var alertPolygon = L.polygon(coord, { fillColor: color, fillOpacity: 0.5, color: color, opacity: 0 }).addTo(map);
-                            alertPolygon.bindPopup('<h2>' + areaDesc + '</h2>' + alertContent);
-                            onMap = true;
-                            break;
-                        default:
-                            console.log(`無法解析${data.type}類型`);
+                                    // 在 Leaflet 中顯示合併後的多邊形
+                                    var alertAreaPolygon = L.geoJSON(combinedGeoJson, {
+                                        style: function (feature) {
+                                            return {
+                                                fillColor: color,
+                                                fillOpacity: 0.5,
+                                                color: color,
+                                                weight: 1,
+                                            };
+                                        }
+                                    }).addTo(map);
+                                    alertAreaPolygon.bindPopup('<h3>' + areaDesc + '</h3>', { autoPan: false, autoClose: false, closeButton: false });
+                                    areaL[i - 1].push(alertAreaPolygon);
+                                    onMap = true;
+                                }
+                                else notOnMapArea.push(areaDesc);
+                                break;
+                            case 'polygon':
+                                var coord = data.value.split(" ").map(function (coord) {
+                                    var latLng = coord.split(",");
+                                    return [parseFloat(latLng[0]), parseFloat(latLng[1])];
+                                });
+
+                                var alertPolygon = L.polygon(coord, { fillColor: color, fillOpacity: 0.5, color: color, opacity: 0 }).addTo(map);
+                                alertPolygon.bindPopup('<h3>' + areaDesc + '</h3>', { autoPan: false, autoClose: false, closeButton: false });
+                                onMap = true;
+                                break;
+                            default:
+                                console.log(`無法解析${data.type}類型`);
+                        }
                     }
                 }
-            }
 
-            //alertList
-            var date = new Date(tableArray[i][2]);
-            var timeAgo = GetTimeAgo(date);
-            var notOnMapString = (onMap) ? "" : "※此示警因地圖資料問題而無出現警示範圍在地圖上";
-            var effectiveDate = new Date(tableArray[i][13]);
-            var expiresDate = new Date(tableArray[i][14]);
-            AddAlertListItem(`
-            <h1>${tableArray[i][9]}<h6>發布於${timeAgo}
-            <br>示警有效期間：${DateFormater(effectiveDate)} ~ ${DateFormater(expiresDate)}</h6></h1>
-            <span>${alertContent}</span><br><span class="text-warning">${notOnMapString}</span>
-            `);
-            process_current++;
-            loadingText.text = `載入示警資料中...(${process_current}/${process_total})`;
+                //alertList
+                var date = new Date(tableArray[i][2]);
+                var timeAgo = GetTimeAgo(date);
+                var notOnMapString = (notOnMapArea.length > 0) ? `※示警區域<b><u>${notOnMapArea.join('、')}</u></b>因地圖資料問題而無出現警示範圍在地圖上` : "";
+                var effectiveDate = new Date(tableArray[i][13]);
+                var expiresDate = new Date(tableArray[i][14]);
+                AddAlertListItem(`
+                <h1>${tableArray[i][9]}<h6>發布於${timeAgo}
+                <br>示警有效期間：${DateFormater(effectiveDate)} ~ ${DateFormater(expiresDate)}</h6></h1>
+                <span>${alertContent}</span><br><span class="text-warning">${notOnMapString}</span>
+                `, i);
+                process_current++;
+                loadingText.text = `載入示警資料中...(${process_current}/${process_total})`;
+            } else {
+                areaL[i - 1].push('');
+            }
         }
         loadingContainer.classList.add('hidden_anim_fadeOut');
-
-        areaL.forEach(function (a) {
-            bounds.extend(a.getBounds());
-        });
     } catch (error) {
         console.error('發生錯誤:', error);
     }
@@ -273,7 +292,7 @@ function fasterUnion(allGeometries) {
 
     return result;
 }
-
+//#region 工具function
 function unionGroup(group) {
     let newGroup = [];
     for (let i = 0; i < group.length; i += 2) {
@@ -294,9 +313,13 @@ function DateFormater(date) {
     ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
 }
 
-function AddAlertListItem(htmlContent) {
+function AddAlertListItem(htmlContent, alertId) {
     var li = document.createElement("li");
     li.innerHTML = htmlContent;
+    li.id = alertId;
+    li.addEventListener("click", function () {
+        OnAlertItemClick(this);
+    });
     alertList.appendChild(li);
 }
 
@@ -319,12 +342,34 @@ function GetTimeAgo(timestamp) {
         return seconds + "秒前";
     }
 }
-
+//#endregion
+//#region 按鈕function
 function BackToTW() {
-    // map.fitBounds(bounds);
     map.flyTo(TW_center_coord, TW_center_zoomlv);
 }
 
 function GoToMy() {
     map.locate();
 }
+
+function OnAlertItemClick(e) {
+    var alertId = e.id;
+    var bounds = L.latLngBounds([]);
+    areaL[alertId - 1].forEach(function (a) {
+        if (!(a instanceof L.Marker)) {
+            bounds.extend(a.getBounds());
+        }
+    });
+
+    map.flyToBounds(bounds).on('zoomend', function () {
+        areaL.forEach(function (a) {
+            a.forEach(function (b) {
+                b.closePopup();
+            });
+        });
+        areaL[alertId - 1].forEach(function (a) {
+            a.openPopup();
+        });
+    });
+}
+//#endregion
