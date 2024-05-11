@@ -150,6 +150,30 @@ button {
     font-weight: bold;
 }
 
+.x-icon {
+    color: red;
+    /* background-color: aqua; */
+    text-align: center;
+    vertical-align: middle;
+    padding: 0;
+    margin: 0;
+    font-size: 36px;
+    line-height: 1;
+    text-shadow: red 1px 0 10px;
+}
+
+.leaflet-popup,
+.leaflet-popup-content {
+    margin: 0 !important;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+    background-color: #00000000 !important;
+    color: #fff !important;
+    box-shadow: none !important;
+}
+
 @keyframes loader {
     to {
         transform: rotate(360deg);
