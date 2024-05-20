@@ -66,9 +66,7 @@ async function fetchJSON(progressCallback) {
         chunks.push(value);
         receivedLength += value.length;
 
-        // 計算下載進度並呼叫進度回調函數
-        const progress = receivedLength / contentLength;
-        updateProgress(progress);
+        updateProgress(receivedLength / 1048576, contentLength / 1048576);
     }
     // 将 Uint8Array 数组连接成一个大的 Uint8Array
     const concatenatedChunks = new Uint8Array(receivedLength);
@@ -83,12 +81,10 @@ async function fetchJSON(progressCallback) {
 }
 
 // 進度條更新回調函數
-function updateProgress(p) {
+function updateProgress(r, c) {
     // 在這裡更新進度條，例如更新 DOM 中的進度條元素
-    console.log(p);
-    loadingText.textContent = `讀取地圖資料中...${Math.round(p * 100.0)}%`;
+    loadingText.textContent = `讀取地圖資料中...${Math.round(r / c * 100.0)}%(${Math.round(r)}MB/${Math.round(c)}MB)`;
 }
-
 
 function convertGeoJsonToObj(geoJson) {
     const result = {};
