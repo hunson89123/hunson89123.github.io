@@ -68,7 +68,7 @@ async function fetchJSON(progressCallback) {
 
         // 計算下載進度並呼叫進度回調函數
         const progress = receivedLength / contentLength;
-        updateProgress(receivedLength, contentLength);
+        updateProgress(progress);
     }
     // 将 Uint8Array 数组连接成一个大的 Uint8Array
     const concatenatedChunks = new Uint8Array(receivedLength);
@@ -83,9 +83,10 @@ async function fetchJSON(progressCallback) {
 }
 
 // 進度條更新回調函數
-function updateProgress(r, c) {
+function updateProgress(p) {
     // 在這裡更新進度條，例如更新 DOM 中的進度條元素
-    loadingText.html = `讀取地圖資料中...(${r}/${c})`;
+    console.log(p);
+    loadingText.textContent = `讀取地圖資料中...${Math.round(p * 100.0)}%`;
 }
 
 
