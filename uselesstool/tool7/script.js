@@ -66,7 +66,7 @@ async function fetchJSON(progressCallback) {
         chunks.push(value);
         receivedLength += value.length;
 
-        updateProgress(receivedLength / 1048576, contentLength / 1048576);
+        updateProgress(receivedLength / 1048576, 83766537 / 1048576, 1);
     }
     // 将 Uint8Array 数组连接成一个大的 Uint8Array
     const concatenatedChunks = new Uint8Array(receivedLength);
@@ -81,9 +81,13 @@ async function fetchJSON(progressCallback) {
 }
 
 // 進度條更新回調函數
-function updateProgress(r, c) {
+function updateProgress(r, c, s) {
     // 在這裡更新進度條，例如更新 DOM 中的進度條元素
-    loadingText.textContent = `讀取地圖資料中...${Math.round(r / c * 100.0)}%(${Math.round(r)}MB/${Math.round(c)}MB)`;
+    if (s == 1) {
+        loadingText.textContent = `讀取地圖資料中...${Math.round(r / c * 100.0)}%(${Math.round(r)}MB/${Math.round(c)}MB)`;
+    } else if (s == 2) {
+        loadingText.textContent = `讀取示警資料中...${Math.round(r / c * 100.0)}%(${r}/${c})`;
+    }
 }
 
 function convertGeoJsonToObj(geoJson) {
@@ -163,8 +167,8 @@ async function GetSheetData() {
             var alertExpiresTime = new Date(tableArray[i][14]);
             const areas = [];
             areaL.push([]);
-            if (true) {
-                // if (Date.now() < alertExpiresTime) {
+            // if (true) {
+            if (Date.now() < alertExpiresTime) {
                 const regex = /areaDesc@(.*?)\|(geocode|circle|polygon)@([^|]+)/g;
                 let match;
                 let currentArea = null;
@@ -259,6 +263,7 @@ async function GetSheetData() {
             } else {
                 areaL[i - 1].push('');
             }
+            updateProgress(i, process_total, 2);
         }
         loadingContainer.classList.add('hidden_anim_fadeOut');
     } catch (error) {
