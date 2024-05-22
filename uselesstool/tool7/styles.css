@@ -111,7 +111,7 @@ button {
     justify-content: center;
     align-items: center;
     background-color: #12121299;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(100px);
 }
 
 .loader {

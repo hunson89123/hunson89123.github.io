@@ -49,53 +49,70 @@ baselayers['CartoDB.DarkMatter'].addTo(map);
 //geoJson
 var geoJsonObj = {};
 
-async function fetchJSON(progressCallback) {
-    const response = await fetch('village_103cap.json');
-    const reader = response.body.getReader();
-    const contentLength = +response.headers.get('Content-Length');
-    let receivedLength = 0;
-    let chunks = [];
+async function fetchJSON() {
+    const urls = ['village_103cap.json', 'town_103cap.json', 'city_112cap.json']; // JSON文件的路徑列表
+    const responses = await Promise.all(urls.map(url => fetch(url)));
+    const jsons = [];
+    let fileSizeTotal = 121746902;
+    let fileLoaded = 0;
+    for (var i = 0; i < responses.length; i++) {
+        const reader = responses[i].body.getReader();
+        const contentLength = +responses[i].headers.get('Content-Length');
+        let receivedLength = 0;
 
-    while (true) {
-        const { done, value } = await reader.read();
+        let chunks = [];
 
-        if (done) {
-            break;
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+                console.log(i);
+                break;
+            }
+
+            chunks.push(value);
+            receivedLength += value.length;
+            fileLoaded += value.length;
+            updateProgress(fileLoaded / 1048576, fileSizeTotal / 1048576, 1);
         }
 
-        chunks.push(value);
-        receivedLength += value.length;
+        const concatenatedChunks = new Uint8Array(receivedLength);
+        let position = 0;
+        for (const chunk of chunks) {
+            concatenatedChunks.set(chunk, position);
+            position += chunk.length;
+        }
 
-        updateProgress(receivedLength / 1048576, 83766537 / 1048576, 1);
+        const json = JSON.parse(new TextDecoder('utf-8').decode(concatenatedChunks));
+        jsons.push(json);
     }
-    // 将 Uint8Array 数组连接成一个大的 Uint8Array
-    const concatenatedChunks = new Uint8Array(receivedLength);
-    let position = 0;
-    for (const chunk of chunks) {
-        concatenatedChunks.set(chunk, position);
-        position += chunk.length;
-    }
-
-    const json = JSON.parse(new TextDecoder('utf-8').decode(concatenatedChunks));
-    return json;
+    return jsons;
 }
 
 // 進度條更新回調函數
 function updateProgress(r, c, s) {
     // 在這裡更新進度條，例如更新 DOM 中的進度條元素
     if (s == 1) {
-        loadingText.textContent = `讀取地圖資料中...${Math.round(r / c * 100.0)}%(${Math.round(r)}MB/${Math.round(c)}MB)`;
-    } else if (s == 2) {
-        loadingText.textContent = `讀取示警資料中...${Math.round(r / c * 100.0)}%(${r}/${c})`;
+        var process = Math.round(r / c * 100.0);
+        if (process < 100)
+            loadingText.textContent = `讀取地圖資料中...${process}%`;
+        else
+            loadingText.textContent = `即將完成...`;
+        loadingContainer.style.backdropFilter = `blur(${100 - process}px)`;
     }
 }
 
 function convertGeoJsonToObj(geoJson) {
     const result = {};
-    geoJson.features.forEach(feature => {
-        const villCode = feature.properties.nVill103;
-        result[villCode] = feature;
-    });
+    for (var i = 0; i < geoJson.length; i++) {
+        console.log(geoJson[i].features);
+        geoJson[i].features.forEach(feature => {
+            let villCode = feature.properties.nVill103;
+            if (!villCode) villCode = feature.properties.nTown103;
+            if (!villCode) villCode = feature.properties.NCITY_103;
+            result[villCode] = feature;
+        });
+    }
+
     return result;
 }
 
@@ -104,15 +121,11 @@ fetchJSON().then(json => {
     geoJsonObj = convertGeoJsonToObj(geoJson);
     GetSheetData();
 })
-    // .catch(error => {
-    //     loadingText.textContent = '地圖資料下載失敗!請稍後再試!';
-    // })
-    ;
 
 function GetCoordinatesByGeoCode(geoCode) {
     var coordinateArray = [];
     for (const key in geoJsonObj) {
-        if (key.startsWith(geoCode)) {
+        if (key === geoCode) {
             coordinateArray.push(geoJsonObj[key] ?? null);
         }
     }
@@ -159,6 +172,7 @@ async function GetSheetData() {
         process_total = tableArray.length;
 
         for (var i = 1; i < tableArray.length; i++) {
+            updateProgress(i, process_total, 3);
             var alertContent = tableArray[i][15];
             var areaData = tableArray[i][16];
             var color = severityColor[tableArray[i][11]]
@@ -167,7 +181,6 @@ async function GetSheetData() {
             var alertExpiresTime = new Date(tableArray[i][14]);
             const areas = [];
             areaL.push([]);
-            // if (true) {
             if (Date.now() < alertExpiresTime) {
                 const regex = /areaDesc@(.*?)\|(geocode|circle|polygon)@([^|]+)/g;
                 let match;
@@ -263,7 +276,6 @@ async function GetSheetData() {
             } else {
                 areaL[i - 1].push('');
             }
-            updateProgress(i, process_total, 2);
         }
         loadingContainer.classList.add('hidden_anim_fadeOut');
     } catch (error) {
