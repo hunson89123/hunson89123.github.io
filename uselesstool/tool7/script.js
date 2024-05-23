@@ -102,7 +102,6 @@ function updateProgress(r, c, s) {
 function convertGeoJsonToObj(geoJson) {
     const result = {};
     for (var i = 0; i < geoJson.length; i++) {
-        console.log(geoJson[i].features);
         geoJson[i].features.forEach(feature => {
             let villCode = feature.properties.nVill103;
             if (!villCode) villCode = feature.properties.nTown103;
@@ -240,7 +239,9 @@ async function GetSheetData() {
                                     areaL[i - 1].push(alertAreaPolygon);
                                     onMap = true;
                                 }
-                                else notOnMapArea.push(areaDesc);
+                                else {
+                                    notOnMapArea.push(areaDesc);
+                                }
                                 break;
                             case 'polygon':
                                 var coord = data.value.split(" ").map(function (coord) {
@@ -250,6 +251,7 @@ async function GetSheetData() {
 
                                 var alertPolygon = L.polygon(coord, { fillColor: color, fillOpacity: 0.5, color: color, opacity: 0 }).addTo(map);
                                 alertPolygon.bindPopup('<h3>' + areaDesc + '</h3>', { autoPan: false, autoClose: false, closeButton: false });
+                                areaL[i - 1].push(alertPolygon);
                                 onMap = true;
                                 break;
                             default:
@@ -367,6 +369,7 @@ function GoToMy() {
 function OnAlertItemClick(e) {
     var alertId = e.id;
     var bounds = L.latLngBounds([]);
+    console.log(areaL[alertId - 1]);
     areaL[alertId - 1].forEach(function (a) {
         if (!(a instanceof L.Marker)) {
             bounds.extend(a.getBounds());
