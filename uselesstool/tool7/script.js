@@ -46,18 +46,17 @@ var overlays = {};
 L.control.layers(baselayers, overlays).addTo(map);
 baselayers['CartoDB.DarkMatter'].addTo(map);
 
-//geoJson
 var geoJsonObj = {};
 
 async function fetchJSON() {
-    const urls = ['village_103cap.json', 'town_103cap.json', 'city_112cap.json']; // JSON文件的路徑列表
-    const responses = await Promise.all(urls.map(url => fetch(url)));
+    const urls = ['village_103cap.json', 'town_103cap.json', 'city_112cap.json'];
     const jsons = [];
     let fileSizeTotal = 121746902;
     let fileLoaded = 0;
-    for (var i = 0; i < responses.length; i++) {
-        const reader = responses[i].body.getReader();
-        const contentLength = +responses[i].headers.get('Content-Length');
+    for (const url of urls) {
+        const response = await fetch(url);
+        const reader = response.body.getReader();
+        const contentLength = +response.headers.get('Content-Length');
         let receivedLength = 0;
 
         let chunks = [];
@@ -65,7 +64,6 @@ async function fetchJSON() {
         while (true) {
             const { done, value } = await reader.read();
             if (done) {
-                console.log(i);
                 break;
             }
 
