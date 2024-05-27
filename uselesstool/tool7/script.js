@@ -1,15 +1,11 @@
 const TW_center_coord = [23.71537674452611, 120.99937407526494];
 const TW_center_zoomlv = 8;
-const bTb = document.getElementById('bTb');
 const loadingContainer = document.getElementById('loadingContainer');
 const loadingText = document.getElementById('loadingText');
 const alertList = document.getElementById('alertList');
+const lastUpdate = document.getElementById('last_update');
 var areaL = [];
 var map = L.map('map').setView(TW_center_coord, TW_center_zoomlv)//座標為臺灣地理中心
-var process_total = 0;
-var process_current = 0;
-
-var div = L.DomUtil.get('bTb');
 
 map.on('locationfound', (e) => {
     map.flyTo(e.latlng, 17);
@@ -156,8 +152,8 @@ async function GetSheetData() {
             cells.forEach(cell => {
                 rowArray.push(cell.textContent.trim());
             });
-            if (rowArray[rowArray.length - 1].length !== 0) //檢查資料最後一欄不為空
-                tableArray.push(rowArray);
+            // if (rowArray[rowArray.length - 1].length !== 0) //檢查資料最後一欄不為空
+            tableArray.push(rowArray);
         });
 
         tableArray.sort((a, b) => {
@@ -166,10 +162,7 @@ async function GetSheetData() {
             return dateB - dateA;
         });
 
-        process_total = tableArray.length;
-
         for (var i = 1; i < tableArray.length; i++) {
-            updateProgress(i, process_total, 3);
             var alertContent = tableArray[i][15];
             var areaData = tableArray[i][16];
             var color = severityColor[tableArray[i][11]]
@@ -271,12 +264,11 @@ async function GetSheetData() {
                 <br>示警有效期間：${DateFormater(effectiveDate)} ~ ${DateFormater(expiresDate)}</h6></h1>
                 <span>${alertContent}</span><br><span class="text-warning">${notOnMapString}</span>
                 `, i);
-                process_current++;
-                loadingText.text = `載入示警資料中...(${process_current}/${process_total})`;
             } else {
                 areaL[i - 1].push('');
             }
         }
+        loadingContainer.classList.remove('show_anim_fadeIn');
         loadingContainer.classList.add('hidden_anim_fadeOut');
     } catch (error) {
         console.error('發生錯誤:', error);
@@ -356,6 +348,17 @@ function GetTimeAgo(timestamp) {
         return seconds + "秒前";
     }
 }
+
+function ClearData() {
+    alertList.innerHTML = '';
+    areaL.forEach(function (layer) {
+        layer.forEach(function (area) {
+            if (area)
+                map.removeLayer(area);
+        })
+    });
+    areaL = [];
+}
 //#endregion
 //#region 按鈕function
 function BackToTW() {
@@ -366,6 +369,13 @@ function GoToMy() {
     map.locate();
 }
 
+function ReloadData() {
+    loadingText.textContent = '更新中...';
+    loadingContainer.classList.remove('hidden_anim_fadeOut');
+    loadingContainer.classList.add('show_anim_fadeIn');
+    ClearData();
+    GetSheetData();
+}
 function OnAlertItemClick(e) {
     var alertId = e.id;
     var bounds = L.latLngBounds([]);
@@ -376,15 +386,14 @@ function OnAlertItemClick(e) {
         }
     });
 
-    map.flyToBounds(bounds).on('zoomend', function () {
-        areaL.forEach(function (a) {
-            a.forEach(function (b) {
-                b.closePopup();
-            });
+    map.flyToBounds(bounds);
+    areaL.forEach(function (a) {
+        a.forEach(function (b) {
+            if (b) b.closePopup();
         });
-        areaL[alertId - 1].forEach(function (a) {
-            a.openPopup();
-        });
+    });
+    areaL[alertId - 1].forEach(function (a) {
+        a.openPopup();
     });
 }
 //#endregion

@@ -80,6 +80,22 @@ button {
     width: 24px;
 }
 
+.reload_data {
+    position: absolute;
+    bottom: 145px;
+    right: 10px;
+    border-radius: 100px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.reload_data img {
+    width: 24px;
+}
+
 .container {
     display: flex;
     justify-content: center;
@@ -98,6 +114,10 @@ button {
 
 .hidden_anim_fadeOut {
     animation: loadingFadeOut 1s forwards;
+}
+
+.show_anim_fadeIn {
+    animation: loadingFadeIn 1s forwards;
 }
 
 #loadingContainer {
@@ -174,6 +194,7 @@ button {
     box-shadow: none !important;
 }
 
+
 @keyframes loader {
     to {
         transform: rotate(360deg);
@@ -207,6 +228,14 @@ button {
     100% {
         z-index: -1;
         opacity: 0;
+    }
+}
+
+
+@keyframes loadingFadeIn {
+    100% {
+        z-index: 5;
+        opacity: 1;
     }
 }
 
