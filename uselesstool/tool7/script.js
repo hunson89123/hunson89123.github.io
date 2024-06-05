@@ -45,9 +45,9 @@ baselayers['CartoDB.DarkMatter'].addTo(map);
 var geoJsonObj = {};
 
 async function fetchJSON() {
-    const urls = ['village_103cap.json', 'town_103cap.json', 'city_112cap.json'];
+    const urls = ['village_103cap.json', 'village_107cap.json', 'town_107cap.json', 'town_103cap.json', 'city_112cap.json'];
     const jsons = [];
-    let fileSizeTotal = 121746902;
+    let fileSizeTotal = 244833385;
     let fileLoaded = 0;
     for (const url of urls) {
         const response = await fetch(url);
@@ -102,6 +102,7 @@ function convertGeoJsonToObj(geoJson) {
             let villCode = feature.properties.nVill103;
             if (!villCode) villCode = feature.properties.nTown103;
             if (!villCode) villCode = feature.properties.NCITY_103;
+            if (!villCode) villCode = feature.properties.VILLCODE;
             result[villCode] = feature;
         });
     }
