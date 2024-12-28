@@ -1,0 +1,163 @@
+body {
+  margin: 0;
+  height: 100vh;
+  background-image: url('https://raw.githubusercontent.com/InFinity54/LoL_DDragon/refs/heads/master/extras/loadingscreen/summonersriftmap_loadingscreen.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
+
+h1 {
+  font-size: 100px;
+  color: white;
+  margin: 50px;
+}
+
+p {
+  font-size: 2em;
+  line-height: 1em;
+  font-family: 'Noto Serif TC', serif;
+}
+
+table {
+  border-collapse: collapse;
+  border-radius: 100%;
+  width: 400px;
+}
+
+td {
+  border: 2px solid #1b4478;
+  border-collapse: collapse;
+  width: 100px;
+  height: 100px;
+}
+
+.chess {
+  width: 80px;
+  height: 80px;
+  /* background-color: #3470c2; */
+  border: 2px solid #3470c2;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  font-family: 'DFKai-SB', serif;
+  align-items: center;
+  font-size: 3em;
+  margin: 0px auto;
+  user-select: none;
+  /* box-shadow: 5px 5px rgba(0, 0, 0, 0.5); */
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes flyIn {
+  from {
+    opacity: 0;
+  }
+
+  from {
+    transform: translateY(-50%);
+  }
+
+  to {
+    transform: translateY(0%);
+    ;
+  }
+}
+
+@keyframes bg1 {
+  from {
+    background: #08192d;
+  }
+
+  to {
+    background-color: #0e2e53;
+  }
+}
+
+@keyframes bg2 {
+  from {
+    background-color: #0e2e53;
+  }
+
+  to {
+    background-color: #144379;
+  }
+}
+
+@keyframes boxYellow {
+  from {
+    box-shadow: none;
+    border-color: white;
+  }
+
+  to {
+    box-shadow: 0 0 20px yellow;
+    border-color: yellow;
+  }
+}
+
+@keyframes boxGreen {
+  from {
+    box-shadow: none;
+    border-color: white;
+  }
+
+  to {
+    box-shadow: 0 0 20px #00C700;
+    border-color: #00C700;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+
+  h1 {
+    font-size: 80px;
+    margin: 10px;
+  }
+
+  button {
+    max-width: 300px;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.5em;
+  }
+
+  button:hover {
+    background-color: #005FCB;
+  }
+
+  #gameArea {
+    justify-items: left;
+  }
+
+  .chess {
+    width: 56px;
+    height: 56px;
+    cursor: none;
+    font-size: 2em;
+  }
+
+  table {
+    width: 280px;
+  }
+
+  td {
+    width: 70px;
+    height: 70px;
+  }
+}

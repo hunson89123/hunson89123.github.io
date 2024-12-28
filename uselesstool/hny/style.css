@@ -88,3 +88,13 @@ canvas {
   bottom: 5%;
   animation: anim-float 3s ease-in-out infinite;
 }
+
+#counter {
+  width: 100%;
+  text-align: center;
+  font-family: 'font';
+  font-size: 1.5em;
+  position: absolute;
+  color: #FFFFFF;
+
+}
