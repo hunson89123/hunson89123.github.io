@@ -5,15 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="utf-8">
   <title>LoLGuessr</title>
+  <link href="fonts.css" rel="stylesheet" type="text/css">
   <link href="style.css" rel="stylesheet" type="text/css">
   <link rel="icon" href="logo.ico" type="image/x-icon" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
 </head>
 
 <body>
-  <!-- <div id="loading">登入中請稍候...</div> -->
   <span id="gameState"></span>
   <div id="gameArea">
-    <img id="cImg">
+    <p id="timer">30<span id="timerMS">.00</span></p>
+    <canvas id="cImg"></canvas>
+    <select id="championSelect">
+    </select>
+    <input type="submit" id="submit" value="確認">
+    <div id="gameoverlayer"></div>
+    <div id="gameover">
+      <h1>時間到</h1>
+      <div>
+        <h2 id="">0</h2>
+        <span>得分</span>
+      </div>
+      <div>
+        <h2>0</h2>
+        <span>最高</span>
+      </div>
+      <button id="tryagin">再來一場</button>
+    </div>
+  </div>
 </body>
 <script src="script.js"></script>
 

@@ -1,0 +1,100 @@
+html,
+body {
+  display: flex;
+  height: 100%;
+  margin: 0 auto;
+  background: #121212;
+  user-select: none;
+}
+
+@font-face {
+  font-family: font;
+  src: url(Cubic_11_1.100_R.ttf);
+}
+
+.div {
+  margin: 0 auto;
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%)
+}
+
+.div p {
+  line-height: 1em;
+  font-family: font;
+  font-size: 5em;
+}
+
+.div a {
+  margin: 0 auto;
+  font-family: font;
+}
+
+.card {
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+  width: 120px;
+  height: 150px;
+}
+
+.box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  vertical-align: middle;
+  text-align: center;
+}
+
+h1,
+h2 {
+  line-height: 0.05em;
+  font-family: font;
+}
+
+h1 {
+  font-size: 3rem;
+}
+
+canvas {
+  display: flex;
+}
+
+.timer {
+  font-size: 5em;
+  font-family: 'font';
+}
+
+#fireworkArea {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+/*USE HEADPHONES FOR BETTER EXPERIENCE*/
+#UHFBE {
+  width: 100%;
+  text-align: center;
+  font-family: 'font';
+  font-size: 1.5em;
+  position: absolute;
+  color: #FFFFFF;
+  bottom: 5%;
+  animation: anim-float 3s ease-in-out infinite;
+}
+
+#counter {
+  width: 100%;
+  text-align: center;
+  font-family: 'font';
+  font-size: 1.5em;
+  position: absolute;
+  color: #FFFFFF;
+
+}
