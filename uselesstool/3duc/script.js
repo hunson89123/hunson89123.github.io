@@ -4,6 +4,9 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+import { EXRLoader } from 'three/addons/loaders/EXRLoader.js';
+import { PMREMGenerator } from 'three';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, .1, 1000);
@@ -24,6 +27,17 @@ loaders.load(
     `taipei101/scene.gltf`,
     (gltf) => {
         object = gltf.scene
+        object.traverse((child) => {
+            if (child.isMesh) {
+                child.material = new THREE.MeshPhysicalMaterial({
+                    metalness: 1.0,  // 完全鏡面效果
+                    roughness: 0.0,  // 無粗糙度
+                    envMap: scene.environment,  // 讓鏡面反射環境
+                    side: THREE.FrontSide // 避免內部樓層影響
+                });
+            }
+        });
+
         scene.add(object);
         var bbox = new THREE.Box3().setFromObject(object);
 
@@ -34,6 +48,21 @@ loaders.load(
         var maxPoint = bbox.max;
 
         var verticalCenter = (minPoint.z + maxPoint.z) / 2;
+
+        scene.fog = new THREE.FogExp2(0xaaaaaa, 0.00005); // 調整密度來讓遠處模糊
+        // 創建地板（大型平面）
+        const groundGeometry = new THREE.PlaneGeometry(10000, 10000); // 設定大小
+        const groundMaterial = new THREE.MeshStandardMaterial({
+            metalness: 1,
+            roughness: 0,
+            envMap: scene.environment,
+        });
+
+        const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+        ground.rotation.x = - Math.PI / 2; // 旋轉為水平面
+        ground.position.y = minPoint.y; // 根據模型高度調整，避免漂浮
+        scene.add(ground);
+
         camera.position.set(minPoint.x - 50, minPoint.y, 0);
         camera.lookAt(scene.position);
         msg.style.display = 'none';
@@ -49,21 +78,33 @@ loaders.load(
     }
 );
 
+const exrLoader = new EXRLoader();
+
+exrLoader.load('textures/NightSkyHDRI013_4K-HDR.exr', function (texture) {
+    texture.mapping = THREE.EquirectangularReflectionMapping; // 設定為球形貼圖
+    scene.environment = texture; // 設定環境光貼圖
+    scene.background = texture; // 設定背景（可選）
+
+    // 如果場景太亮，可降低曝光
+    renderer.toneMappingExposure = 0.01; // 0.5 = 降低亮度
+});
 
 
 const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.toneMappingExposure = 0.5; // 0.5 代表降低亮度，1.0 是預設值
+
 const controls = new OrbitControls(camera, renderer.domElement);
 
 document.getElementById("container3D").appendChild(renderer.domElement);
 
-const topLight = new THREE.DirectionalLight(0xffffff, .1);
-topLight.position.set(100, 100, 100);
-topLight.castShadow = true;
-scene.add(topLight);
+// const topLight = new THREE.DirectionalLight(0xffffff, .1);
+// topLight.position.set(100, 100, 100);
+// topLight.castShadow = true;
+// scene.add(topLight);
 
-const ambientLight = new THREE.AmbientLight(0xffffff, .1); // 使用淺黃色（PeachPuff）並設置強度為0.5
-scene.add(ambientLight);
+// const ambientLight = new THREE.AmbientLight(0xffffff, 0); // 使用淺黃色（PeachPuff）並設置強度為0.5
+// scene.add(ambientLight);
 
 var pointLight = new THREE.PointLight(0xff0000, 0, 0); // 白色光，強度為1，距離為100的點光源
 pointLight.position.set(2, -5, 0); // 設定光源位置，這裡假設燈光位於摩天大樓頂部的中心
