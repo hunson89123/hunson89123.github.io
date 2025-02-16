@@ -18,7 +18,7 @@ $(document).ready(function () {
       })
       .then(data => {
         version = data.v;
-        fetch(`http://ddragon.leagueoflegends.com/cdn/${version}/data/zh_TW/champion.json`)
+        fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/zh_TW/champion.json`)
           .then(response => {
             if (!response.ok) {
               throw new Error(response.statusText);
