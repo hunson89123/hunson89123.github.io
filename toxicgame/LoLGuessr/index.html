@@ -11,30 +11,29 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cactus+Classical+Serif&family=Jersey+15&family=Micro+5&family=Noto+Serif+TC&display=swap"
+    rel="stylesheet">
 </head>
 
 <body>
-  <span id="gameState"></span>
+  <div id="bg"></div>
   <div id="gameArea">
-    <p id="timer">30<span id="timerMS">.00</span></p>
+    <p id="guess_count">0</p>
     <canvas id="cImg"></canvas>
     <select id="championSelect">
     </select>
-    <input type="submit" id="submit" value="確認">
-    <div id="gameoverlayer"></div>
     <div id="gameover">
-      <h1>時間到</h1>
-      <div>
-        <h2 id="">0</h2>
-        <span>得分</span>
-      </div>
-      <div>
-        <h2>0</h2>
-        <span>最高</span>
-      </div>
-      <button id="tryagin">再來一場</button>
+      <h2>猜錯囉！正確答案是<br><span id="correctAns">－</span></h2>
+      <p>最高得分</p>
+      <p id="highScore">0</p>
     </div>
   </div>
+  <button id="submit">確認</button>
+  <button id="tryagain">再來一場</button>
+
 </body>
 <script src="script.js"></script>
 
