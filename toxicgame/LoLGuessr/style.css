@@ -2,7 +2,7 @@ body {
   margin: 0;
   width: 100dvw;
   height: 100dvh;
-  font-family: "Jersey 15", serif;
+  font-family: "Jersey 15", serif !important;
   font-weight: 400;
   font-style: normal;
 }
@@ -142,4 +142,15 @@ body {
   }
 }
 
-@media only screen and (max-width: 600px) {}
+@media only screen and (max-width: 600px) {
+  #gameover {
+    font-size: .8rem;
+  }
+
+  #guess_count,
+  #highScore {
+    margin: 0;
+    font-size: 4rem;
+    color: #f0e5ce;
+  }
+}
