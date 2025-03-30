@@ -1,0 +1,52 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background-color: #121212;
+}
+
+canvas {
+    display: block;
+}
+
+header {
+    margin-top: 3em;
+    text-align: center;
+    color: white;
+}
+
+header h1 {
+    font-size: 2em;
+    font-weight: 900;
+}
+
+header h6 {
+    color: #666666;
+}
+
+#container3D canvas {
+    z-index: -1;
+    width: 100vw !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 90%;
+    height: 10%;
+    background-color: #00000066;
+    margin: 10px;
+    padding: 10px;
+    color: white;
+}
+
+#license {
+    position: absolute;
+    bottom: 5px;
+    width: 100%;
+    color: #FFFFFF;
+    text-align: center;
+}
