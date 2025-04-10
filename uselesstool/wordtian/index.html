@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>單字小測驗</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+            background: #f0f0f0;
+        }
+
+        .question-card {
+            background: white;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .options button {
+            display: block;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            width: 100%;
+            border: none;
+            background: #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .options button.correct {
+            background-color: #a0e6a0;
+        }
+
+        .options button.wrong {
+            background-color: #f4aaaa;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>單字小測驗</h1>
+    <div id="quiz"></div>
+
+    <script>
+        //1mJD9TReuACf7Uxw5LJ3I44x5XPFIHb--FFhQXnyoN44
+        const SHEET_URL = 'https://opensheet.elk.sh/1mJD9TReuACf7Uxw5LJ3I44x5XPFIHb--FFhQXnyoN44/工作表2'; // 替換成你的網址
+
+        async function getSheetData() {
+            const res = await fetch(SHEET_URL);
+            const data = await res.json();
+            console.log(data);
+            return data.filter(item => item.english && item.chinese);
+        }
+
+        function getRandomElements(arr, count, exclude) {
+            const filtered = arr.filter(item => item.chinese !== exclude);
+            const shuffled = filtered.sort(() => 0.5 - Math.random());
+            const selected = shuffled.slice(0, count);
+            return selected;
+        }
+
+        function shuffleArray(arr) {
+            return arr.sort(() => Math.random() - 0.5);
+        }
+
+        async function generateQuiz() {
+            const data = await getSheetData();
+            const quizContainer = document.getElementById('quiz');
+
+            const questions = shuffleArray(data).slice(0, 10);
+
+            questions.forEach((q, index) => {
+                const wrongChoices = getRandomElements(data, 3, q.chinese);
+                const options = shuffleArray([...wrongChoices.map(w => w.chinese), q.chinese]);
+
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.innerHTML = `
+          <h3>Q${index + 1}: ${q.english}</h3>
+          <div class="options">
+            ${options.map(opt => `<button data-answer="${q.chinese}" data-choice="${opt}">${opt}</button>`).join('')}
+          </div>
+        `;
+
+                quizContainer.appendChild(card);
+            });
+
+            document.querySelectorAll('.options button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const isCorrect = btn.dataset.choice === btn.dataset.answer;
+                    btn.classList.add(isCorrect ? 'correct' : 'wrong');
+                    const soundURL = isCorrect ? 'duolingo-correct' : 'duolingo-wrong';
+                    const soundCorrect = new Audio(`https://www.myinstants.com/media/sounds/${soundURL}.mp3`);
+                    soundCorrect.play();
+                    // 禁止其他按鈕再被點
+                    const siblings = btn.parentNode.querySelectorAll('button');
+                    siblings.forEach(b => {
+                        b.disabled = true;
+                        if (b.dataset.choice === btn.dataset.answer) b.classList.add('correct');
+                    });
+                });
+            });
+        }
+
+        generateQuiz();
+    </script>
+</body>
+
+</html>
