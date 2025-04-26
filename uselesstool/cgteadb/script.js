@@ -11,21 +11,33 @@ async function initData() {
   const data = await getSheetData();
   console.log(data);
   data.forEach(store => {
-    const menuLink = `menu/${store["店家名稱"]}.html`; // 假設你有對應檔案
-
     const card = document.createElement("div");
     card.className = "col-md-4";
+    // 取得圖示連結
+    const logoUrl = store["店家圖示連結"];
     card.innerHTML = `
-          <div class="card cursor-pointer" ${store["菜單已完全加入"] == 'TRUE' ? 'data-bs-toggle="modal" data-bs-target="#menuModal"' : ''}  data-name="${store["店家名稱"]}">
-            <div class="card-body d-flex justify-content-between align-items-center">
-              <div class="overflow-hidden">
-                <h2 class="text-truncate ${store["菜單已完全加入"] == 'TRUE' ? '' : 'text-secondary'}">${store["店家名稱"]}</h2>
-                <h6 class="f-w-400 text-secondary">${store["分店名稱"]}</h6>
-              </div>
-              <i class="h3 bi bi-chevron-right ${store["菜單已完全加入"] == 'TRUE' ? '' : 'text-secondary'} "></i>
-            </div>
-          </div>
-        `;
+    <div class="card cursor-pointer" 
+      ${store["菜單已完全加入"] == 'TRUE' ? 'data-bs-toggle="modal" data-bs-target="#menuModal"' : ''} 
+      data-name="${store["店家名稱"]}">
+      
+      <div class="card-body d-flex align-items-center gap-3">
+        
+        <!-- 圖片區塊 with 漸層 -->
+       
+
+        <!-- 文字區塊 -->
+        <div class="overflow-hidden">
+          <h2 class="text-truncate mb-1 ${store["菜單已完全加入"] == 'TRUE' ? '' : 'text-secondary'}">${store["店家名稱"]}</h2>
+          <h6 class="f-w-400 text-secondary mb-0">${store["分店名稱"]}</h6>
+        </div>
+        <div style="position:absolute;top:20%;right:10%;height:60%;">
+          ${logoUrl ? `
+            <img src="${logoUrl}" alt="Logo" style="width: 100%; height: 100%; object-fit: cover;border-radius:50%;">
+          ` : ''}
+        </div>
+      </div>
+    </div>
+  `;
     container.appendChild(card);
   });
 
@@ -36,10 +48,12 @@ async function initData() {
     const storeName = card.getAttribute('data-name');
     const menuUrl = `https://opensheet.elk.sh/1ykEQFnXG0YqNsgJc3AWxzGU2ePXndbiw8qh9eJawusU/${encodeURIComponent(storeName)}`;
 
-    document.getElementById('menuModalLabel').innerText = `${storeName} 菜單`;
+    document.getElementById('menuModalLabel').innerText = `${storeName}`;
     const body = document.getElementById('menuModalBody');
     body.innerHTML = `<p>載入中...</p>`;
 
+    const footer = document.getElementById('menuModalFooter');
+    footer.innerHTML = '';
     try {
       const res = await fetch(menuUrl);
       const menuItems = await res.json();
@@ -78,15 +92,18 @@ async function initData() {
       // 合併成完整 HTML
       body.innerHTML = `
       <div class="overflow-auto">
-      <ul class="nav nav-tabs flex-nowrap" role="tablist" style="white-space: nowrap;">
-        ${tabTitles}
-      </ul>
+        <ul class="nav nav-tabs flex-nowrap sticky-top bg-white" role="tablist" style="white-space: nowrap;">
+          ${tabTitles}
+        </ul>
       </div>
-      <div class="tab-content">
-        ${tabContents}
+
+      <div class="overflow-auto" style="max-height: calc(90vh - 170px);">
+        <div class="tab-content p-3">
+          ${tabContents}
+        </div>
       </div>
     `;
-
+      footer.innerHTML = `共 ${Object.keys(grouped).length} 種系列、 ${menuItems.length} 種飲料`;
     } catch (err) {
       body.innerHTML = `<p class="text-muted">此店家菜單尚待加入中</p>`;
     }
