@@ -25,7 +25,7 @@ async function initData() {
         <!-- 圖片區塊 with 漸層 -->
          ${logoUrl ? `
         <div style="height: 100%; aspect-ratio: 1/1; ">
-          <img src="${logoUrl}" alt="Logo" class="rounded-3" style="height: 100%; width: 100%; object-fit: cover;">
+          <img src="${logoUrl}" alt="Logo" class="rounded-3 shadow-sm" style="height: 100%; width: 100%; object-fit: cover;">
         </div>
       ` : ''}
 
