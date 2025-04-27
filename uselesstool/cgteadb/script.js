@@ -16,25 +16,26 @@ async function initData() {
     // 取得圖示連結
     const logoUrl = store["店家圖示連結"];
     card.innerHTML = `
-    <div class="card cursor-pointer" 
+    <div class="card cursor-pointer rounded-3" 
       ${store["菜單已完全加入"] == 'TRUE' ? 'data-bs-toggle="modal" data-bs-target="#menuModal"' : ''} 
       data-name="${store["店家名稱"]}">
       
-      <div class="card-body d-flex align-items-center gap-3">
+      <div class="card-body d-flex align-items-center gap-3" style="height: 100px;">
         
         <!-- 圖片區塊 with 漸層 -->
-       
+         ${logoUrl ? `
+        <div style="height: 100%; aspect-ratio: 1/1; ">
+          <img src="${logoUrl}" alt="Logo" class="rounded-3" style="height: 100%; width: 100%; object-fit: cover;">
+        </div>
+      ` : ''}
 
         <!-- 文字區塊 -->
         <div class="overflow-hidden">
+       
           <h2 class="text-truncate mb-1 ${store["菜單已完全加入"] == 'TRUE' ? '' : 'text-secondary'}">${store["店家名稱"]}</h2>
           <h6 class="f-w-400 text-secondary mb-0">${store["分店名稱"]}</h6>
         </div>
-        <div style="position:absolute;top:20%;right:10%;height:60%;">
-          ${logoUrl ? `
-            <img src="${logoUrl}" alt="Logo" style="width: 100%; height: 100%; object-fit: cover;border-radius:50%;">
-          ` : ''}
-        </div>
+        
       </div>
     </div>
   `;
@@ -97,7 +98,7 @@ async function initData() {
         </ul>
       </div>
 
-      <div class="overflow-auto" style="max-height: calc(90vh - 170px);">
+      <div class="overflow-auto" style="max-height: calc(90vh - 230px);">
         <div class="tab-content p-3">
           ${tabContents}
         </div>
