@@ -23,7 +23,7 @@ async function initData() {
       <div class="card-body d-flex align-items-center gap-3" style="height: 100px;">
         
         <!-- 圖片區塊 with 漸層 -->
-         ${logoUrl ? `
+         ${logoUrl && store["菜單已完全加入"] == 'TRUE' ? `
         <div style="height: 100%; aspect-ratio: 1/1; ">
           <img src="${logoUrl}" alt="Logo" class="rounded-3 shadow-sm" style="height: 100%; width: 100%; object-fit: cover;">
         </div>
