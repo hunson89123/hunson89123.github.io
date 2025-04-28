@@ -26,13 +26,13 @@ async function initData() {
         </div>
       ` : ''}
 
-        <div class="overflow-hidden">
+        <div class="overflow-hidden w-100">
           <h2 class="text-truncate mb-1 ${store["菜單已完全加入"] == 'TRUE' ? '' : 'text-secondary'}">${store["店家名稱"]}</h2>
           <h6 class="f-w-400 text-secondary mb-0">${store["分店名稱"]}</h6>
         </div>
         <div class="ms-auto ${store["菜單已完全加入"] == 'TRUE' ? 'd-flex gap-3' : 'd-none'}">
-          <button class="btn btn-light rounded-3" data-bs-toggle="modal" data-bs-target="#menuModal" data-name="${store["店家名稱"]}"><i class="bi bi-card-list"></i></button>
-          <button class="btn btn-light rounded-3 ${store["菜單圖片連結"] == '' ? 'd-none' : ''}" data-bs-toggle="modal" data-bs-target="#menuImageModal" data-name="${store["店家名稱"]}" data-image-link="${store["菜單圖片連結"] == '' ? '#' : store["菜單圖片連結"]}"><i class="bi bi-image"></i></button>
+          <button class="btn btn-link btn-sm text-dark rounded-circle" data-bs-toggle="modal" data-bs-target="#menuModal" data-name="${store["店家名稱"]}"><i class="bi bi-card-list"></i></button>
+          <button class="btn btn-link btn-sm text-dark rounded-circle ${store["菜單圖片連結"] == '' ? 'd-none' : ''}" data-bs-toggle="modal" data-bs-target="#menuImageModal" data-name="${store["店家名稱"]}" data-image-link="${store["菜單圖片連結"] == '' ? '#' : store["菜單圖片連結"]}"><i class="bi bi-image"></i></button>
         </div>
       </div>
     </div>
