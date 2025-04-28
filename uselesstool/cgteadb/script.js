@@ -16,26 +16,24 @@ async function initData() {
     // 取得圖示連結
     const logoUrl = store["店家圖示連結"];
     card.innerHTML = `
-    <div class="card cursor-pointer rounded-3" 
-      ${store["菜單已完全加入"] == 'TRUE' ? 'data-bs-toggle="modal" data-bs-target="#menuModal"' : ''} 
-      data-name="${store["店家名稱"]}">
+    <div class="card rounded-3">
       
       <div class="card-body d-flex align-items-center gap-3" style="height: 100px;">
         
-        <!-- 圖片區塊 with 漸層 -->
          ${logoUrl && store["菜單已完全加入"] == 'TRUE' ? `
         <div style="height: 100%; aspect-ratio: 1/1; ">
           <img src="${logoUrl}" alt="Logo" class="rounded-3 shadow-sm" style="height: 100%; width: 100%; object-fit: cover;">
         </div>
       ` : ''}
 
-        <!-- 文字區塊 -->
         <div class="overflow-hidden">
-       
           <h2 class="text-truncate mb-1 ${store["菜單已完全加入"] == 'TRUE' ? '' : 'text-secondary'}">${store["店家名稱"]}</h2>
           <h6 class="f-w-400 text-secondary mb-0">${store["分店名稱"]}</h6>
         </div>
-        
+        <div class="ms-auto ${store["菜單已完全加入"] == 'TRUE' ? 'd-flex gap-3' : 'd-none'}">
+          <button class="btn btn-light rounded-3" data-bs-toggle="modal" data-bs-target="#menuModal" data-name="${store["店家名稱"]}"><i class="bi bi-card-list"></i></button>
+          <button class="btn btn-light rounded-3 ${store["菜單圖片連結"] == '' ? 'd-none' : ''}" data-bs-toggle="modal" data-bs-target="#menuImageModal" data-name="${store["店家名稱"]}" data-image-link="${store["菜單圖片連結"] == '' ? '#' : store["菜單圖片連結"]}"><i class="bi bi-image"></i></button>
+        </div>
       </div>
     </div>
   `;
@@ -109,6 +107,51 @@ async function initData() {
       body.innerHTML = `<p class="text-muted">此店家菜單尚待加入中</p>`;
     }
   });
+
+  const menuImageModal = document.getElementById('menuImageModal');
+
+  menuImageModal.addEventListener('show.bs.modal', async event => {
+    const card = event.relatedTarget;
+    const storeName = card.getAttribute('data-name');
+    const storeMenuImageLink = card.getAttribute('data-image-link');
+
+    document.getElementById('menuImageModalLabel').innerText = `${storeName}`;
+    const body = document.getElementById('menuImageModalBody');
+    const footer = document.getElementById('menuImageModalFooter');
+
+    // 先顯示「載入中...」
+    body.innerHTML = `<p>載入中...</p>`;
+
+    // 建立一個新的 Image 元素
+    const img = new Image();
+    img.id = "menuImage";
+    img.alt = "菜單圖片";
+    img.style.maxWidth = "100%"; // 讓圖片不超出 modal
+    img.style.height = "auto";
+
+    // 圖片載入成功後才顯示
+    img.onload = function () {
+      body.innerHTML = ''; // 清除「載入中」
+      body.appendChild(img); // 將圖片放到 modal body 中
+    };
+
+    // 圖片載入失敗處理（選擇性加上）
+    img.onerror = function () {
+      body.innerHTML = `<p class="text-danger">載入失敗，請稍後再試</p>`;
+    };
+
+    // 最後設定圖片來源，開始載入
+    img.src = storeMenuImageLink;
+
+    const viewer = new Viewer(img, {
+      navbar: false,
+      title: false,
+      toolbar: false,
+    });
+  });
+
+
 }
+
 
 initData();

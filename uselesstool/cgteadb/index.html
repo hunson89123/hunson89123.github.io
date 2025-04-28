@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="./assets/css/style-preset.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/viewerjs/dist/viewer.min.css" />
 </head>
 
 <body data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light">
@@ -142,6 +143,23 @@
         </div>
     </div>
 
+    <div class="modal fade" id="menuImageModal" tabindex="-1" aria-labelledby="menuImageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="menuImageModalLabel">菜單圖片</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button>
+                </div>
+
+                <div class="modal-body overflow-auto" id="menuImageModalBody">
+                    <img id="menuImage" style="max-width:100%; height:auto;" />
+                </div>
+                <div class="modal-footer">
+                    <span class="h6 text-muted" id="menuImageModalFooter">點擊圖片可縮放</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- [Page Specific JS] end -->
     <!-- Required Js -->
@@ -185,6 +203,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js"
     integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/"
     crossorigin="anonymous"></script>
+<script src="https://unpkg.com/viewerjs/dist/viewer.min.js"></script>
 <script src="script.js"></script>
 
 </html>
