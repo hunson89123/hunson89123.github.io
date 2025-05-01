@@ -3,18 +3,16 @@ const SHEET_URL = 'https://opensheet.elk.sh/1ykEQFnXG0YqNsgJc3AWxzGU2ePXndbiw8qh
 async function getSheetData() {
   const res = await fetch(SHEET_URL);
   const data = await res.json();
-  console.log(data);
   return data;
 }
 async function initData() {
   const container = document.getElementById('store-list');
   const data = await getSheetData();
-  console.log(data);
   data.forEach(store => {
     const card = document.createElement("div");
     card.className = "col-md-4";
     // 取得圖示連結
-    const logoUrl = store["店家圖示連結"];
+    const logoUrl = `./assets/images/stores/logo/${store["Place ID"]}.png`;
     card.innerHTML = `
     <div class="card rounded-3">
       
@@ -32,7 +30,7 @@ async function initData() {
         </div>
         <div class="ms-auto ${store["菜單已完全加入"] == 'TRUE' ? 'd-flex gap-3' : 'd-none'}">
           <button class="btn btn-link btn-sm text-dark rounded-circle" data-bs-toggle="modal" data-bs-target="#menuModal" data-name="${store["店家名稱"]}"><i class="bi bi-card-list"></i></button>
-          <button class="btn btn-link btn-sm text-dark rounded-circle ${store["菜單圖片連結"] == '' ? 'd-none' : ''}" data-bs-toggle="modal" data-bs-target="#menuImageModal" data-name="${store["店家名稱"]}" data-image-link="${store["菜單圖片連結"] == '' ? '#' : store["菜單圖片連結"]}"><i class="bi bi-image"></i></button>
+          <button class="btn btn-link btn-sm text-dark rounded-circle ${store["是否有菜單圖片"] == 'FALSE' ? 'd-none' : ''}" data-bs-toggle="modal" data-bs-target="#menuImageModal" data-name="${store["店家名稱"]}" data-image-link="${store["是否有菜單圖片"] == 'FALSE' ? '#' : `./assets/images/stores/menu/${store["Place ID"]}.png`}"><i class="bi bi-image"></i></button>
         </div>
       </div>
     </div>
