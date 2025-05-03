@@ -1,42 +1,31 @@
 const SHEET_URL = 'https://opensheet.elk.sh/1ykEQFnXG0YqNsgJc3AWxzGU2ePXndbiw8qh9eJawusU/飲料店';
-
+const GOOGLEMAPINFO_SHEET_URL = 'https://opensheet.elk.sh/1ykEQFnXG0YqNsgJc3AWxzGU2ePXndbiw8qh9eJawusU/GoogleMaps資訊';
 async function getSheetData() {
   const res = await fetch(SHEET_URL);
+  const data = await res.json();
+  return data;
+}
+
+async function getGoogleMapInfoData() {
+  const res = await fetch(GOOGLEMAPINFO_SHEET_URL);
   const data = await res.json();
   return data;
 }
 async function initData() {
   const container = document.getElementById('store-list');
   const data = await getSheetData();
-  data.forEach(store => {
-    const card = document.createElement("div");
-    card.className = "col-md-4";
-    // 取得圖示連結
-    const logoUrl = `./assets/images/stores/logo/${store["Place ID"]}.png`;
-    card.innerHTML = `
-    <div class="card rounded-3">
-      
-      <div class="card-body d-flex align-items-center gap-3" style="height: 100px;">
-        
-         ${logoUrl && store["菜單已完全加入"] == 'TRUE' ? `
-        <div style="height: 100%; aspect-ratio: 1/1; ">
-          <img src="${logoUrl}" alt="Logo" class="rounded-3 shadow-sm" style="height: 100%; width: 100%; object-fit: cover;">
-        </div>
-      ` : ''}
-
-        <div class="overflow-hidden w-100">
-          <h2 class="text-truncate mb-1 ${store["菜單已完全加入"] == 'TRUE' ? '' : 'text-secondary'}">${store["店家名稱"]}</h2>
-          <h6 class="f-w-400 text-secondary mb-0">${store["分店名稱"]}</h6>
-        </div>
-        <div class="ms-auto ${store["菜單已完全加入"] == 'TRUE' ? 'd-flex gap-3' : 'd-none'}">
-          <button class="btn btn-link btn-sm text-dark rounded-circle" data-bs-toggle="modal" data-bs-target="#menuModal" data-name="${store["店家名稱"]}"><i class="bi bi-card-list"></i></button>
-          <button class="btn btn-link btn-sm text-dark rounded-circle ${store["是否有菜單圖片"] == 'FALSE' ? 'd-none' : ''}" data-bs-toggle="modal" data-bs-target="#menuImageModal" data-name="${store["店家名稱"]}" data-image-link="${store["是否有菜單圖片"] == 'FALSE' ? '#' : `./assets/images/stores/menu/${store["Place ID"]}.png`}"><i class="bi bi-image"></i></button>
-        </div>
-      </div>
-    </div>
-  `;
-    container.appendChild(card);
+  const googleMapInfoData = await getGoogleMapInfoData();
+  const googleMapInfoMap = new Map();
+  data.forEach((store, index) => {
+    store._originalIndex = index;
   });
+  googleMapInfoData.forEach(info => {
+    if (info["Place ID"]) {
+      googleMapInfoMap.set(info["Place ID"], info);
+    }
+  });
+  renderCards(data, googleMapInfoMap);
+
 
   const menuModal = document.getElementById('menuModal');
 
@@ -55,7 +44,6 @@ async function initData() {
       const res = await fetch(menuUrl);
       const menuItems = await res.json();
 
-      // 分組資料
       const grouped = {};
       menuItems.forEach(item => {
         const series = item["飲料系列"] || "未分類";
@@ -63,7 +51,6 @@ async function initData() {
         grouped[series].push(item);
       });
 
-      // 產生 Tabs 標題列
       const tabTitles = Object.keys(grouped).map((series, idx) => `
       <li class="nav-item" role="presentation">
         <button class="nav-link ${idx === 0 ? 'active' : ''}" id="tab-${idx}" data-bs-toggle="tab" data-bs-target="#pane-${idx}" type="button" role="tab">
@@ -72,7 +59,6 @@ async function initData() {
       </li>
     `).join('');
 
-      // 產生每個 Tab 對應的內容
       const tabContents = Object.entries(grouped).map(([series, items], idx) => `
       <div class="tab-pane fade ${idx === 0 ? 'show active' : ''}" id="pane-${idx}" role="tabpanel">
         <ul class="list-group list-group-flush mt-3">
@@ -86,7 +72,6 @@ async function initData() {
       </div>
     `).join('');
 
-      // 合併成完整 HTML
       body.innerHTML = `
       <div class="overflow-auto">
         <ul class="nav nav-tabs flex-nowrap sticky-top bg-white" role="tablist" style="white-space: nowrap;">
@@ -141,14 +126,90 @@ async function initData() {
     // 最後設定圖片來源，開始載入
     img.src = storeMenuImageLink;
 
-    const viewer = new Viewer(img, {
+    new Viewer(img, {
       navbar: false,
       title: false,
       toolbar: false,
+      toggleOnDblclick: false,
     });
   });
 
+  document.getElementById("sortOption").addEventListener("change", function () {
+    const key = this.value;
+    if (key === "default") {
+      data.sort((a, b) => a._originalIndex - b._originalIndex);
+    } else if (key.endsWith("-reverse")) {
+      const baseKey = key.replace("-reverse", "");
+      data.sort((a, b) => a[baseKey] - b[baseKey]);
+    } else {
+      data.sort((a, b) => b[key] - a[key]);
+    }
+    renderCards(data, googleMapInfoMap);
+  });
+}
+function renderCards(data, googleMapInfoMap) {
+  const container = document.getElementById('store-list');
+  container.innerHTML = '';
 
+  data.forEach(store => {
+    const placeId = store["Place ID"];
+    const mapInfo = googleMapInfoMap.get(placeId);
+    store.rating = mapInfo ? parseFloat(mapInfo["評分"]) || 0 : 0;
+    store.reviews = mapInfo ? parseInt(mapInfo["評分人數"]) || 0 : 0;
+
+    const card = document.createElement("div");
+    card.className = "col-md-4";
+    const logoUrl = `./assets/images/stores/logo/${placeId}.png`;
+    const reviewLink = `https://search.google.com/local/reviews?placeid=${placeId}`;
+
+    card.innerHTML = `
+      <div class="card rounded-3">
+        <div class="card-body d-flex align-items-center gap-3" style="height: 100px;">
+          ${logoUrl && store["菜單已完全加入"] == 'TRUE' ? `
+            <div style="height: 100%; aspect-ratio: 1/1;">
+              <img src="${logoUrl}" alt="Logo" class="rounded-3 shadow-sm" style="height: 100%; width: 100%; object-fit: cover;">
+            </div>
+          ` : ''}
+          <div class="overflow-hidden w-100">
+            <h3 class="text-truncate mb-1 ${store["菜單已完全加入"] == 'TRUE' ? '' : 'text-secondary'}">${store["店家名稱"]}</h3>
+            <h6 class="f-w-400 text-secondary mb-0">${store["分店名稱"]}</h6>
+          </div>
+          <div class="d-flex ms-auto w-50 text-end justify-content-end">
+              <a class="text-muted small" href="${reviewLink}" target="_blank">
+                ${store.reviews > 0 ? `${renderStars(store.rating)} ${store.rating}<br/>${store.reviews} 則評論` : '沒有評論'}
+              </a>
+          </div>
+        </div>
+        <div class="${store["菜單已完全加入"] == 'TRUE' ? 'd-flex gap-3 w-100 border-top' : 'd-none'}">
+          <button class="btn btn-link btn-sm text-dark flex-fill border-end" data-bs-toggle="modal" data-bs-target="#menuModal" data-name="${store["店家名稱"]}">
+            <i class="bi bi-card-list me-2"></i>清單檢視
+          </button>
+          <button class="btn btn-link btn-sm text-dark flex-fill ${store["是否有菜單圖片"] == 'FALSE' ? 'd-none' : ''}" 
+            data-bs-toggle="modal" data-bs-target="#menuImageModal" 
+            data-name="${store["店家名稱"]}" 
+            data-image-link="${store["是否有菜單圖片"] == 'FALSE' ? '#' : `./assets/images/stores/menu/${placeId}.png`}">
+            <i class="bi bi-image me-2"></i>菜單圖片
+          </button>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+
+function renderStars(rating) {
+  const stars = [];
+  for (let i = 1; i <= 5; i++) {
+    if (rating >= i - 0.2) {
+      stars.push('<i class="bi bi-star-fill text-warning"></i>');
+    } else if (rating >= i - 0.7) {
+      stars.push('<i class="bi bi-star-half text-warning"></i>');
+    } else {
+      stars.push('<i class="bi bi-star text-warning"></i>');
+    }
+  }
+  return stars.join('');
 }
 
 
