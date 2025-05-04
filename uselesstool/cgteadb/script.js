@@ -165,13 +165,13 @@ function renderCards(data, googleMapInfoMap) {
     card.innerHTML = `
       <div class="card rounded-3">
         <div class="card-body d-flex align-items-center gap-3" style="height: 100px;">
-          ${logoUrl && store["菜單已完全加入"] == 'TRUE' ? `
+          ${logoUrl && store["是否有店家圖示"] == 'TRUE' ? `
             <div style="height: 100%; aspect-ratio: 1/1;">
               <img src="${logoUrl}" alt="Logo" class="rounded-3 shadow-sm" style="height: 100%; width: 100%; object-fit: cover;">
             </div>
           ` : ''}
           <div class="overflow-hidden w-100">
-            <h3 class="text-truncate mb-1 ${store["菜單已完全加入"] == 'TRUE' ? '' : 'text-secondary'}">${store["店家名稱"]}</h3>
+            <h3 class="text-truncate mb-1">${store["店家名稱"]}</h3>
             <h6 class="f-w-400 text-secondary mb-0">${store["分店名稱"]}</h6>
           </div>
           <div class="d-flex ms-auto w-50 text-end justify-content-end">
@@ -180,14 +180,20 @@ function renderCards(data, googleMapInfoMap) {
               </a>
           </div>
         </div>
-        <div class="${store["菜單已完全加入"] == 'TRUE' ? 'd-flex gap-3 w-100 border-top' : 'd-none'}">
-          <button class="btn btn-link btn-sm text-dark flex-fill border-end" data-bs-toggle="modal" data-bs-target="#menuModal" data-name="${store["店家名稱"]}">
+        <div class="d-flex gap-3 w-100 border-top">
+          <button class="btn btn-link btn-sm text-dark flex-fill border-end"
+          data-bs-toggle="modal"
+          data-bs-target="#menuModal"
+          data-name="${store["店家名稱"]}"
+          ${store["菜單已完全加入"] == 'TRUE' ? '' : 'disabled'}
+          >
             <i class="bi bi-card-list me-2"></i>清單檢視
           </button>
-          <button class="btn btn-link btn-sm text-dark flex-fill ${store["是否有菜單圖片"] == 'FALSE' ? 'd-none' : ''}" 
+          <button class="btn btn-link btn-sm text-dark flex-fill" 
             data-bs-toggle="modal" data-bs-target="#menuImageModal" 
             data-name="${store["店家名稱"]}" 
-            data-image-link="${store["是否有菜單圖片"] == 'FALSE' ? '#' : `./assets/images/stores/menu/${placeId}.png`}">
+            data-image-link="${store["是否有菜單圖片"] == 'FALSE' ? '#' : `./assets/images/stores/menu/${placeId}.png`}"
+            ${store["是否有菜單圖片"] == 'TRUE' ? '' : 'disabled'}>
             <i class="bi bi-image me-2"></i>菜單圖片
           </button>
         </div>
