@@ -218,5 +218,6 @@ function renderStars(rating) {
   return stars.join('');
 }
 
-
-initData();
+function initHomePage() {
+  initData();
+}
