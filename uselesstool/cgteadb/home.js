@@ -1,38 +1,54 @@
-const SHEET_URL = 'https://opensheet.elk.sh/1ykEQFnXG0YqNsgJc3AWxzGU2ePXndbiw8qh9eJawusU/飲料店';
-const GOOGLEMAPINFO_SHEET_URL = 'https://opensheet.elk.sh/1ykEQFnXG0YqNsgJc3AWxzGU2ePXndbiw8qh9eJawusU/GoogleMaps資訊';
-async function getSheetData() {
-  const res = await fetch(SHEET_URL);
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbw8WvOreSXPZUkFYfHa7xXNyP6gOsT2sb8UY9GbGrmDpulI8BnQsRyud1Q-xiKZJfU/exec';
+let allStoreData = {};
+let allMenuData = {};
+let allGoogleMapsInfoData = {};
+let googleMapInfoMap = new Map();
+
+async function getStoreData() {
+  showLoading();
+  const res = await fetch(`${GAS_URL}?action=getStore`);
+  return await res.json();
+}
+
+async function getMenuData() {
+  showLoading();
+  const res = await fetch(`${GAS_URL}?action=getMenu`);
   const data = await res.json();
   return data;
+
 }
 
 async function getGoogleMapInfoData() {
-  const res = await fetch(GOOGLEMAPINFO_SHEET_URL);
+  showLoading();
+  const res = await fetch(`${GAS_URL}?action=getGoogleMapsInfo`);
   const data = await res.json();
   return data;
 }
 async function initData() {
-  const container = document.getElementById('store-list');
-  const data = await getSheetData();
-  const googleMapInfoData = await getGoogleMapInfoData();
-  const googleMapInfoMap = new Map();
-  data.forEach((store, index) => {
-    store._originalIndex = index;
+  allStoreData = await getStoreData();
+  allMenuData = await getMenuData();
+  allGoogleMapsInfoData = await getGoogleMapInfoData();
+  Object.entries(allMenuData).forEach(([storeName, menuItems], index) => {
+    if (menuItems.length > 0) {
+      menuItems.forEach(item => {
+        item._originalIndex = index;
+      });
+    }
   });
-  googleMapInfoData.forEach(info => {
+
+  allGoogleMapsInfoData.forEach(info => {
     if (info["Place ID"]) {
       googleMapInfoMap.set(info["Place ID"], info);
     }
   });
-  renderCards(data, googleMapInfoMap);
-
+  renderCards(allStoreData, googleMapInfoMap);
+  hideLoading();
 
   const menuModal = document.getElementById('menuModal');
 
   menuModal.addEventListener('show.bs.modal', async event => {
     const card = event.relatedTarget;
     const storeName = card.getAttribute('data-name');
-    const menuUrl = `https://opensheet.elk.sh/1ykEQFnXG0YqNsgJc3AWxzGU2ePXndbiw8qh9eJawusU/${encodeURIComponent(storeName)}`;
 
     document.getElementById('menuModalLabel').innerText = `${storeName}`;
     const body = document.getElementById('menuModalBody');
@@ -41,8 +57,7 @@ async function initData() {
     const footer = document.getElementById('menuModalFooter');
     footer.innerHTML = '';
     try {
-      const res = await fetch(menuUrl);
-      const menuItems = await res.json();
+      const menuItems = allMenuData[storeName] || [];
 
       const grouped = {};
       menuItems.forEach(item => {
@@ -100,30 +115,25 @@ async function initData() {
 
     document.getElementById('menuImageModalLabel').innerText = `${storeName}`;
     const body = document.getElementById('menuImageModalBody');
-    const footer = document.getElementById('menuImageModalFooter');
 
-    // 先顯示「載入中...」
     body.innerHTML = `<p>載入中...</p>`;
 
-    // 建立一個新的 Image 元素
     const img = new Image();
     img.id = "menuImage";
     img.alt = "菜單圖片";
-    img.style.maxWidth = "100%"; // 讓圖片不超出 modal
+    img.style.maxWidth = "100%";
     img.style.height = "auto";
 
-    // 圖片載入成功後才顯示
     img.onload = function () {
-      body.innerHTML = ''; // 清除「載入中」
-      body.appendChild(img); // 將圖片放到 modal body 中
+      body.innerHTML = '';
+      body.appendChild(img);
+
     };
 
-    // 圖片載入失敗處理（選擇性加上）
     img.onerror = function () {
       body.innerHTML = `<p class="text-danger">載入失敗，請稍後再試</p>`;
     };
 
-    // 最後設定圖片來源，開始載入
     img.src = storeMenuImageLink;
 
     new Viewer(img, {
@@ -137,21 +147,21 @@ async function initData() {
   document.getElementById("sortOption").addEventListener("change", function () {
     const key = this.value;
     if (key === "default") {
-      data.sort((a, b) => a._originalIndex - b._originalIndex);
+      allStoreData.sort((a, b) => a._originalIndex - b._originalIndex);
     } else if (key.endsWith("-reverse")) {
       const baseKey = key.replace("-reverse", "");
-      data.sort((a, b) => a[baseKey] - b[baseKey]);
+      allStoreData.sort((a, b) => a[baseKey] - b[baseKey]);
     } else {
-      data.sort((a, b) => b[key] - a[key]);
+      allStoreData.sort((a, b) => b[key] - a[key]);
     }
-    renderCards(data, googleMapInfoMap);
+    renderCards(allStoreData, googleMapInfoMap);
   });
 }
 function renderCards(data, googleMapInfoMap) {
   const container = document.getElementById('store-list');
   container.innerHTML = '';
 
-  data.forEach(store => {
+  Object.values(data).forEach(store => {
     const placeId = store["Place ID"];
     const mapInfo = googleMapInfoMap.get(placeId);
     store.rating = mapInfo ? parseFloat(mapInfo["評分"]) || 0 : 0;
@@ -165,7 +175,7 @@ function renderCards(data, googleMapInfoMap) {
     card.innerHTML = `
       <div class="card rounded-3">
         <div class="card-body d-flex align-items-center gap-3" style="height: 100px;">
-          ${logoUrl && store["是否有店家圖示"] == 'TRUE' ? `
+          ${logoUrl && store["是否有店家圖示"] ? `
             <div style="height: 100%; aspect-ratio: 1/1;">
               <img src="${logoUrl}" alt="Logo" class="rounded-3 shadow-sm" style="height: 100%; width: 100%; object-fit: cover;">
             </div>
@@ -185,15 +195,15 @@ function renderCards(data, googleMapInfoMap) {
           data-bs-toggle="modal"
           data-bs-target="#menuModal"
           data-name="${store["店家名稱"]}"
-          ${store["菜單已完全加入"] == 'TRUE' ? '' : 'disabled'}
+          ${store["菜單已完全加入"] ? '' : 'disabled'}
           >
             <i class="bi bi-card-list me-2"></i>清單檢視
           </button>
           <button class="btn btn-link btn-sm text-dark flex-fill" 
             data-bs-toggle="modal" data-bs-target="#menuImageModal" 
             data-name="${store["店家名稱"]}" 
-            data-image-link="${store["是否有菜單圖片"] == 'FALSE' ? '#' : `./assets/images/stores/menu/${placeId}.png`}"
-            ${store["是否有菜單圖片"] == 'TRUE' ? '' : 'disabled'}>
+            data-image-link="${!store["是否有菜單圖片"] ? '#' : `./assets/images/stores/menu/${placeId}.png`}"
+            ${store["是否有菜單圖片"] ? '' : 'disabled'}>
             <i class="bi bi-image me-2"></i>菜單圖片
           </button>
         </div>
