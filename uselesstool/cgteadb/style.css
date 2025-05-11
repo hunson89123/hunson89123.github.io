@@ -1,3 +1,27 @@
 .cursor-pointer {
     cursor: pointer !important;
 }
+
+#loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100dvw;
+    height: 100dvh;
+    z-index: 9999;
+    background-color: #00000033;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+    pointer-events: auto;
+    visibility: visible;
+}
+
+#loading.hide {
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+}
