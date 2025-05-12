@@ -1,3 +1,35 @@
-<div class="h-100 w-100 d-flex justify-content-center align-items-center">
-    <h1>排行榜準備中:)</h1>
+<div class="overflow-auto">
+    <ul class="nav nav-tabs justify-content-center flex-nowrap sticky-top" id="rankingTabs" role="tablist"
+        style="white-space: nowrap;">
+        <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#cheapTab">最便宜TOP10</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#expensiveTab">最貴TOP10</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#mostTab">最多飲品TOP10</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#leastTab">最少飲品TOP10</button>
+        </li>
+    </ul>
+</div>
+<div class="tab-content mt-3">
+    <div id="cheapTab" class="tab-pane fade show active" role="tabpanel" aria-labelledby="expensive-tab">
+        <ol class="list-group list-group-numbered">
+        </ol>
+    </div>
+    <div id="expensiveTab" class="tab-pane fade" role="tabpanel" aria-labelledby="expensive-tab">
+        <ol class="list-group list-group-numbered">
+        </ol>
+    </div>
+    <div id="mostTab" class="tab-pane fade" role="tabpanel" aria-labelledby="expensive-tab">
+        <ol class="list-group list-group-numbered">
+        </ol>
+    </div>
+    <div id="leastTab" class="tab-pane fade" role="tabpanel" aria-labelledby="expensive-tab">
+        <ol class="list-group list-group-numbered">
+        </ol>
+    </div>
 </div>
