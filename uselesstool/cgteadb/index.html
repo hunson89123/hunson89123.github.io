@@ -46,6 +46,12 @@
                         </a>
                     </li>
                     <li class="pc-item">
+                        <a href="#" class="pc-link" data-page="search">
+                            <span class="pc-micon"><i class="bi bi-search"></i></span>
+                            <span class="pc-mtext">找茶</span>
+                        </a>
+                    </li>
+                    <li class="pc-item">
                         <a href="#" class="pc-link" data-page="ranking">
                             <span class="pc-micon"><i class="bi bi-trophy"></i></span>
                             <span class="pc-mtext">排行榜</span>
@@ -162,27 +168,6 @@
                             <i class="ti ti-menu-2"></i>
                         </a>
                     </li>
-                    <li class="dropdown pc-h-item d-inline-flex d-md-none">
-                        <a class="pc-head-link dropdown-toggle arrow-none m-0" data-bs-toggle="dropdown" href="#"
-                            role="button" aria-haspopup="false" aria-expanded="false">
-                            <i class="ti ti-search"></i>
-                        </a>
-                        <div class="dropdown-menu pc-h-dropdown drp-search">
-                            <form class="px-3">
-                                <div class="form-group mb-0 d-flex align-items-center">
-                                    <i data-feather="search"></i>
-                                    <input type="search" class="form-control border-0 shadow-none"
-                                        placeholder="Search here. . .">
-                                </div>
-                            </form>
-                        </div>
-                    </li>
-                    <li class="pc-h-item d-none d-md-inline-flex">
-                        <form class="header-search">
-                            <i data-feather="search" class="icon-search"></i>
-                            <input type="search" class="form-control" placeholder="Search here. . .">
-                        </form>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -248,8 +233,11 @@
         </div>
     </div>
     <div id="loading" class="hide">
-        <div class="sk-pulse"></div>
-        <h3 class="mt-3">找茶中，請稍候...</h3>
+        <div class="sk-swing">
+            <div class="sk-swing-dot"></div>
+            <div class="sk-swing-dot"></div>
+        </div>
+        <h3 id="loading_text" class="mt-3"></h3>
     </div>
 
     <!-- [Page Specific JS] end -->
@@ -335,7 +323,6 @@
                         };
                         document.body.appendChild(script);
                     } else {
-
                         if (!initializedPages.has(pageName)) {
                             const initFunc = getInitFunctionName(scriptName);
                             if (typeof window[initFunc] === "function") {
@@ -345,7 +332,12 @@
                         } else {
                             if (pageName === 'home') {
                                 window["renderCards"](allStoreData, googleMapInfoMap);
+                            } else if (pageName === 'search') {
+                                window["initSearchPage"]();
+                            } else if (pageName === 'ranking') {
+                                window["initRankingPage"]();
                             }
+
                         }
                     }
                 });
@@ -361,6 +353,29 @@
 
         function showLoading() {
             const loading = document.getElementById("loading");
+            const loading_text = document.getElementById("loading_text");
+            const rnd_text = [
+                '找茶中，請稍候...',
+                '泡茶中，請稍候...',
+                '茶湯熬煮中，請稍候...',
+                '好茶值得等待...',
+                '熱水正沖進茶包裡，請稍後...',
+                '珍珠正在跳探戈，等一下！',
+                '茶壺還沒嗶一聲，再等一下～',
+                '我們正在請茶神加持中...',
+                '奶精正在雲霧中現身...',
+                '茶農正在穿越時空送來...',
+                '正在確認每一顆珍珠的圓度...',
+                '茶葉在舒展筋骨中...',
+                '冰塊掉進杯子的聲音傳來了...',
+                'AI 調茶師正在調整甜度...',
+                '煮茶師傅說：這杯需要一點耐心',
+                '茶魂附體中…請喝一口冷靜',
+                '牛奶還在路上擠...',
+                '一杯完美飲料，需要一點魔法時間'
+            ];
+
+            loading_text.textContent = rnd_text[Math.floor(Math.random() * rnd_text.length)]
             loading.classList.remove("hide");
         }
 

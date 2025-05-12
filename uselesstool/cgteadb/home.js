@@ -1,39 +1,34 @@
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbw8WvOreSXPZUkFYfHa7xXNyP6gOsT2sb8UY9GbGrmDpulI8BnQsRyud1Q-xiKZJfU/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxKNauOpCTGKianAEr3AiST-qDMJWxQ4s0kK8rEPorgepinJ-MMWnw8ZSLDRJTZvsFh/exec';
 let allStoreData = {};
 let allMenuData = {};
 let allGoogleMapsInfoData = {};
 let googleMapInfoMap = new Map();
+let sortSelected = "default";
 
 async function getStoreData() {
-  showLoading();
   const res = await fetch(`${GAS_URL}?action=getStore`);
   return await res.json();
 }
 
 async function getMenuData() {
-  showLoading();
   const res = await fetch(`${GAS_URL}?action=getMenu`);
   const data = await res.json();
   return data;
-
 }
 
 async function getGoogleMapInfoData() {
-  showLoading();
   const res = await fetch(`${GAS_URL}?action=getGoogleMapsInfo`);
   const data = await res.json();
   return data;
 }
 async function initData() {
+  showLoading();
   allStoreData = await getStoreData();
   allMenuData = await getMenuData();
   allGoogleMapsInfoData = await getGoogleMapInfoData();
-  Object.entries(allMenuData).forEach(([storeName, menuItems], index) => {
-    if (menuItems.length > 0) {
-      menuItems.forEach(item => {
-        item._originalIndex = index;
-      });
-    }
+  Object.entries(allStoreData).forEach(([storeName, storeItems], index) => {
+    storeItems._originalIndex = index;
+    console.log(storeItems);
   });
 
   allGoogleMapsInfoData.forEach(info => {
@@ -144,23 +139,11 @@ async function initData() {
     });
   });
 
-  document.getElementById("sortOption").addEventListener("change", function () {
-    const key = this.value;
-    if (key === "default") {
-      allStoreData.sort((a, b) => a._originalIndex - b._originalIndex);
-    } else if (key.endsWith("-reverse")) {
-      const baseKey = key.replace("-reverse", "");
-      allStoreData.sort((a, b) => a[baseKey] - b[baseKey]);
-    } else {
-      allStoreData.sort((a, b) => b[key] - a[key]);
-    }
-    renderCards(allStoreData, googleMapInfoMap);
-  });
+
 }
 function renderCards(data, googleMapInfoMap) {
   const container = document.getElementById('store-list');
   container.innerHTML = '';
-
   Object.values(data).forEach(store => {
     const placeId = store["Place ID"];
     const mapInfo = googleMapInfoMap.get(placeId);
@@ -210,6 +193,22 @@ function renderCards(data, googleMapInfoMap) {
       </div>
     `;
     container.appendChild(card);
+  });
+
+  const sortOption = document.getElementById("sortOption");
+  sortOption.value = sortSelected
+  sortOption.addEventListener("change", function () {
+    const key = this.value;
+    sortSelected = key;
+    if (key === "default") {
+      allStoreData.sort((a, b) => a._originalIndex - b._originalIndex);
+    } else if (key.endsWith("-reverse")) {
+      const baseKey = key.replace("-reverse", "");
+      allStoreData.sort((a, b) => a[baseKey] - b[baseKey]);
+    } else {
+      allStoreData.sort((a, b) => b[key] - a[key]);
+    }
+    renderCards(allStoreData, googleMapInfoMap);
   });
 }
 
