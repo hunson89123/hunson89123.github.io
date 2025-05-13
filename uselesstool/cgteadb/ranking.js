@@ -1,5 +1,4 @@
 function getTopCheapDrinks(data, topN = 10) {
-    alert('!');
     const allDrinks = [];
     for (const [brand, drinks] of Object.entries(data)) {
         drinks.forEach(drink => {
