@@ -28,7 +28,6 @@ async function initData() {
   allGoogleMapsInfoData = await getGoogleMapInfoData();
   Object.entries(allStoreData).forEach(([storeName, storeItems], index) => {
     storeItems._originalIndex = index;
-    console.log(storeItems);
   });
 
   allGoogleMapsInfoData.forEach(info => {

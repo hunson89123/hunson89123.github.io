@@ -11,7 +11,6 @@ function getTopCheapDrinks(data, topN = 10) {
         });
     }
 
-    console.log(allDrinks);
     return allDrinks
         .sort((a, b) => a.price - b.price)
         .slice(0, topN);
