@@ -164,30 +164,25 @@ function renderCards(data, googleMapInfoMap) {
           ` : ''}
           <div class="overflow-hidden w-100">
             <h3 class="text-truncate mb-1">${store["店家名稱"]}</h3>
-            <h6 class="f-w-400 text-secondary mb-0">${store["分店名稱"]}</h6>
+            <h6 class="text-truncate f-w-400 text-secondary mb-0">${store["分店名稱"]}</h6>
           </div>
           <div class="d-flex ms-auto w-50 text-end justify-content-end">
-              <a class="text-muted small" href="${reviewLink}" target="_blank">
-                ${store.reviews > 0 ? `${renderStars(store.rating)} ${store.rating}<br/>${store.reviews} 則評論` : '沒有評論'}
-              </a>
-          </div>
-        </div>
-        <div class="d-flex gap-3 w-100 border-top">
-          <button class="btn btn-link btn-sm text-dark flex-fill border-end"
+               <button class="btn btn-link text-dark flex-fill"
           data-bs-toggle="modal"
           data-bs-target="#menuModal"
           data-name="${store["店家名稱"]}"
           ${store["菜單已完全加入"] ? '' : 'disabled'}
           >
-            <i class="bi bi-card-list me-2"></i>清單檢視
+            <i class="bi bi-journal-text"></i>
           </button>
-          <button class="btn btn-link btn-sm text-dark flex-fill" 
+          <button class="btn btn-link text-dark flex-fill" 
             data-bs-toggle="modal" data-bs-target="#menuImageModal" 
             data-name="${store["店家名稱"]}" 
             data-image-link="${!store["是否有菜單圖片"] ? '#' : `./assets/images/stores/menu/${placeId}.png`}"
             ${store["是否有菜單圖片"] ? '' : 'disabled'}>
-            <i class="bi bi-image me-2"></i>菜單圖片
+            <i class="bi bi-file-image"></i>
           </button>
+          </div>
         </div>
       </div>
     `;
@@ -212,19 +207,7 @@ function renderCards(data, googleMapInfoMap) {
 }
 
 
-function renderStars(rating) {
-  const stars = [];
-  for (let i = 1; i <= 5; i++) {
-    if (rating >= i - 0.2) {
-      stars.push('<i class="bi bi-star-fill text-warning"></i>');
-    } else if (rating >= i - 0.7) {
-      stars.push('<i class="bi bi-star-half text-warning"></i>');
-    } else {
-      stars.push('<i class="bi bi-star text-warning"></i>');
-    }
-  }
-  return stars.join('');
-}
+
 
 function initHomePage() {
   initData();

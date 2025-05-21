@@ -41,8 +41,8 @@
                 <ul class="pc-navbar">
                     <li class="pc-item">
                         <a href="#" class="pc-link" data-page="home">
-                            <span class="pc-micon"><i class="bi bi-house"></i></span>
-                            <span class="pc-mtext">首頁</span>
+                            <span class="pc-micon"><i class="bi bi-card-list"></i></span>
+                            <span class="pc-mtext">菜單</span>
                         </a>
                     </li>
                     <li class="pc-item">
@@ -57,7 +57,12 @@
                             <span class="pc-mtext">排行榜</span>
                         </a>
                     </li>
-
+                    <li class="pc-item">
+                        <a href="#" class="pc-link" data-page="comment">
+                            <span class="pc-micon"><i class="bi bi-chat-left-text"></i></span>
+                            <span class="pc-mtext">評論數據</span>
+                        </a>
+                    </li>
                     <!-- <li class="pc-item pc-caption">
                         <label>UI Components</label>
                         <i class="ti ti-dashboard"></i>
@@ -324,21 +329,13 @@
                         };
                         document.body.appendChild(script);
                     } else {
-                        if (!initializedPages.has(pageName)) {
-                            const initFunc = getInitFunctionName(scriptName);
-                            if (typeof window[initFunc] === "function") {
-                                window[initFunc]();
-                                initializedPages.add(pageName);
-                            }
-                        } else {
-                            if (pageName === 'home') {
-                                window["renderCards"](allStoreData, googleMapInfoMap);
-                            } else if (pageName === 'search') {
-                                window["initSearchPage"]();
-                            } else if (pageName === 'ranking') {
-                                window["initRankingPage"]();
-                            }
-
+                        const initFunc = getInitFunctionName(scriptName);
+                        if (typeof window[initFunc] === "function") {
+                            window[initFunc]();
+                            initializedPages.add(pageName);
+                        }
+                        if (pageName === 'home') {
+                            window["renderCards"](allStoreData, googleMapInfoMap);
                         }
                     }
                     hideLoading();
@@ -357,27 +354,35 @@
             const loading = document.getElementById("loading");
             const loading_text = document.getElementById("loading_text");
             const rnd_text = [
-                '找茶中，請稍候...',
-                '泡茶中，請稍候...',
-                '茶湯熬煮中，請稍候...',
-                '好茶值得等待...',
-                '熱水正沖進茶包裡，請稍後...',
-                '珍珠正在跳探戈，等一下！',
-                '茶壺還沒嗶一聲，再等一下～',
-                '我們正在請茶神加持中...',
-                '奶精正在雲霧中現身...',
-                '茶農正在穿越時空送來...',
-                '正在確認每一顆珍珠的圓度...',
-                '茶葉在舒展筋骨中...',
-                '冰塊掉進杯子的聲音傳來了...',
-                'AI 調茶師正在調整甜度...',
-                '煮茶師傅說：這杯需要一點耐心',
-                '茶魂附體中…請喝一口冷靜',
-                '牛奶還在路上擠...',
-                '一杯完美飲料，需要一點魔法時間'
+                { name: "上宇林", slogan: "簡單喝 不簡單的茶" },
+                { name: "清心福全", slogan: "誠信、用心、創新、惜福" },
+                { name: "UG", slogan: "每一口都是綠意花香" },
+                { name: "迷客夏", slogan: "為了你，我們養了一群牛" },
+                { name: "青嵐茶飲", slogan: "疊翠為青 山風成嵐<br>　雲霧為好 山間享茶" },
+                { name: "COMEBUY", slogan: "用一杯創意好茶，帶給人類歡樂安心" },
+                { name: "得正", slogan: "行得正、坐得正、萬事得正" },
+                { name: "林三茶研所", slogan: "研究的不只是茶飲<br>　更是一種生活態度" },
+                /*{ name: "50嵐", slogan: "" },*/
+                { name: "有飲", slogan: "手握有飲，所向無敵" },
+                { name: "可不可熟成紅茶", slogan: "渴不渴，可不可" },
+                { name: "老賴茶棧", slogan: "遵循傳統．創造未來" },
+                { name: "龜記茗品", slogan: "小人物.大生活" },
+                { name: "陸柒零", slogan: "一起重溫，過往的難忘時光<br>　一同感受，曾經的燦爛美好" },
+                { name: "春陽茶事", slogan: "喜如春陽，笑談茶事" },
+                /*{ name: "甘蔗媽媽", slogan: "" },*/
+                /*{ name: "三砌茶", slogan: "" },*/
+                { name: "麻古茶坊", slogan: "MACU, INTO YOUR LIFE." },
+                { name: "大苑子", slogan: "台灣鮮果第一品牌" },
+                { name: "大茗", slogan: "感受茶葉的靈魂，品味生活的真諦" },
+                { name: "特．好喝", slogan: "色澤烏青，烏龍入水" }
+                /*{ name:"瀚漟茶坊", slogan:""}*/
             ];
-
-            loading_text.textContent = rnd_text[Math.floor(Math.random() * rnd_text.length)]
+            const rnd_brand = rnd_text[Math.floor(Math.random() * rnd_text.length)];
+            loading_text.innerHTML = `
+            <h5 class="w-100 text-center">取得資料中，請稍候</h5>
+            <h2>「${rnd_brand.slogan}」</h2>
+            <h5 class="w-100 text-end pe-3">──${rnd_brand.name}</h5>
+            `
             loading.classList.remove("hide");
         }
 
@@ -406,5 +411,6 @@
     integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/"
     crossorigin="anonymous"></script>
 <script src="https://unpkg.com/viewerjs/dist/viewer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 </html>
