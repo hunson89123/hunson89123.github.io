@@ -13,14 +13,15 @@
     width: 100dvw;
     height: 100dvh;
     z-index: 9999;
-    background-color: #00000033;
+    background-color: #ffffff;
     opacity: 1;
-    transition: opacity 0.5s ease;
+    transition: all .5s ease;
     pointer-events: auto;
     visibility: visible;
 }
 
 #loading.hide {
+    transition: all .5s ease;
     opacity: 0;
     pointer-events: none;
     visibility: hidden;
