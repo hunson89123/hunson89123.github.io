@@ -100,45 +100,18 @@ async function initData() {
     }
   });
 
-  const menuImageModal = document.getElementById('menuImageModal');
-
-  menuImageModal.addEventListener('show.bs.modal', async event => {
+  const storeInfoModal = document.getElementById('storeInfoModal');
+  storeInfoModal.addEventListener('show.bs.modal', async event => {
     const card = event.relatedTarget;
     const storeName = card.getAttribute('data-name');
-    const storeMenuImageLink = card.getAttribute('data-image-link');
 
-    document.getElementById('menuImageModalLabel').innerText = `${storeName}`;
-    const body = document.getElementById('menuImageModalBody');
-
+    document.getElementById('storeInfoModalLabel').innerText = `${storeName}`;
+    const body = document.getElementById('storeInfoModalBody');
     body.innerHTML = `<p>載入中...</p>`;
 
-    const img = new Image();
-    img.id = "menuImage";
-    img.alt = "菜單圖片";
-    img.style.maxWidth = "100%";
-    img.style.height = "auto";
-
-    img.onload = function () {
-      body.innerHTML = '';
-      body.appendChild(img);
-
-    };
-
-    img.onerror = function () {
-      body.innerHTML = `<p class="text-danger">載入失敗，請稍後再試</p>`;
-    };
-
-    img.src = storeMenuImageLink;
-
-    new Viewer(img, {
-      navbar: false,
-      title: false,
-      toolbar: false,
-      toggleOnDblclick: false,
-    });
+    const footer = document.getElementById('menuModalFooter');
+    footer.innerHTML = '';
   });
-
-
 }
 function renderCards(data, googleMapInfoMap) {
   const container = document.getElementById('store-list');
@@ -150,24 +123,24 @@ function renderCards(data, googleMapInfoMap) {
     store.reviews = mapInfo ? parseInt(mapInfo["評分人數"]) || 0 : 0;
 
     const card = document.createElement("div");
-    card.className = "col-md-4";
+    card.className = "col-xxl-4 col-xl-6";
     const logoUrl = `./assets/images/stores/logo/${placeId}.png`;
     const reviewLink = `https://search.google.com/local/reviews?placeid=${placeId}`;
 
     card.innerHTML = `
       <div class="card rounded-3">
-        <div class="card-body d-flex align-items-center gap-3" style="height: 100px;">
+        <div class="card-body d-flex align-items-center gap-3" style="height: 100px;">        
           ${logoUrl && store["是否有店家圖示"] ? `
-            <div style="height: 100%; aspect-ratio: 1/1;">
+            <div style="height: 100%; aspect-ratio: 1/1;" class="cursor-pointer" data-name="${store["店家名稱"]}" data-bs-toggle="modal" data-bs-target="#storeInfoModal">
               <img src="${logoUrl}" alt="Logo" class="rounded-3 shadow-sm" style="height: 100%; width: 100%; object-fit: cover;">
             </div>
           ` : ''}
-          <div class="overflow-hidden w-100">
+          <div class="overflow-hidden w-100 cursor-pointer" data-name="${store["店家名稱"]}" data-bs-toggle="modal" data-bs-target="#storeInfoModal">
             <h3 class="text-truncate mb-1">${store["店家名稱"]}</h3>
             <h6 class="text-truncate f-w-400 text-secondary mb-0">${store["分店名稱"]}</h6>
           </div>
           <div class="d-flex ms-auto w-50 text-end justify-content-end">
-               <button class="btn btn-link text-dark flex-fill"
+               <button class="btn btn-link text-dark"
           data-bs-toggle="modal"
           data-bs-target="#menuModal"
           data-name="${store["店家名稱"]}"
@@ -175,8 +148,7 @@ function renderCards(data, googleMapInfoMap) {
           >
             <i class="bi bi-journal-text"></i>
           </button>
-          <button class="btn btn-link text-dark flex-fill" 
-            data-bs-toggle="modal" data-bs-target="#menuImageModal" 
+          <button class="btn btn-link text-dark btn-menu-viewer" 
             data-name="${store["店家名稱"]}" 
             data-image-link="${!store["是否有菜單圖片"] ? '#' : `./assets/images/stores/menu/${placeId}.png`}"
             ${store["是否有菜單圖片"] ? '' : 'disabled'}>
@@ -203,6 +175,36 @@ function renderCards(data, googleMapInfoMap) {
       allStoreData.sort((a, b) => b[key] - a[key]);
     }
     renderCards(allStoreData, googleMapInfoMap);
+  });
+
+  document.querySelectorAll('.btn-menu-viewer').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const imgUrl = btn.getAttribute('data-image-link');
+      if (!imgUrl || imgUrl === '#') return;
+
+      const img = new Image();
+      img.src = imgUrl;
+      img.id = 'menuImage';
+      img.alt = '菜單圖片';
+      img.style.maxWidth = '100%';
+      img.style.height = 'auto';
+
+      img.onload = () => {
+        const viewer = new Viewer(img, {
+          navbar: false,
+          title: false,
+          toolbar: false,
+          toggleOnDblclick: false,
+          transition: false
+        });
+        viewer.show();
+      };
+
+      img.onerror = () => {
+        console.error('圖片載入失敗:', imgUrl);
+        alert('載入失敗，請稍後再試');
+      };
+    });
   });
 }
 

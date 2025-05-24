@@ -26,3 +26,36 @@
     pointer-events: none;
     visibility: hidden;
 }
+
+.viewer-container .viewer-close {
+    top: auto !important;
+    right: auto !important;
+
+    width: 100% !important;
+    height: 50px !important;
+    bottom: 0;
+    left: 0;
+    background: #dc3545;
+    border-radius: 0;
+    text-align: center;
+}
+
+.viewer-container .viewer-button:focus,
+.viewer-button:hover {
+    background: #bb2d3b !important;
+}
+
+.viewer-container .viewer-close::before {
+    color: #fff !important;
+    top: 0;
+    left: 0;
+    line-height: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    font-size: 1rem;
+    content: " ✕ 關閉菜單" !important;
+    background-image: url("") !important;
+}
