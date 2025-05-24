@@ -179,6 +179,7 @@ function renderCards(data, googleMapInfoMap) {
 
   document.querySelectorAll('.btn-menu-viewer').forEach(btn => {
     btn.addEventListener('click', () => {
+      showLoading();
       const imgUrl = btn.getAttribute('data-image-link');
       if (!imgUrl || imgUrl === '#') return;
 
@@ -195,9 +196,11 @@ function renderCards(data, googleMapInfoMap) {
           title: false,
           toolbar: false,
           toggleOnDblclick: false,
-          transition: false
+          transition: false,
+          loading: true
         });
         viewer.show();
+        hideLoading();
       };
 
       img.onerror = () => {
