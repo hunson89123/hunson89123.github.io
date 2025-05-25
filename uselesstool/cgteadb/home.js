@@ -43,8 +43,9 @@ async function initData() {
   menuModal.addEventListener('show.bs.modal', async event => {
     const card = event.relatedTarget;
     const storeName = card.getAttribute('data-name');
+    const branchName = card.getAttribute('data-branch');
 
-    document.getElementById('menuModalLabel').innerText = `${storeName}`;
+    document.getElementById('menuModalLabel').innerHTML = `${storeName} <small class="text-secondary">${branchName}</small>`;
     const body = document.getElementById('menuModalBody');
     body.innerHTML = `<p>載入中...</p>`;
 
@@ -104,8 +105,9 @@ async function initData() {
   storeInfoModal.addEventListener('show.bs.modal', async event => {
     const card = event.relatedTarget;
     const storeName = card.getAttribute('data-name');
+    const branchName = card.getAttribute('data-branch');
 
-    document.getElementById('storeInfoModalLabel').innerText = `${storeName}`;
+    document.getElementById('storeInfoModalLabel').innerHTML = `${storeName} <small class="text-secondary">${branchName}</small>`;
     const body = document.getElementById('storeInfoModalBody');
     body.innerHTML = `<p>載入中...</p>`;
 
@@ -126,24 +128,27 @@ function renderCards(data, googleMapInfoMap) {
     card.className = "col-xxl-4 col-xl-6";
     const logoUrl = `./assets/images/stores/logo/${placeId}.png`;
     const reviewLink = `https://search.google.com/local/reviews?placeid=${placeId}`;
-
+    console.log(data);
     card.innerHTML = `
       <div class="card rounded-3">
-        <div class="card-body d-flex align-items-center gap-3" style="height: 100px;">        
+        <div class="card-body d-flex align-items-center" style="height: 100px;">
+          <div class="d-flex justify-content-center align-items-center w-100 cursor-pointer" data-name="${store["店家名稱"]}" data-branch="${store["分店名稱"]}" data-bs-toggle="modal" data-bs-target="#storeInfoModal">
           ${logoUrl && store["是否有店家圖示"] ? `
-            <div style="height: 100%; aspect-ratio: 1/1;" class="cursor-pointer" data-name="${store["店家名稱"]}" data-bs-toggle="modal" data-bs-target="#storeInfoModal">
-              <img src="${logoUrl}" alt="Logo" class="rounded-3 shadow-sm" style="height: 100%; width: 100%; object-fit: cover;">
+            <div style="height:100%; aspect-ratio: 1/1;">
+            <img src="${logoUrl}" alt="Logo" class="rounded-3 shadow-sm" style="height: auto; width:clamp(50px, 10vw, 60px); object-fit: cover;">
             </div>
-          ` : ''}
-          <div class="overflow-hidden w-100 cursor-pointer" data-name="${store["店家名稱"]}" data-bs-toggle="modal" data-bs-target="#storeInfoModal">
+            ` : ''}
+            <div class="overflow-hidden w-100 ms-3">
             <h3 class="text-truncate mb-1">${store["店家名稱"]}</h3>
             <h6 class="text-truncate f-w-400 text-secondary mb-0">${store["分店名稱"]}</h6>
-          </div>
-          <div class="d-flex ms-auto w-50 text-end justify-content-end">
+            </div>
+          </div> 
+          <div class="d-flex ms-auto text-end justify-content-end">
                <button class="btn btn-link text-dark"
           data-bs-toggle="modal"
           data-bs-target="#menuModal"
           data-name="${store["店家名稱"]}"
+          data-branch="${store["分店名稱"]}"
           ${store["菜單已完全加入"] ? '' : 'disabled'}
           >
             <i class="bi bi-journal-text"></i>
