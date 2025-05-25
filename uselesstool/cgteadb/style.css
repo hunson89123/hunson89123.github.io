@@ -27,6 +27,16 @@
     visibility: hidden;
 }
 
+#store-list {
+    height: calc(100vh - 150px);
+    overflow: auto;
+}
+
+.pc-link {
+    display: flex !important;
+    align-items: center;
+}
+
 .viewer-container .viewer-close {
     top: auto !important;
     right: auto !important;

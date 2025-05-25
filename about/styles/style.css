@@ -28,8 +28,10 @@ body {
 
 h1,
 h2,
-h3 {
+h3,
+p {
   font-family: 'Noto Serif TC', serif;
+  margin: 0;
 }
 
 #last {
