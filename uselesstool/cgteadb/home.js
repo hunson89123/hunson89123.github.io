@@ -114,22 +114,19 @@ async function initData() {
     const footer = document.getElementById('menuModalFooter');
     footer.innerHTML = '';
   });
-
-  document.getElementById("showOption").addEventListener("change", () => {
-    renderCards(allStoreData, googleMapInfoMap);
-  });
 }
 
 function getRightContent(store, placeId, showOption) {
+  const reviewLink = `https://search.google.com/local/reviews?placeid=${placeId}`;
   switch (showOption) {
-    case 'rating':
-      return renderStars(store["rating"]) ?? "無資料";
     case 'reviews':
-      return `<div class="text-end">
-                <div class="text-dark"><i class="bi bi-chat-dots text-primary"></i> ${store["評論數"] ?? "無資料"} 則</div>
-              </div>`;
+      return `
+      <a href="${reviewLink}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-dark">
+        <small>${renderStars(store["rating"], store["reviews"]) ?? "無資料"}</small>
+      </a>
+      `;
     case '開幕時間':
-      return formatDateToYMD(store["開幕時間"]);
+      return `<small>${formatDateToYMD(store["開幕時間"])}</small>`;
     case 'menu':
     default:
       return `<button class="btn btn-link text-dark"
@@ -163,7 +160,6 @@ function renderCards(data, googleMapInfoMap) {
     const card = document.createElement("div");
     card.className = "col-xxl-4 col-xl-6";
     const logoUrl = `./assets/images/stores/logo/${placeId}.png`;
-    const reviewLink = `https://search.google.com/local/reviews?placeid=${placeId}`;
     card.innerHTML = `
       <div class="card rounded-3">
         <div class="card-body d-flex align-items-center" style="height: 100px;">
@@ -208,6 +204,10 @@ function renderCards(data, googleMapInfoMap) {
     renderCards(allStoreData, googleMapInfoMap);
   });
 
+  document.getElementById("showOption").addEventListener("change", () => {
+    renderCards(allStoreData, googleMapInfoMap);
+  });
+
   document.querySelectorAll('.btn-menu-viewer').forEach(btn => {
     btn.addEventListener('click', () => {
       showLoading();
@@ -242,7 +242,7 @@ function renderCards(data, googleMapInfoMap) {
   });
 }
 
-function renderStars(rating) {
+function renderStars(rating, reviews) {
   const stars = [];
   for (let i = 1; i <= 5; i++) {
     if (rating >= i - 0.2) {
@@ -253,7 +253,7 @@ function renderStars(rating) {
       stars.push('<i class="bi bi-star text-warning"></i>');
     }
   }
-  return `${parseFloat(rating).toFixed(1)} ${stars.join('')}`;
+  return `${parseFloat(rating).toFixed(1)} ${stars.join('')}<br>${reviews}則評論`;
 }
 
 function formatDateToYMD(dateStr) {
