@@ -13,7 +13,7 @@
     width: 100dvw;
     height: 100dvh;
     z-index: 9999;
-    background-color: #ffffff;
+    background-color: #ffffffad;
     opacity: 1;
     transition: all .5s ease;
     pointer-events: auto;
