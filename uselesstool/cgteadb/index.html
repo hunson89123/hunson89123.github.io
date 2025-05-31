@@ -373,9 +373,9 @@
             ];
             const rnd_brand = rnd_text[Math.floor(Math.random() * rnd_text.length)];
             loading_text.innerHTML = `
-            <h5 class="w-100 text-center">取得資料中，請稍候</h5>
-            <h2>「${rnd_brand.slogan}」</h2>
-            <h5 class="w-100 text-end pe-3">──${rnd_brand.name}</h5>
+            <h5 class="w-100 text-center text-light">取得資料中，請稍候</h5>
+            <h2 class="text-light">「${rnd_brand.slogan}」</h2>
+            <h5 class="w-100 text-end pe-3 text-light">──${rnd_brand.name}</h5>
             `
             loading.classList.remove("hide");
         }

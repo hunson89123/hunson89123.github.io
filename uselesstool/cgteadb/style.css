@@ -1,3 +1,7 @@
+:root {
+    --sk-color: #f8f9fa
+}
+
 .cursor-pointer {
     cursor: pointer !important;
 }
@@ -13,7 +17,7 @@
     width: 100dvw;
     height: 100dvh;
     z-index: 9999;
-    background-color: #ffffffad;
+    background-color: #000000ad;
     opacity: 1;
     transition: all .5s ease;
     pointer-events: auto;

@@ -121,7 +121,7 @@ function getRightContent(store, placeId, showOption) {
   switch (showOption) {
     case 'reviews':
       return `
-      <a href="${reviewLink}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-dark">
+      <a href="${reviewLink}" target="_blank" class="text-decoration-none text-dark">
         <small>${renderStars(store["rating"], store["reviews"]) ?? "無資料"}</small>
       </a>
       `;
@@ -147,7 +147,7 @@ function getRightContent(store, placeId, showOption) {
 }
 
 
-function renderCards(data, googleMapInfoMap) {
+async function renderCards(data, googleMapInfoMap) {
   const container = document.getElementById('store-list');
   container.innerHTML = '';
   Object.values(data).forEach(store => {
@@ -186,7 +186,7 @@ function renderCards(data, googleMapInfoMap) {
   const sortOption = document.getElementById("sortOption");
   sortOption.value = sortSelected
 
-  sortOption.addEventListener("change", function () {
+  sortOption.addEventListener("change", async function () {
     const key = this.value;
     sortSelected = key;
     if (key === "default") {
@@ -201,11 +201,11 @@ function renderCards(data, googleMapInfoMap) {
     } else {
       allStoreData.sort((a, b) => b[key] - a[key]);
     }
-    renderCards(allStoreData, googleMapInfoMap);
+    await renderCards(allStoreData, googleMapInfoMap);
   });
 
-  document.getElementById("showOption").addEventListener("change", () => {
-    renderCards(allStoreData, googleMapInfoMap);
+  document.getElementById("showOption").addEventListener("change", async () => {
+    await renderCards(allStoreData, googleMapInfoMap);
   });
 
   document.querySelectorAll('.btn-menu-viewer').forEach(btn => {
