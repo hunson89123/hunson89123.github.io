@@ -53,6 +53,12 @@
                     </li>
                     <li class="pc-item">
                         <a href="#" class="pc-link" data-page="ranking">
+                            <span class="pc-micon"><i class="bi bi-trophy"></i></span>
+                            <span class="pc-mtext">排行</span>
+                        </a>
+                    </li>
+                    <li class="pc-item">
+                        <a href="#" class="pc-link" data-page="data">
                             <span class="pc-micon"><i class="bi bi-list-ol"></i></span>
                             <span class="pc-mtext">數據</span>
                         </a>
@@ -324,13 +330,13 @@
                         document.body.appendChild(script);
                     } else {
                         const initFunc = getInitFunctionName(scriptName);
-                        if (typeof window[initFunc] === "function") {
+                        if (pageName === 'home') {
+                            window["renderCards"](allStoreData, googleMapInfoMap);
+                        } else if (typeof window[initFunc] === "function") {
                             window[initFunc]();
                             initializedPages.add(pageName);
                         }
-                        if (pageName === 'home') {
-                            window["renderCards"](allStoreData, googleMapInfoMap);
-                        }
+
                     }
                     hideLoading();
                 });
@@ -344,7 +350,7 @@
 
 
 
-        function showLoading() {
+        function showLoading(msg = '取得資料中，請稍候') {
             const loading = document.getElementById("loading");
             const loading_text = document.getElementById("loading_text");
             const rnd_text = [
@@ -373,9 +379,7 @@
             ];
             const rnd_brand = rnd_text[Math.floor(Math.random() * rnd_text.length)];
             loading_text.innerHTML = `
-            <h5 class="w-100 text-center text-light">取得資料中，請稍候</h5>
-            <h2 class="text-light">「${rnd_brand.slogan}」</h2>
-            <h5 class="w-100 text-end pe-3 text-light">──${rnd_brand.name}</h5>
+            <h2 class="w-100 text-center text-light">${msg}<br>請稍候...</h2>
             `
             loading.classList.remove("hide");
         }
@@ -406,5 +410,7 @@
     crossorigin="anonymous"></script>
 <script src="https://unpkg.com/viewerjs/dist/viewer.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script type="module"
+    src="https://cdn.jsdelivr.net/gh/lekoala/formidable-elements@master/dist/count-up.min.js"></script>
 
 </html>

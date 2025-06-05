@@ -1,4 +1,4 @@
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxKNauOpCTGKianAEr3AiST-qDMJWxQ4s0kK8rEPorgepinJ-MMWnw8ZSLDRJTZvsFh/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwS-k0t4XQ0sn7jGM3g5jLl8wDB87lVgT2cNsTSqqDiS227ypeGfYwxiSKAcCGLZHzA/exec';
 let allStoreData = {};
 let allMenuData = {};
 let allGoogleMapsInfoData = {};
@@ -6,17 +6,20 @@ let googleMapInfoMap = new Map();
 let sortSelected = "default";
 
 async function getStoreData() {
+  showLoading('取得店家資訊中');
   const res = await fetch(`${GAS_URL}?action=getStore`);
   return await res.json();
 }
 
 async function getMenuData() {
+  showLoading('取得菜單資訊中');
   const res = await fetch(`${GAS_URL}?action=getMenu`);
   const data = await res.json();
   return data;
 }
 
 async function getGoogleMapInfoData() {
+  showLoading('取得店家評論資訊中');
   const res = await fetch(`${GAS_URL}?action=getGoogleMapsInfo`);
   const data = await res.json();
   return data;
