@@ -315,6 +315,11 @@
                     if (!loadedScripts.has(scriptName)) {
                         const script = document.createElement("script");
                         script.src = scriptName;
+
+                        if (pageName === "data") {
+                            script.type = "module";
+                        }
+
                         script.onload = () => {
                             loadedScripts.add(scriptName);
 
@@ -350,7 +355,7 @@
 
 
 
-        function showLoading(msg = '取得資料中，請稍候') {
+        function showLoading(msg = '取得資料中') {
             const loading = document.getElementById("loading");
             const loading_text = document.getElementById("loading_text");
             const rnd_text = [
@@ -410,7 +415,5 @@
     crossorigin="anonymous"></script>
 <script src="https://unpkg.com/viewerjs/dist/viewer.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<script type="module"
-    src="https://cdn.jsdelivr.net/gh/lekoala/formidable-elements@master/dist/count-up.min.js"></script>
 
 </html>

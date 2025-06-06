@@ -73,3 +73,18 @@
     content: " ✕ 關閉菜單" !important;
     background-image: url("") !important;
 }
+
+/* 隱藏 Chrome / Safari / Edge 等 Webkit 內核的 details 小箭頭 */
+details summary::-webkit-details-marker {
+    display: none;
+}
+
+/* 隱藏 Firefox 內核的 marker */
+details summary::marker {
+    content: none;
+}
+
+/* 讓 summary 滑鼠移上去有手型指標，提示「可點」 */
+details summary {
+    cursor: pointer;
+}

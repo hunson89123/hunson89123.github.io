@@ -1,8 +1,7 @@
 
+import { CountUp } from './assets/js/countUp.min.js';
+
 function initDataPage() {
-    console.log(allStoreData.length);
-    console.warn(allGoogleMapsInfoData);
-    console.info(allMenuData)
     const seriesSet = new Set();
     let totalDrinkCount = 0;
     let totalPrice = 0;
@@ -13,12 +12,10 @@ function initDataPage() {
         const menuItems = allMenuData[store];
 
         menuItems.forEach(item => {
-            // 統計系列
             if (item.飲料系列) {
                 seriesSet.add(item.飲料系列);
             }
 
-            // 統計價格與數量
             if (typeof item.價格 === 'number') {
                 totalDrinkCount++;
                 totalPrice += item.價格;
@@ -43,6 +40,22 @@ function initDataPage() {
         const el = document.getElementById(id);
         if (!el) return;
 
-        el.innerText = value;
+        const decimalPlaces = (typeof value === 'string' && value.includes('.')) ||
+            (typeof value === 'number' && !Number.isInteger(value)) ? 1 : 0;
+
+        const countUp = new CountUp(id, value, {
+            duration: 1.5,
+            separator: ',',
+            decimalPlaces: decimalPlaces
+        });
+
+        if (!countUp.error) {
+            countUp.start();
+        } else {
+            console.error(countUp.error);
+            el.innerText = value; // fallback 顯示
+        }
     });
 }
+
+window.initDataPage = initDataPage;

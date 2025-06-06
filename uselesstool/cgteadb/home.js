@@ -19,7 +19,7 @@ async function getMenuData() {
 }
 
 async function getGoogleMapInfoData() {
-  showLoading('取得店家評論資訊中');
+  showLoading('取得評論資訊中');
   const res = await fetch(`${GAS_URL}?action=getGoogleMapsInfo`);
   const data = await res.json();
   return data;
