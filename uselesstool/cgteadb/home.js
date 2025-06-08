@@ -144,7 +144,7 @@ async function initData() {
         </div>
       `;
     } catch (err) {
-      body.innerHTML = `< p class="text-muted" > 尚無店家資訊，敬請期待</p > `;
+      body.innerHTML = `<p class="text-muted">尚無店家資訊，敬請期待</p>`;
     }
   });
 }
@@ -167,13 +167,13 @@ function getRightContent(store, placeId, showOption) {
                 data-bs-target="#menuModal"
                 data-name="${store["店家名稱"]}"
                 data-branch="${store["分店名稱"]}"
-                ${store["菜單已完全加入"] ? '' : 'disabled'}>
+                ${store["菜單已完全加入"] ? '' : 'hidden'}>
                 <i class="bi bi-journal-text"></i>
               </button>
               <button class="btn btn-link text-dark btn-menu-viewer"
                 data-name="${store["店家名稱"]}"
                 data-image-link="${!store["是否有菜單圖片"] ? '#' : `./assets/images/stores/menu/${placeId}.png`}"
-                ${store["是否有菜單圖片"] ? '' : 'disabled'}>
+                ${store["是否有菜單圖片"] ? '' : 'hidden'}>
                 <i class="bi bi-file-image"></i>
               </button>`;
   }
