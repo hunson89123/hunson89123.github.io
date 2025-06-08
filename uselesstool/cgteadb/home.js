@@ -120,11 +120,6 @@ async function initData() {
 
     try {
       const storeItem = allStoreData.find(x => x.店家名稱 === storeName) || {};
-      const hoursArray = storeItem.營業時間.split('\n').map(line => {
-        const [day, timeRange] = line.split(': ');
-        const [open, close] = timeRange.split(' – ');
-        return { day, open, close };
-      });
       body.innerHTML = `
         <div class="row my-3">
           <div class="col-auto"><i class="bi bi-geo-alt h5"></i></div>
