@@ -114,8 +114,38 @@ async function initData() {
     const body = document.getElementById('storeInfoModalBody');
     body.innerHTML = `<p>載入中...</p>`;
 
-    const footer = document.getElementById('menuModalFooter');
+    const footer = document.getElementById('storeInfoModalFooter');
     footer.innerHTML = '';
+
+
+    try {
+      const storeItem = allStoreData.find(x => x.店家名稱 === storeName) || {};
+      const hoursArray = storeItem.營業時間.split('\n').map(line => {
+        const [day, timeRange] = line.split(': ');
+        const [open, close] = timeRange.split(' – ');
+        return { day, open, close };
+      });
+      body.innerHTML = `
+        <div class="row my-3">
+          <div class="col-auto"><i class="bi bi-geo-alt h5"></i></div>
+          <div class="col">${storeItem.地址}</div >
+        </div>
+        <div class="row my-3">
+          <div class="col-auto"><i class="bi bi-telephone h5"></i></div>
+          <div class="col">${storeItem.電話號碼}</div >
+        </div>
+        <div class="row my-3">
+          <div class="col-auto"><i class="bi bi-clock h5"></i></div>
+          <div class="col">${formatOpeningHoursWithStatus(storeItem.營業時間)}</div >
+        </div>
+        <div class="row my-3">
+          <div class="col-auto"><i class="bi bi-calendar3-event h5"></i></div>
+          <div class="col">${formatDateToYMD(storeItem.開幕時間)}(<a href="${storeItem.開幕時間來源網址}" target="_blank">開幕時間來源</a>)</div >
+        </div>
+      `;
+    } catch (err) {
+      body.innerHTML = `< p class="text-muted" > 尚無店家資訊，敬請期待</p > `;
+    }
   });
 }
 
@@ -297,6 +327,45 @@ function timeAgo(dateStr) {
   }
 }
 
+function formatOpeningHoursWithStatus(hoursText) {
+  const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+  const todayIdx = new Date().getDay();
+  const today = days[todayIdx];
+  const now = new Date();
+
+  return hoursText.split('\n').map(line => {
+    const [day, timeRange] = line.split(': ');
+    const isToday = day === today;
+
+    if (isToday) {
+      if (timeRange && timeRange.includes('–')) {
+        const [openStr, closeStr] = timeRange.split(' – ');
+        const [openH, openM] = openStr.split(':').map(Number);
+        const [closeH, closeM] = closeStr.split(':').map(Number);
+
+        const openTime = new Date(now);
+        openTime.setHours(openH, openM, 0, 0);
+
+        const closeTime = new Date(now);
+        closeTime.setHours(closeH, closeM, 0, 0);
+
+        // 處理營業時間跨午夜
+        if (closeTime <= openTime) {
+          closeTime.setDate(closeTime.getDate() + 1);
+        }
+
+        const isOpenNow = now >= openTime && now <= closeTime;
+        const statusClass = isOpenNow ? "text-primary" : "text-danger";
+
+        return `<b class="${statusClass}">${line}</b>`;
+      } else {
+        return `<b class="text-danger">${line}</b>`;
+      }
+    }
+
+    return line; // 非今日直接回傳原文字
+  }).join('<br>');
+}
 
 function initHomePage() {
   initData();
