@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="Big5">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="免費線上CapCut字幕提取工具，可快速擷取字幕並轉換成TXT或SRT格式">
+    <meta property="og:title" content="CapCut字幕提取器" />
+    <meta property="og:description" content="線上轉出 CapCut 字幕為 TXT或SRT" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <title>CapCut字幕提取器</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <style>
+        body {
+            height: 100dvh;
+            width: 100dvw;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-light h-100 d-flex flex-column justify-content-center align-items-center">
+        <h1 class="display-4">CapCut字幕提取器</h1>
+        <div class="lead">免費線上CapCut字幕提取工具，可快速擷取字幕並轉換成TXT或SRT格式</div>
+        <div class="row w-100 px-5 justify-content-center">
+            <div class="card p-5 m-3 my-3 col-12 col-lg-5">
+                <p><span class="h3">Step.1</span> 將要取字幕的影片放入CapCut並透過自動字幕功能產生後儲存專案</p>
+                <p><span class="h3">Step.2</span>
+                    上傳<code>draft_content.json</code>檔案，應位於專案資料夾(預設在<code>C:\Users\[使用者名稱]\AppData\Local\CapCut
+                    Drafts\[專案名稱]\</code>資料夾下)</p>
+                <div class="input-group mb-3">
+                    <input type="file" class="form-control" id="file-input" accept=".json">
+                </div>
+                <p><span class="h3">Step.3</span> 選擇欲輸出之檔案格式
+                <div class="mb-3">
+                    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                        <input type="radio" class="btn-check" name="download-type-radio" id="download-type-1"
+                            value=".srt" autocomplete="off" checked>
+                        <label class="btn btn-outline-primary" for="download-type-1">
+                            SRT字幕格式 <i class="bi bi-badge-cc"></i></label>
+
+                        <input type="radio" class="btn-check" name="download-type-radio" id="download-type-2"
+                            value=".txt" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="download-type-2">
+                            TXT純文字檔 <i class="bi bi-filetype-txt"></i></label>
+                    </div>
+                </div>
+                <p><span class="h3">Step.4</span> 點擊按鈕以下載提取結果檔案
+                <div>
+                    <button id="extract-btn" class="btn btn-success" disabled>下載<span id="download-type-span"></span>檔案
+                        <i class="bi bi-file-earmark-arrow-down"></i></button>
+                </div>
+            </div>
+            <div class="card p-5 m-3 my-3 col-12 col-lg-5">
+                <div class="d-flex justify-content-between">
+                    <h3>預覽輸出結果</h3>
+                    <button id="simp2trad-btn" class="btn btn-link">複製並開啟簡轉繁網站 <i
+                            class="bi bi-box-arrow-up-right"></i></button>
+                </div>
+                <p id="preview-area" style="height:500px;max-height:500px;overflow:auto;"></p>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const previewArea = document.getElementById('preview-area');
+        const extractBtn = document.getElementById('extract-btn');
+        const simp2tradBtn = document.getElementById('simp2trad-btn');
+        const downloadTypeRadio = document.getElementsByName('download-type-radio');
+        const downloadTypeSpan = document.getElementById('download-type-span');
+        const loader = document.getElementById('loader');
+
+        let loadedData = null;
+        let downloadType = '.srt';
+        downloadTypeSpan.innerText = downloadType;
+
+        fileInput.addEventListener('change', e => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => {
+                try {
+                    loadedData = JSON.parse(reader.result);
+                    downloadType = document.querySelector('input[name="download-type-radio"]:checked').value;
+                    const data = query(loadedData);
+                    if (data.success) {
+                        previewArea.innerText = data.result;
+                        extractBtn.disabled = false;
+                    } else {
+                        previewArea.innerHTML = `<div class="text-danger">${data.result}</div>`
+                    }
+                } catch (err) {
+                    previewArea.innerHTML = '<div class="text-danger">讀取 JSON 失敗，請確認檔案格式正確</div>'
+                    extractBtn.disabled = true;
+                }
+            };
+            reader.readAsText(file, 'utf-8');
+        });
+        for (var i = 0; i < downloadTypeRadio.length; i++) {
+            downloadTypeRadio[i].addEventListener('change', e => {
+                try {
+                    downloadType = document.querySelector('input[name="download-type-radio"]:checked').value;
+                    downloadTypeSpan.innerText = downloadType;
+                    if (loadedData !== null) {
+                        const data = query(loadedData);
+                        if (data.success) {
+                            previewArea.innerText = data.result;
+                            extractBtn.disabled = false;
+                        } else {
+                            previewArea.innerHTML = `<div class="text-danger">${data.result}</div>`
+                        }
+                    }
+
+                } catch (err) {
+                    previewArea.innerHTML = '<div class="text-danger">讀取 JSON 失敗，請確認檔案格式正確</div>'
+                    extractBtn.disabled = true;
+                }
+            });
+        }
+
+        extractBtn.addEventListener('click', e => {
+            var link = document.createElement('a');
+            link.download = `CapCutSubExtractor_${new Date().getTime()}${downloadType}`;
+
+            const bom = "\uFEFF";
+            const content = query(loadedData).result;
+
+            var blob = new Blob([bom, content], { type: 'text/plain; charset=utf-8' });
+
+            link.href = window.URL.createObjectURL(blob);
+            link.click();
+        });
+
+        simp2tradBtn.addEventListener('click', e => {
+            navigator.clipboard.writeText(previewArea.innerText);
+            window.open('https://www.ifreesite.com/gbk-big5-gb2312-utf8.htm', '_blank');
+        });
+
+        function query(data) {
+            var output = { success: true, result: "" };
+            try {
+                if (downloadType === '.srt') {
+                    output.result = generateSRT(data.extra_info);
+                } else if (downloadType === '.txt') {
+                    output.result = generateTXT(data)
+                }
+            } catch (e) {
+                output.success = false;
+                output.result = "字幕提取時發生錯誤!請檢查檔案是否正確錯誤";
+            }
+            return output;
+        }
+
+        function generateSRT(data) {
+            let srt = '';
+            let index = 1;
+
+            data.subtitle_fragment_info_list.forEach(fragment => {
+                const cacheInfo = fragment.subtitle_cache_info;
+                if (!cacheInfo) return;
+
+                try {
+                    const parsed = JSON.parse(cacheInfo);
+                    const sentences = parsed.sentence_list;
+
+                    sentences.forEach(sentence => {
+                        const start = msToSRTTime(Math.floor(sentence.start_time / 1000 * 60)); // 秒轉毫秒
+                        const end = msToSRTTime(Math.floor(sentence.end_time / 1000 * 60));
+                        const text = sentence.text;
+
+                        srt += `${index++}\n${start} --> ${end}\n${text}\n\n`;
+                    });
+                } catch (e) {
+                    console.warn('無法解析 JSON:', e);
+                }
+            });
+
+            return srt;
+        }
+
+        function msToSRTTime(ms) {
+            const hours = Math.floor(ms / (60 * 60 * 60));
+            const minutes = Math.floor((ms % (60 * 60 * 60)) / (60 * 60));
+            const seconds = Math.floor((ms % (60 * 60)) / 60);
+            const milliseconds = Math.floor((ms % 60) / 60 * 1000) % 1000;
+
+            return (
+                String(hours).padStart(2, '0') + ':' +
+                String(minutes).padStart(2, '0') + ':' +
+                String(seconds).padStart(2, '0') + ',' +
+                String(milliseconds).padStart(3, '0')
+            );
+        }
+
+        function generateTXT(data) {
+            console.log(data);
+            var texts = data.materials.texts;
+            var output = "";
+            texts.forEach(t => output += t.content.substring(t.content.indexOf("xt\"") + 5, t.content.length - 2) + "\n")
+            return output;
+        }
+    </script>
+</body>
+
+</html>
