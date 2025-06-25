@@ -58,6 +58,12 @@
                         </a>
                     </li>
                     <li class="pc-item">
+                        <a href="#" class="pc-link" data-page="random">
+                            <span class="pc-micon"><i id="rnd-icon" class="bi bi-dice-3"></i></span>
+                            <span class="pc-mtext">喝啥</span>
+                        </a>
+                    </li>
+                    <li class="pc-item">
                         <a href="#" class="pc-link" data-page="data">
                             <span class="pc-micon"><i class="bi bi-list-ol"></i></span>
                             <span class="pc-mtext">數據</span>
@@ -247,12 +253,11 @@
 
     <!-- [Page Specific JS] end -->
     <!-- Required Js -->
-    <script src="./assets/js/plugins/popper.min.js"></script>
+    <!-- 
+    <script src="./assets/js/fonts/custom-font.js"></script>-->
     <script src="./assets/js/plugins/simplebar.min.js"></script>
-    <script src="./assets/js/plugins/bootstrap.min.js"></script>
-    <script src="./assets/js/fonts/custom-font.js"></script>
-    <script src="./assets/js/pcoded.js"></script>
     <script src="./assets/js/plugins/feather.min.js"></script>
+    <script src="./assets/js/pcoded.js"></script>
 
 
 
@@ -384,8 +389,8 @@
             ];
             const rnd_brand = rnd_text[Math.floor(Math.random() * rnd_text.length)];
             loading_text.innerHTML = `
-            <h2 class="w-100 text-center text-light">${msg}<br>請稍候...</h2>
-            `
+    <h2 class="w-100 text-center text-light">${msg}<br>請稍候...</h2>
+    `
             loading.classList.remove("hide");
         }
 
@@ -396,17 +401,11 @@
 
         document.querySelectorAll('.pc-link').forEach(link => {
             link.addEventListener('click', function () {
-                if (window.innerWidth < 768) {
-                    rm_menu()
-                }
+                if (window.innerWidth < 768) { rm_menu() }
             });
-        });
-
-    </script>
+        }); const n = Math.floor(Math.random() * 6) + 1;
+        document.getElementById('rnd-icon').className = `bi bi-dice-${n}`; </script>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
-    crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.1/dist/umd/popper.min.js"
     integrity="sha384-W8fXfP3gkOKtndU4JGtKDvXbO53Wy8SZCQHczT5FMiiqmQfUpWbYdTil/SxwZgAN"
     crossorigin="anonymous"></script>

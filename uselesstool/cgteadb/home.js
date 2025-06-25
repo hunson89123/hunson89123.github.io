@@ -131,7 +131,7 @@ async function initData() {
         </div>
         <div class="row my-3">
           <div class="col-auto"><i class="bi bi-clock h5"></i></div>
-          <div class="col">${formatOpeningHoursWithStatus(storeItem.營業時間)}</div >
+          <div class="col">${formatOpeningHoursWithStatus(storeItem.營業時間).html}</div >
         </div>
         <div class="row my-3">
           <div class="col-auto"><i class="bi bi-calendar3-event h5"></i></div>
@@ -188,6 +188,7 @@ async function renderCards(data, googleMapInfoMap) {
     const card = document.createElement("div");
     card.className = "col-xxl-4 col-xl-6";
     const logoUrl = `./assets/images/stores/logo/${placeId}.png`;
+    const isOpenNowBadges = ['bg-secondary">已打烊', 'bg-primary">營業中', 'bg-secondary">今日未營業', 'd-none">無提供']
     card.innerHTML = `
       <div class="card rounded-3">
         <div class="card-body d-flex align-items-center" style="height: 100px;">
@@ -199,7 +200,7 @@ async function renderCards(data, googleMapInfoMap) {
             ` : ''}
             <div class="overflow-hidden w-100 ms-3">
             <h3 class="text-truncate mb-1">${store["店家名稱"]}</h3>
-            <h6 class="text-truncate f-w-400 text-secondary mb-0">${store["分店名稱"]}</h6>
+            <h6 class="text-truncate f-w-400 text-secondary mb-0">${store["分店名稱"]} <span class="badge ${isOpenNowBadges[Number(formatOpeningHoursWithStatus(store["營業時間"]).isOpenNow)]}</span></h6>
             </div>
           </div> 
           <div class="d-flex ms-auto text-end justify-content-end text-nowrap">
@@ -328,7 +329,9 @@ function formatOpeningHoursWithStatus(hoursText) {
   const today = days[todayIdx];
   const now = new Date();
 
-  return hoursText.split('\n').map(line => {
+  let isOpenNow = 0;
+
+  const formatted = hoursText.split('\n').map(line => {
     const [day, timeRange] = line.split(': ');
     const isToday = day === today;
 
@@ -349,18 +352,24 @@ function formatOpeningHoursWithStatus(hoursText) {
           closeTime.setDate(closeTime.getDate() + 1);
         }
 
-        const isOpenNow = now >= openTime && now <= closeTime;
-        const statusClass = isOpenNow ? "text-primary" : "text-danger";
-
+        isOpenNow = now >= openTime && now <= closeTime;
+        const statusClass = isOpenNow ? "text-primary" : "text-secondary";
         return `<b class="${statusClass}">${line}</b>`;
       } else {
-        return `<b class="text-danger">${line}</b>`;
+        isOpenNow = 2;
+        return `<b class="text-secondary">${line}</b>`;
       }
     }
 
-    return line; // 非今日直接回傳原文字
+    return line;
   }).join('<br>');
+  if (hoursText === '無提供') isOpenNow = 3;
+  return {
+    html: formatted,
+    isOpenNow: isOpenNow
+  };
 }
+
 
 function initHomePage() {
   initData();

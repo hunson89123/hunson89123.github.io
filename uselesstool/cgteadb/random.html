@@ -1,0 +1,52 @@
+<div class="container" style="max-height:calc(100dvh - 80px);">
+    <button class="btn float-end" data-bs-toggle="modal" data-bs-target="#randomSettingModal"><span class="bi bi-gear">
+            設定</span></button>
+    <div id="resultArea" class="overflow-auto" style="max-height:calc(90dvh - 80px);"></div>
+    <div class="modal fade" id="randomSettingModal" tabindex="-1" aria-labelledby="randomSettingModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content" style="height: 90vh;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="randomSettingModalLabel">設定</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button>
+                </div>
+
+                <div class="modal-body overflow-auto" id="randomSettingModalBody">
+                    <div class="accordion" id="settingAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingStores">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseStores" aria-expanded="true"
+                                    aria-controls="collapseStores">
+                                    抽那些家? <span id="collapseStoresSelectedCount" class="badge bg-primary ms-2"></span>
+                                </button>
+                            </h2>
+                            <div id="collapseStores" class="accordion-collapse collapse"
+                                aria-labelledby="headingStores">
+                                <div class="accordion-body" id="randomSettingStores">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingCount">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseCount" aria-expanded="true" aria-controls="collapseCount">
+                                    抽幾家? <span id="collapseStoresCount" class="badge bg-primary ms-2"></span>
+                                </button>
+                            </h2>
+                            <div id="collapseCount" class="accordion-collapse collapse" aria-labelledby="headingCount">
+                                <div class="accordion-body" id="randomSettingCount">
+                                    <label for="countRange" class="form-label" id="countRangeLabel">1</label>家
+                                    <input type="range" class="form-range" min="1" max="0" id="countRange">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <span class="h6 text-muted" id="randomSettingModalFooter"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
