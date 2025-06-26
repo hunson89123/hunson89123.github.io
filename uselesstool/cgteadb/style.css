@@ -88,3 +88,20 @@ details summary::marker {
 details summary {
     cursor: pointer;
 }
+
+.rolling-text {
+    color: #bbb;
+}
+
+.draw-highlight {
+    color: #084298;
+    background-color: #bacbe6;
+    animation: highlightAnim 0.5s ease-in forwards;
+}
+
+@keyframes highlightAnim {
+    to {
+        color: #212529;
+        background-color: #ffffff;
+    }
+}

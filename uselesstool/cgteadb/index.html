@@ -169,12 +169,12 @@
             <div class="me-auto pc-mob-drp">
                 <ul class="list-unstyled">
                     <!-- ======= Menu collapse Icon ===== -->
-                    <li class="pc-h-item pc-sidebar-collapse">
+                    <li class="pc-h-item pc-sidebar-collapse" onclick="randomIcon();">
                         <a href="#" class="pc-head-link ms-0" id="sidebar-hide">
                             <i class="ti ti-menu-2"></i>
                         </a>
                     </li>
-                    <li class="pc-h-item pc-sidebar-popup">
+                    <li class="pc-h-item pc-sidebar-popup" onclick="randomIcon();">
                         <a href="#" class="pc-head-link ms-0" id="mobile-collapse">
                             <i class="ti ti-menu-2"></i>
                         </a>
@@ -403,8 +403,13 @@
             link.addEventListener('click', function () {
                 if (window.innerWidth < 768) { rm_menu() }
             });
-        }); const n = Math.floor(Math.random() * 6) + 1;
-        document.getElementById('rnd-icon').className = `bi bi-dice-${n}`; </script>
+        });
+        function randomIcon() {
+            const n = Math.floor(Math.random() * 6) + 1;
+            document.getElementById('rnd-icon').className = `bi bi-dice-${n}`;
+        }
+        randomIcon();
+    </script>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.1/dist/umd/popper.min.js"
     integrity="sha384-W8fXfP3gkOKtndU4JGtKDvXbO53Wy8SZCQHczT5FMiiqmQfUpWbYdTil/SxwZgAN"

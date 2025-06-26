@@ -1,7 +1,10 @@
-<div class="container" style="max-height:calc(100dvh - 80px);">
-    <button class="btn float-end" data-bs-toggle="modal" data-bs-target="#randomSettingModal"><span class="bi bi-gear">
+<div class="container d-flex flex-column" style="max-height:calc(100dvh - 80px);">
+    <button class="btn ms-auto" data-bs-toggle="modal" data-bs-target="#randomSettingModal"><span class="bi bi-gear">
             設定</span></button>
-    <div id="resultArea" class="overflow-auto" style="max-height:calc(90dvh - 80px);"></div>
+    <div class="overflow-auto" style="max-height:calc(90dvh - 80px);height:100dvh">
+        <ol id="results" class="list-group"></ol>
+    </div>
+    <button id="drawBtn" class="btn btn-primary" onclick="drawStores();">喝啥?</button>
     <div class="modal fade" id="randomSettingModal" tabindex="-1" aria-labelledby="randomSettingModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
