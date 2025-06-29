@@ -46,11 +46,10 @@ function initMemberPage(onlyWithMemberLink = true) {
 
   initTooltips();
 
-  document.getElementById('flexCheckDefault').addEventListener('change', function () {
-    const showOnlyWithLink = this.checked;
-    initMemberPage(showOnlyWithLink);
-  });
-
+  // document.getElementById('flexCheckDefault').addEventListener('change', function () {
+  //   const showOnlyWithLink = this.checked;
+  //   initMemberPage(showOnlyWithLink);
+  // });
 }
 
 function memberLinkFormatter(value, row, index) {

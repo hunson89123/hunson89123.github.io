@@ -417,8 +417,11 @@
         }
 
         document.querySelectorAll('.pc-link').forEach(link => {
-            link.addEventListener('click', function () {
-                if (window.innerWidth < 768) { rm_menu() }
+            link.addEventListener('click', function (e) {
+                const pageAttr = this.getAttribute('data-page');
+                if (window.innerWidth < 768 && pageAttr !== 'random') {
+                    rm_menu();
+                }
             });
         });
         function randomIcon() {
