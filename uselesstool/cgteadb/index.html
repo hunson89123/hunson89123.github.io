@@ -20,6 +20,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://unpkg.com/viewerjs/dist/viewer.min.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+        integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.1/dist/bootstrap-table.min.css">
 </head>
 
 <body data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light">
@@ -46,6 +49,12 @@
                         </a>
                     </li>
                     <li class="pc-item">
+                        <a href="#" class="pc-link" data-page="member">
+                            <span class="pc-micon"><i class="bi bi-star"></i></span>
+                            <span class="pc-mtext">集點</span>
+                        </a>
+                    </li>
+                    <li class="pc-item">
                         <a href="#" class="pc-link" data-page="search">
                             <span class="pc-micon"><i class="bi bi-search"></i></span>
                             <span class="pc-mtext">找茶</span>
@@ -58,7 +67,7 @@
                         </a>
                     </li>
                     <li class="pc-item">
-                        <a href="#" class="pc-link" data-page="random">
+                        <a href="#" class="pc-link" data-page="random" onclick="randomIcon();">
                             <span class="pc-micon"><i id="rnd-icon" class="bi bi-dice-3"></i></span>
                             <span class="pc-mtext">喝啥</span>
                         </a>
@@ -169,12 +178,12 @@
             <div class="me-auto pc-mob-drp">
                 <ul class="list-unstyled">
                     <!-- ======= Menu collapse Icon ===== -->
-                    <li class="pc-h-item pc-sidebar-collapse" onclick="randomIcon();">
+                    <li class="pc-h-item pc-sidebar-collapse">
                         <a href="#" class="pc-head-link ms-0" id="sidebar-hide">
                             <i class="ti ti-menu-2"></i>
                         </a>
                     </li>
-                    <li class="pc-h-item pc-sidebar-popup" onclick="randomIcon();">
+                    <li class="pc-h-item pc-sidebar-popup">
                         <a href="#" class="pc-head-link ms-0" id="mobile-collapse">
                             <i class="ti ti-menu-2"></i>
                         </a>
@@ -305,17 +314,26 @@
 
         const initializedPages = new Set();
         const loadedScripts = new Set();
+        let currentPage = null;
 
         function loadPage(url) {
+            const pageName = url.replace(".html", "");
+
+            // 檢查是否已經是當前頁面
+            if (currentPage === pageName) {
+                console.log(`${pageName} is already loaded.`);
+                return;
+            }
+
             showLoading();
+
             fetch(url)
                 .then(res => res.text())
                 .then(html => {
                     document.getElementById("content").innerHTML = html;
+                    currentPage = pageName; // 更新當前頁面
 
-                    const scriptName = url.replace(".html", ".js");
-                    const pageName = url.replace(".html", "");
-
+                    const scriptName = `${pageName}.js`;
 
                     if (!loadedScripts.has(scriptName)) {
                         const script = document.createElement("script");
@@ -327,7 +345,6 @@
 
                         script.onload = () => {
                             loadedScripts.add(scriptName);
-
 
                             if (!initializedPages.has(pageName)) {
                                 const initFunc = getInitFunctionName(scriptName);
@@ -346,8 +363,8 @@
                             window[initFunc]();
                             initializedPages.add(pageName);
                         }
-
                     }
+
                     hideLoading();
                 });
         }
@@ -419,5 +436,6 @@
     crossorigin="anonymous"></script>
 <script src="https://unpkg.com/viewerjs/dist/viewer.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.1/dist/bootstrap-table.min.js"></script>
 
 </html>

@@ -1,0 +1,36 @@
+<style>
+    .table thead th:first-child,
+    .table tbody td:first-child {
+        position: sticky;
+        left: 0;
+        background: white;
+        z-index: 1;
+        box-shadow: inset;
+    }
+</style>
+<!-- <div class="d-flex justify-content-end align-items-center">
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="flexCheckDefault" checked>
+        <label class="form-check-label" for="flexCheckDefault">
+            僅顯示有集點卡之店家
+        </label>
+    </div>
+</div> -->
+<div class="table-responsive">
+    <table id="table" data-toggle="table" data-sort-multiple="true" class="table table-borderless table-striped">
+        <thead>
+            <tr>
+                <th data-field="name">店家名稱</th>
+                <th data-field="memberLink" data-formatter="memberLinkFormatter">會員連結</th>
+                <th data-field="threshold" data-sortable="true">集點門檻(元/點)</th>
+                <th data-field="minPoint" data-sortable="true">最低兌換點數(點)</th>
+                <th data-field="minAmount" data-sortable="true">最低兌換折抵(元)</th>
+                <th data-field="rate" data-sortable="true" data-formatter="rateFormatter">實際回饋率</th>
+                <th data-field="expire" data-sortable="true" data-formatter="expireFormatter">點數最長期限(天)</th>
+            </tr>
+        </thead>
+        <tbody id="store-member-list">
+
+        </tbody>
+    </table>
+</div>

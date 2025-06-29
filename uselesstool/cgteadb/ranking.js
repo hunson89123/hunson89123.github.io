@@ -251,5 +251,3 @@ function initRankingPage() {
     renderMostItemsList();
     renderLeastItemsList();
 }
-
-initRankingPage();

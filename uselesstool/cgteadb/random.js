@@ -1,42 +1,48 @@
-const randomSettingModalBody = document.getElementById('randomSettingStores');
-const collapseStoresSelectedCount = document.getElementById('collapseStoresSelectedCount');
-const collapseStoresCount = document.getElementById('collapseStoresCount');
-const countRange = document.getElementById('countRange');
-const countRangeLabel = document.getElementById('countRangeLabel');
-const drawBtn = document.getElementById('drawBtn');
-let drawStoreLists = [];
-let drawStoreCount = 1;
-randomSettingModalBody.innerHTML = '';
+
+
 
 const row = document.createElement('div');
 row.className = 'row w-100 g-3';
+let drawStoreLists = [];
+let drawStoreCount = 1;
 
-let savedStores = JSON.parse(localStorage.getItem('selectedStores') || '[]');
-if (savedStores.length === 0) {
-  savedStores = Object.values(allStoreData).map(store => ({
-    name: store["店家名稱"],
-    placeId: store["Place ID"]
-  }));
-  localStorage.setItem('selectedStores', JSON.stringify(savedStores));
-}
-collapseStoresSelectedCount.innerText = `共${savedStores.length}家`;
-countRange.max = savedStores.length;
-countRange.value = localStorage.getItem('storesCount') ?? 1;
-countRangeLabel.textContent = countRange.value;
-collapseStoresCount.innerText = `抽${countRange.value}家`;
-drawStoreLists = savedStores.map(store => store.name);
-drawStoreCount = countRange.value;
-Object.values(allStoreData).forEach(store => {
-  const storeName = store["店家名稱"];
-  const storeID = store["Place ID"];
+function initRandomPage() {
+  const randomSettingModalBody = document.getElementById('randomSettingStores');
+  const collapseStoresSelectedCount = document.getElementById('collapseStoresSelectedCount');
+  const collapseStoresCount = document.getElementById('collapseStoresCount');
+  const countRange = document.getElementById('countRange');
+  const countRangeLabel = document.getElementById('countRangeLabel');
+  const drawBtn = document.getElementById('drawBtn');
 
-  const col = document.createElement('div');
-  col.className = 'col-6 col-md-4';
+  randomSettingModalBody.innerHTML = '';
+  let savedStores = JSON.parse(localStorage.getItem('selectedStores') || '[]');
 
-  const isChecked = savedStores.some(store => store.placeId === storeID) ? 'checked' : '';
+  if (savedStores.length === 0) {
+    savedStores = Object.values(allStoreData).map(store => ({
+      name: store["店家名稱"],
+      placeId: store["Place ID"]
+    }));
+    localStorage.setItem('selectedStores', JSON.stringify(savedStores));
+  }
+  collapseStoresSelectedCount.innerText = `共${savedStores.length}家`;
+  countRange.max = savedStores.length;
+  countRange.value = localStorage.getItem('storesCount') ?? 1;
+  countRangeLabel.textContent = countRange.value;
+  collapseStoresCount.innerText = `抽${countRange.value}家`;
+  console.log(`抽${countRange.value}家`);
+  drawStoreLists = savedStores.map(store => store.name);
+  drawStoreCount = countRange.value;
+  Object.values(allStoreData).forEach(store => {
+    const storeName = store["店家名稱"];
+    const storeID = store["Place ID"];
 
-  col.innerHTML = `
-    <label for="${storeID}" class="card p-3 h-100 cursor-pointer mb-0">
+    const col = document.createElement('div');
+    col.className = 'col-12 col-md-4';
+
+    const isChecked = savedStores.some(store => store.placeId === storeID) ? 'checked' : '';
+
+    col.innerHTML = `
+    <label for="${storeID}" class="card p-2 h-100 cursor-pointer mb-0">
       <div class="form-check">
         <input class="form-check-input" type="checkbox" value="${storeID}" id="${storeID}" ${isChecked}>
         <div class="form-check-label">${storeName}</div>
@@ -44,28 +50,31 @@ Object.values(allStoreData).forEach(store => {
     </label>
   `;
 
-  row.appendChild(col);
-});
+    row.appendChild(col);
+  });
+  console.log(row);
+  randomSettingModalBody.appendChild(row);
 
-randomSettingModalBody.appendChild(row);
+  randomSettingModalBody.addEventListener('change', () => {
+    const checked = [...randomSettingModalBody.querySelectorAll('input[type=checkbox]:checked')]
+      .map(input => input.value);
+    localStorage.setItem('selectedStores', JSON.stringify(checked));
+    collapseStoresSelectedCount.innerText = `共${checked.length}家`;
+    countRange.max = checked.length;
+    countRangeLabel.innerText = countRange.value;
+    countRangeLabel.textContent = countRange.value;
+    collapseStoresCount.innerText = `抽${countRange.value}家`;
+    drawStoreLists = savedStores.map(store => store.name);
+  });
+  countRange.addEventListener('input', () => {
+    localStorage.setItem('storesCount', countRange.value);
+    countRangeLabel.textContent = countRange.value;
+    collapseStoresCount.innerText = `抽${countRange.value}家`;
+    drawStoreCount = countRange.value;
+  });
 
-randomSettingModalBody.addEventListener('change', () => {
-  const checked = [...randomSettingModalBody.querySelectorAll('input[type=checkbox]:checked')]
-    .map(input => input.value);
-  localStorage.setItem('selectedStores', JSON.stringify(checked));
-  collapseStoresSelectedCount.innerText = `共${checked.length}家`;
-  countRange.max = checked.length;
-  countRangeLabel.innerText = countRange.value;
-  countRangeLabel.textContent = countRange.value;
-  collapseStoresCount.innerText = `抽${countRange.value}家`;
-  drawStoreLists = savedStores.map(store => store.name);
-});
-countRange.addEventListener('input', () => {
-  localStorage.setItem('storesCount', countRange.value);
-  countRangeLabel.textContent = countRange.value;
-  collapseStoresCount.innerText = `抽${countRange.value}家`;
-  drawStoreCount = countRange.value;
-});
+
+}
 
 function drawStores() {
   const rawList = drawStoreLists;
@@ -126,6 +135,5 @@ function drawStores() {
     crypto.getRandomValues(array);
     return array[0] % max;
   }
-
   startNext();
 }
