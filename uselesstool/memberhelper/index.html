@@ -1,15 +1,57 @@
+<div id="loginArea" style="display: none;">
+    <button onclick="loginWithLINE()">使用 LINE 登入 會員小幫手</button>
+</div>
+
+<div id="userFormArea" style="display: none;">
+    <form id="form" method="post"
+        action="https://script.google.com/macros/s/AKfycbzPPaEZ0smODujKiBwWV95nrBB1xwpu6-8vxQnMGWrwglcqZKfL248PRFBJSzZbgSY7/exec">
+        <input type="hidden" name="userId" id="userId">
+        姓名：<input type="text" name="name"><br>
+        Email：<input type="email" name="email"><br>
+        <button type="submit">送出</button>
+    </form>
+    <div id="userData"></div>
+</div>
+
 <script>
+    const storedUserId = localStorage.getItem('line_userId');
+    const loginArea = document.getElementById('loginArea');
+    const userFormArea = document.getElementById('userFormArea');
+    const userIdInput = document.getElementById('userId');
+    const userDataDiv = document.getElementById('userData');
+
+    if (storedUserId) {
+        // 已登入，用 userId 呼叫 GAS 查資料
+        loginArea.style.display = 'none';
+        userFormArea.style.display = 'block';
+        userIdInput.value = storedUserId;
+
+        fetch(`https://script.google.com/macros/s/AKfycbzPPaEZ0smODujKiBwWV95nrBB1xwpu6-8vxQnMGWrwglcqZKfL248PRFBJSzZbgSY7/exec?userId=${storedUserId}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.found && data.userData) {
+                    userDataDiv.innerHTML = `
+                        <p>Hi ${data.userData.name}！以下是你的資料：</p>
+                        <p>Email: ${data.userData.email}</p>
+                    `;
+                } else {
+                    userDataDiv.innerHTML = `<p>查無資料，請填寫表單</p>`;
+                }
+            });
+    } else {
+        // 尚未登入，顯示登入按鈕
+        loginArea.style.display = 'block';
+        userFormArea.style.display = 'none';
+    }
+
     function loginWithLINE() {
         const clientId = '2007692538';
-        const redirectUri = 'https://script.google.com/macros/s/AKfycbzPPaEZ0smODujKiBwWV95nrBB1xwpu6-8vxQnMGWrwglcqZKfL248PRFBJSzZbgSY7/exec';
+        const redirectUri = 'http://127.0.0.1:5500/uselesstool/memberhelper/callback.html';
         const state = generateRandomState();
-        sessionStorage.setItem('line_login_state', state); // 儲存起來做驗證
+        sessionStorage.setItem('line_login_state', state);
         const scope = 'profile openid';
-        const result = document.getElementById('result');
 
         const authUrl = `https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}&scope=${encodeURIComponent(scope)}`;
-        //result.textContent = authUrl;
-        //result.href = authUrl;
         window.location.href = authUrl;
     }
 
@@ -22,25 +64,3 @@
         return result;
     }
 </script>
-
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    button {
-        background-color: #06c755;
-        color: #ffffff;
-        border-radius: 5px;
-        width: 300px;
-        height: 60px;
-    }
-</style>
-
-<button onclick="loginWithLINE()">使用 LINE 登入 會員小幫手</button>
-<br>
-<a id="result" target="_blank"></a>

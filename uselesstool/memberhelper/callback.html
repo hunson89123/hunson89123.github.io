@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>LINE Login Callback</title>
+</head>
+
+<body>
+    <h1>登入中，請稍候...</h1>
+
+    <script>
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbzPPaEZ0smODujKiBwWV95nrBB1xwpu6-8vxQnMGWrwglcqZKfL248PRFBJSzZbgSY7/exec';
+
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        async function fetchUserInfo() {
+            const code = getQueryParam('code');
+            if (!code) {
+                console.log('No code parameter found in URL');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${GAS_URL}?code=${encodeURIComponent(code)}`);
+                console.log(response);
+                const result = await response.json();
+                console.log(result);
+                if (result.found) {
+                    localStorage.setItem('line_userId', JSON.stringify(result.userData.userId));
+                    console.log('User info saved:', result.userData);
+
+                    // Optional: redirect to home page
+                    window.location.href = './';
+                } else {
+                    alert('找不到用戶資訊');
+                }
+            } catch (err) {
+                console.error('Error:', err);
+            }
+        }
+
+        window.onload = fetchUserInfo;
+    </script>
+</body>
+
+</html>
