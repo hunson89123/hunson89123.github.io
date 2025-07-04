@@ -1,0 +1,46 @@
+<script>
+    function loginWithLINE() {
+        const clientId = '2007692538';
+        const redirectUri = 'https://script.google.com/macros/s/AKfycbzPPaEZ0smODujKiBwWV95nrBB1xwpu6-8vxQnMGWrwglcqZKfL248PRFBJSzZbgSY7/exec';
+        const state = generateRandomState();
+        sessionStorage.setItem('line_login_state', state); // 儲存起來做驗證
+        const scope = 'profile openid';
+        const result = document.getElementById('result');
+
+        const authUrl = `https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}&scope=${encodeURIComponent(scope)}`;
+        //result.textContent = authUrl;
+        //result.href = authUrl;
+        window.location.href = authUrl;
+    }
+
+    function generateRandomState(length = 16) {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return result;
+    }
+</script>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    button {
+        background-color: #06c755;
+        color: #ffffff;
+        border-radius: 5px;
+        width: 300px;
+        height: 60px;
+    }
+</style>
+
+<button onclick="loginWithLINE()">使用 LINE 登入 會員小幫手</button>
+<br>
+<a id="result" target="_blank"></a>
