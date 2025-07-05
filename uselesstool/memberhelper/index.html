@@ -1,3 +1,11 @@
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+    }
+</style>
 <div id="loginArea" style="display: none;">
     <button onclick="loginWithLINE()">使用 LINE 登入 會員小幫手</button>
 </div>
@@ -46,7 +54,7 @@
 
     function loginWithLINE() {
         const clientId = '2007692538';
-        const redirectUri = 'http://127.0.0.1:5500/uselesstool/memberhelper/callback.html';
+        const redirectUri = 'https://hunson89123.github.io/uselesstool/memberhelper/callback.html';
         const state = generateRandomState();
         sessionStorage.setItem('line_login_state', state);
         const scope = 'profile openid';
