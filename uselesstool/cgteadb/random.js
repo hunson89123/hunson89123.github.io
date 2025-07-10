@@ -1,12 +1,9 @@
-
-
-
-const row = document.createElement('div');
-row.className = 'row w-100 g-3';
 let drawStoreLists = [];
 let drawStoreCount = 1;
 
 function initRandomPage() {
+  const row = document.createElement('div');
+  row.className = 'row w-100 g-3';
   const randomSettingModalBody = document.getElementById('randomSettingStores');
   const collapseStoresSelectedCount = document.getElementById('collapseStoresSelectedCount');
   const collapseStoresCount = document.getElementById('collapseStoresCount');
@@ -29,7 +26,6 @@ function initRandomPage() {
   countRange.value = localStorage.getItem('storesCount') ?? 1;
   countRangeLabel.textContent = countRange.value;
   collapseStoresCount.innerText = `抽${countRange.value}家`;
-  console.log(`抽${countRange.value}家`);
   drawStoreLists = savedStores.map(store => store.name);
   drawStoreCount = countRange.value;
   Object.values(allStoreData).forEach(store => {
@@ -52,7 +48,6 @@ function initRandomPage() {
 
     row.appendChild(col);
   });
-  console.log(row);
   randomSettingModalBody.appendChild(row);
 
   randomSettingModalBody.addEventListener('change', () => {

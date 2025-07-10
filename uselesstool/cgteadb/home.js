@@ -188,9 +188,12 @@ async function renderCards(data, googleMapInfoMap) {
     const card = document.createElement("div");
     card.className = "col-xxl-4 col-xl-6";
     const logoUrl = `./assets/images/stores/logo/${placeId}.png`;
-    const isOpenNowBadges = ['bg-secondary">已打烊', 'bg-primary">營業中', 'bg-secondary">今日未營業', 'd-none">無提供']
+    const isOpenNowBackground = ['bg-secondary', 'bg-primary', 'bg-danger', 'd-none']
     card.innerHTML = `
-      <div class="card rounded-3">
+      <div class="card rounded-3 position-relative">
+        <span class="position-absolute top-0 start-100 translate-middle p-2 ${isOpenNowBackground[Number(formatOpeningHoursWithStatus(store["營業時間"]).isOpenNow)]} border border-light rounded-circle">
+          <span class="visually-hidden">New alerts</span>
+        </span>
         <div class="card-body d-flex align-items-center" style="height: 100px;">
           <div class="d-flex justify-content-center align-items-center w-100 cursor-pointer" data-name="${store["店家名稱"]}" data-branch="${store["分店名稱"]}" data-bs-toggle="modal" data-bs-target="#storeInfoModal">
           ${logoUrl && store["是否有店家圖示"] ? `
@@ -200,7 +203,7 @@ async function renderCards(data, googleMapInfoMap) {
             ` : ''}
             <div class="overflow-hidden w-100 ms-3">
             <h3 class="text-truncate mb-1">${store["店家名稱"]}</h3>
-            <h6 class="text-truncate f-w-400 text-secondary mb-0">${store["分店名稱"]} <span class="badge ${isOpenNowBadges[Number(formatOpeningHoursWithStatus(store["營業時間"]).isOpenNow)]}</span></h6>
+            <h6 class="text-truncate f-w-400 text-secondary mb-0">${store["分店名稱"]}</h6>
             </div>
           </div> 
           <div class="d-flex ms-auto text-end justify-content-end text-nowrap">
@@ -334,7 +337,6 @@ function formatOpeningHoursWithStatus(hoursText) {
   const formatted = hoursText.split('\n').map(line => {
     const [day, timeRange] = line.split(': ');
     const isToday = day === today;
-
     if (isToday) {
       if (timeRange && timeRange.includes('–')) {
         const [openStr, closeStr] = timeRange.split(' – ');
@@ -353,8 +355,8 @@ function formatOpeningHoursWithStatus(hoursText) {
         }
 
         isOpenNow = now >= openTime && now <= closeTime;
-        const statusClass = isOpenNow ? "text-primary" : "text-secondary";
-        return `<b class="${statusClass}">${line}</b>`;
+        const statusClass = isOpenNow ? "bg-primary" : "bg-secondary";
+        return `<b class="text-light ${statusClass}">${line}</b>`;
       } else {
         isOpenNow = 2;
         return `<b class="text-secondary">${line}</b>`;
@@ -363,7 +365,7 @@ function formatOpeningHoursWithStatus(hoursText) {
 
     return line;
   }).join('<br>');
-  if (hoursText === '無提供') isOpenNow = 3;
+  if (hoursText === '無提供' || hoursText === '') isOpenNow = 3;
   return {
     html: formatted,
     isOpenNow: isOpenNow
