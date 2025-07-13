@@ -35,12 +35,12 @@
     <!-- [ Pre-loader ] End -->
     <!-- [ Sidebar Menu ] start -->
     <nav class="pc-sidebar">
-        <div class="navbar-wrapper">
+        <div class="navbar-wrapper d-flex flex-column h-100">
             <div class="m-header">
                 <img class="img-fluid logo-lg" alt="logo" style="height: 35px;">
                 長庚商圈飲料資料庫
             </div>
-            <div class="navbar-content">
+            <div class="navbar-content flex-grow-1">
                 <ul class="pc-navbar">
                     <li class="pc-item">
                         <a href="#" class="pc-link" data-page="home">
@@ -169,6 +169,18 @@
                         </a>
                     </li> -->
                 </ul>
+                <div class="position-absolute bottom-0 w-100">
+                    <ul class="pc-submenu">
+                        <li class="pc-item p-3">
+                            <div class="btn btn-primary w-100"
+                                onclick="localStorage.clear(); initData(true);  if(window.innerWidth < 768)rm_menu();">
+                                <span class="pc-micon"><i class="bi bi-database-up"></i></span>
+                                <span class="pc-mtext">更新資料</span>
+                            </div>
+                            <div id="lastUpdatedTime" class="px-4 pb-3 text-muted text-center small"></div>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </nav>
@@ -309,6 +321,7 @@
                 if (parentLi) {
                     parentLi.classList.add('active');
                 }
+                updateLastUpdatedDisplay();
             });
         });
 

@@ -5,30 +5,50 @@ let allGoogleMapsInfoData = {};
 let googleMapInfoMap = new Map();
 let sortSelected = "default";
 
-async function getStoreData() {
+async function getStoreData(forceUpdate = false) {
+  const cacheKey = 'storeData';
+  if (!forceUpdate) {
+    const cached = loadFromLocalStorage(cacheKey);
+    if (cached) return cached;
+  }
   showLoading('取得店家資訊中');
   const res = await fetch(`${GAS_URL}?action=getStore`);
-  return await res.json();
+  const data = await res.json();
+  saveToLocalStorage(cacheKey, data);
+  return data;
 }
 
-async function getMenuData() {
+async function getMenuData(forceUpdate = false) {
+  const cacheKey = 'menuData';
+  if (!forceUpdate) {
+    const cached = loadFromLocalStorage(cacheKey);
+    if (cached) return cached;
+  }
   showLoading('取得菜單資訊中');
   const res = await fetch(`${GAS_URL}?action=getMenu`);
   const data = await res.json();
+  saveToLocalStorage(cacheKey, data);
   return data;
 }
 
-async function getGoogleMapInfoData() {
+async function getGoogleMapInfoData(forceUpdate = false) {
+  const cacheKey = 'googleMapInfoData';
+  if (!forceUpdate) {
+    const cached = loadFromLocalStorage(cacheKey);
+    if (cached) return cached;
+  }
   showLoading('取得評論資訊中');
   const res = await fetch(`${GAS_URL}?action=getGoogleMapsInfo`);
   const data = await res.json();
+  saveToLocalStorage(cacheKey, data);
   return data;
 }
-async function initData() {
+
+async function initData(forceUpdate = false) {
   showLoading();
-  allStoreData = await getStoreData();
-  allMenuData = await getMenuData();
-  allGoogleMapsInfoData = await getGoogleMapInfoData();
+  allStoreData = await getStoreData(forceUpdate);
+  allMenuData = await getMenuData(forceUpdate);
+  allGoogleMapsInfoData = await getGoogleMapInfoData(forceUpdate);
   Object.entries(allStoreData).forEach(([storeName, storeItems], index) => {
     storeItems._originalIndex = index;
   });
@@ -107,6 +127,7 @@ async function initData() {
   const storeInfoModal = document.getElementById('storeInfoModal');
   storeInfoModal.addEventListener('show.bs.modal', async event => {
     const card = event.relatedTarget;
+    const storePlaceId = card.getAttribute('data-place-id');
     const storeName = card.getAttribute('data-name');
     const branchName = card.getAttribute('data-branch');
 
@@ -119,21 +140,36 @@ async function initData() {
 
 
     try {
-      const storeItem = allStoreData.find(x => x.店家名稱 === storeName) || {};
+      const storeItem = allStoreData.find(x => x["Place ID"] === storePlaceId) || {};
       body.innerHTML = `
         <div class="row my-3">
           <div class="col-auto"><i class="bi bi-geo-alt h5"></i></div>
-          <div class="col">${storeItem.地址}</div >
+          <div class="col">
+            <a href="https://www.google.com/maps/place/?q=place_id:${encodeURIComponent(storeItem["Place ID"])}" 
+              target="_blank" 
+              class="text-decoration-none">
+              ${storeItem.地址}
+            </a>
+            (<a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(storeItem.店家地址)}&destination_place_id=${encodeURIComponent(storeItem["Place ID"])}" 
+              target="_blank" 
+              class="text-decoration-none">
+              <i class="bi bi-sign-turn-right-fill"></i>立即出發
+            </a>)
+          </div>
         </div>
-        <div class="row my-3">
+        <div class="row my-3 ${storeItem.電話號碼 === '無提供' ? 'd-none' : ''}">
           <div class="col-auto"><i class="bi bi-telephone h5"></i></div>
-          <div class="col">${storeItem.電話號碼}</div >
+          <div class="col">
+            <a href="tel:${storeItem.電話號碼}" class="text-decoration-none">
+              ${storeItem.電話號碼}
+            </a>
+          </div >
         </div>
         <div class="row my-3">
           <div class="col-auto"><i class="bi bi-clock h5"></i></div>
           <div class="col">${formatOpeningHoursWithStatus(storeItem.營業時間).html}</div >
         </div>
-        <div class="row my-3">
+        <div class="row my-3 ${formatDateToYMD(storeItem.開幕時間) ? '' : 'd-none'}">
           <div class="col-auto"><i class="bi bi-calendar3-event h5"></i></div>
           <div class="col">${formatDateToYMD(storeItem.開幕時間)}(<a href="${storeItem.開幕時間來源網址}" target="_blank">開幕時間來源</a>)</div >
         </div>
@@ -162,12 +198,14 @@ function getRightContent(store, placeId, showOption) {
                 data-bs-target="#menuModal"
                 data-name="${store["店家名稱"]}"
                 data-branch="${store["分店名稱"]}"
+                data-place-id="${store["Place ID"]}"
                 ${store["菜單已完全加入"] ? '' : 'hidden'}>
                 <i class="bi bi-journal-text"></i>
               </button>
               <button class="btn btn-link text-dark btn-menu-viewer"
                 data-name="${store["店家名稱"]}"
                 data-image-link="${!store["是否有菜單圖片"] ? '#' : `./assets/images/stores/menu/${placeId}.png`}"
+                data-place-id="${store["Place ID"]}"
                 ${store["是否有菜單圖片"] ? '' : 'hidden'}>
                 <i class="bi bi-file-image"></i>
               </button>`;
@@ -188,26 +226,23 @@ async function renderCards(data, googleMapInfoMap) {
     const card = document.createElement("div");
     card.className = "col-xxl-4 col-xl-6";
     const logoUrl = `./assets/images/stores/logo/${placeId}.png`;
-    const isOpenNowBackground = ['bg-secondary', 'bg-primary', 'bg-danger', 'd-none']
+    const isOpenNowBorder = ['border-light-gray', 'border-success', 'border-danger', 'border']
     card.innerHTML = `
-      <div class="card rounded-3 position-relative">
-        <span class="position-absolute top-0 start-100 translate-middle p-2 ${isOpenNowBackground[Number(formatOpeningHoursWithStatus(store["營業時間"]).isOpenNow)]} border border-light rounded-circle">
-          <span class="visually-hidden">New alerts</span>
-        </span>
+      <div class="card rounded-3 position-relative ${isOpenNowBorder[Number(formatOpeningHoursWithStatus(store["營業時間"]).isOpenNow)]}">
         <div class="card-body d-flex align-items-center" style="height: 100px;">
-          <div class="d-flex justify-content-center align-items-center w-100 cursor-pointer" data-name="${store["店家名稱"]}" data-branch="${store["分店名稱"]}" data-bs-toggle="modal" data-bs-target="#storeInfoModal">
-          ${logoUrl && store["是否有店家圖示"] ? `
-            <div style="height:100%; aspect-ratio: 1/1;">
-            <img src="${logoUrl}" alt="Logo" class="rounded-3 shadow-sm" style="height: auto; width:clamp(50px, 10vw, 60px); object-fit: cover;">
-            </div>
+          <div class="d-flex justify-content-center align-items-center w-100 cursor-pointer" data-name="${store["店家名稱"]}" data-branch="${store["分店名稱"]}" data-place-id="${store["Place ID"]}" data-bs-toggle="modal" data-bs-target="#storeInfoModal">
+            ${logoUrl && store["是否有店家圖示"] ? `
+              <div class="position-relative" style="height:100%; aspect-ratio: 1/1;">
+                <img src="${logoUrl}" alt="Logo" class="rounded-3 shadow-sm" style="height: auto; width:clamp(50px, 10vw, 60px); object-fit: cover;">
+              </div>
             ` : ''}
             <div class="overflow-hidden w-100 ms-3">
-            <h3 class="text-truncate mb-1">${store["店家名稱"]}</h3>
-            <h6 class="text-truncate f-w-400 text-secondary mb-0">${store["分店名稱"]}</h6>
+              <h3 class="text-truncate mb-1">${store["店家名稱"]}</h3>
+              <h6 class="text-truncate f-w-400 text-secondary mb-0">${store["分店名稱"]}</h6>
             </div>
-          </div> 
+          </div>
           <div class="d-flex ms-auto text-end justify-content-end text-nowrap">
-               ${getRightContent(store, placeId, showOption)}
+            ${getRightContent(store, placeId, showOption)}
           </div>
         </div>
       </div>
@@ -290,7 +325,7 @@ function renderStars(rating, reviews) {
 
 function formatDateToYMD(dateStr) {
   const date = new Date(dateStr);
-  if (isNaN(date)) return "無效日期";
+  if (isNaN(date)) return false;
 
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份從0開始
@@ -372,6 +407,45 @@ function formatOpeningHoursWithStatus(hoursText) {
   };
 }
 
+function saveToLocalStorage(key, data) {
+  localStorage.setItem(key, JSON.stringify({
+    timestamp: Date.now(),
+    data: data
+  }));
+  localStorage.setItem('lastUpdated', Date.now());
+}
+
+function loadFromLocalStorage(key) {
+  const item = localStorage.getItem(key);
+  if (!item) return null;
+  try {
+    const parsed = JSON.parse(item);
+    return parsed.data;
+  } catch {
+    return null;
+  }
+}
+
+function updateLastUpdatedDisplay() {
+  const timestamp = localStorage.getItem('lastUpdated');
+  const el = document.getElementById('lastUpdatedTime');
+  if (!el) return;
+
+  if (timestamp) {
+    const date = new Date(parseInt(timestamp));
+    const formatted = date.toLocaleString('zh-TW', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+    el.textContent = `上次更新：${timeAgo(formatted)}`;
+  } else {
+    el.textContent = '尚未更新過資料';
+  }
+}
 
 function initHomePage() {
   initData();

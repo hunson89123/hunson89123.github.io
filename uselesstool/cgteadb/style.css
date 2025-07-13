@@ -99,6 +99,11 @@ details summary {
     animation: highlightAnim 0.5s ease-in forwards;
 }
 
+.border-light-gray {
+    --bs-border-opacity: 1;
+    border-color: rgb(173, 181, 189) !important;
+}
+
 @keyframes highlightAnim {
     to {
         color: #212529;
