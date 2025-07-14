@@ -449,4 +449,5 @@ function updateLastUpdatedDisplay() {
 
 function initHomePage() {
   initData();
+  updateLastUpdatedDisplay();
 }
