@@ -145,16 +145,10 @@ async function initData(forceUpdate = false) {
         <div class="row my-3">
           <div class="col-auto"><i class="bi bi-geo-alt h5"></i></div>
           <div class="col">
-            <a href="https://www.google.com/maps/place/?q=place_id:${encodeURIComponent(storeItem["Place ID"])}" 
-              target="_blank" 
-              class="text-decoration-none">
+            <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(storeItem.店家地址)}&destination_place_id=${encodeURIComponent(storeItem["Place ID"])}" 
+              target="_blank">
               ${storeItem.地址}
             </a>
-            (<a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(storeItem.店家地址)}&destination_place_id=${encodeURIComponent(storeItem["Place ID"])}" 
-              target="_blank" 
-              class="text-decoration-none">
-              <i class="bi bi-sign-turn-right-fill"></i>立即出發
-            </a>)
           </div>
         </div>
         <div class="row my-3 ${storeItem.電話號碼 === '無提供' ? 'd-none' : ''}">
@@ -178,6 +172,8 @@ async function initData(forceUpdate = false) {
       body.innerHTML = `<p class="text-muted">尚無店家資訊，敬請期待</p>`;
     }
   });
+
+  updateLastUpdatedDisplay();
 }
 
 function getRightContent(store, placeId, showOption) {
@@ -449,5 +445,4 @@ function updateLastUpdatedDisplay() {
 
 function initHomePage() {
   initData();
-  updateLastUpdatedDisplay();
 }
