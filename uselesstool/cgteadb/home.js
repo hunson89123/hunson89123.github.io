@@ -222,7 +222,7 @@ async function renderCards(data, googleMapInfoMap) {
     const card = document.createElement("div");
     card.className = "col-xxl-4 col-xl-6";
     const logoUrl = `./assets/images/stores/logo/${placeId}.png`;
-    const isOpenNowBorder = ['border-light-gray', 'border-success', 'border-danger', 'border']
+    const isOpenNowBorder = ['border-light-gray', 'border-success border-2', 'border-danger', 'border']
     card.innerHTML = `
       <div class="card rounded-3 position-relative ${isOpenNowBorder[Number(formatOpeningHoursWithStatus(store["營業時間"]).isOpenNow)]}">
         <div class="card-body d-flex align-items-center" style="height: 100px;">
@@ -330,33 +330,6 @@ function formatDateToYMD(dateStr) {
   return `${year}-${month}-${day}<br>${timeAgo(dateStr)}`;
 }
 
-function timeAgo(dateStr) {
-  const timestamp = new Date(dateStr).getTime();
-  const now = Date.now();
-  const difference = now - timestamp;
-
-  const seconds = difference / 1000;
-  const minutes = seconds / 60;
-  const hours = minutes / 60;
-  const days = hours / 24;
-  const months = days / 30.44;
-  const years = days / 365.25;
-
-  if (years >= 1) {
-    return `${years.toFixed(1)} 年前`;
-  } else if (months >= 1) {
-    return `${months.toFixed(1)} 個月前`;
-  } else if (days >= 1) {
-    return `${Math.floor(days)} 天前`;
-  } else if (hours >= 1) {
-    return `${Math.floor(hours)} 小時前`;
-  } else if (minutes >= 1) {
-    return `${Math.floor(minutes)} 分鐘前`;
-  } else {
-    return `${Math.floor(seconds)} 秒前`;
-  }
-}
-
 function formatOpeningHoursWithStatus(hoursText) {
   const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
   const todayIdx = new Date().getDay();
@@ -419,27 +392,6 @@ function loadFromLocalStorage(key) {
     return parsed.data;
   } catch {
     return null;
-  }
-}
-
-function updateLastUpdatedDisplay() {
-  const timestamp = localStorage.getItem('lastUpdated');
-  const el = document.getElementById('lastUpdatedTime');
-  if (!el) return;
-
-  if (timestamp) {
-    const date = new Date(parseInt(timestamp));
-    const formatted = date.toLocaleString('zh-TW', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
-    });
-    el.textContent = `上次更新：${timeAgo(formatted)}`;
-  } else {
-    el.textContent = '尚未更新過資料';
   }
 }
 
