@@ -215,7 +215,7 @@ async function renderCards(data, googleMapInfoMap) {
   Object.values(data).forEach(store => {
     const placeId = store["Place ID"];
     const mapInfo = googleMapInfoMap.get(placeId);
-    const showOption = document.getElementById("showOption").value;
+    const showOptionValue = document.getElementById("showOption").value;
     store.rating = mapInfo ? parseFloat(mapInfo["評分"]) || 0 : 0;
     store.reviews = mapInfo ? parseInt(mapInfo["評分人數"]) || 0 : 0;
 
@@ -238,7 +238,7 @@ async function renderCards(data, googleMapInfoMap) {
             </div>
           </div>
           <div class="d-flex ms-auto text-end justify-content-end text-nowrap">
-            ${getRightContent(store, placeId, showOption)}
+            ${getRightContent(store, placeId, showOptionValue)}
           </div>
         </div>
       </div>
@@ -247,6 +247,7 @@ async function renderCards(data, googleMapInfoMap) {
   });
 
   const sortOption = document.getElementById("sortOption");
+  const showOption = document.getElementById("showOption");
   sortOption.value = sortSelected
 
   sortOption.addEventListener("change", async function () {
@@ -256,18 +257,22 @@ async function renderCards(data, googleMapInfoMap) {
       allStoreData.sort((a, b) => a._originalIndex - b._originalIndex);
     } else if (key === "開幕時間") {
       allStoreData.sort((a, b) => new Date(b["開幕時間"]) - new Date(a["開幕時間"])); // 新→舊
+      showOption.value = "開幕時間";
     } else if (key === "開幕時間-reverse") {
       allStoreData.sort((a, b) => new Date(a["開幕時間"]) - new Date(b["開幕時間"])); // 舊→新
+      showOption.value = "開幕時間";
     } else if (key.endsWith("-reverse")) {
       const baseKey = key.replace("-reverse", "");
       allStoreData.sort((a, b) => a[baseKey] - b[baseKey]);
+      showOption.value = baseKey == 'rating' ? 'reviews' : baseKey;
     } else {
       allStoreData.sort((a, b) => b[key] - a[key]);
+      showOption.value = key == 'rating' ? 'reviews' : key;
     }
     await renderCards(allStoreData, googleMapInfoMap);
   });
 
-  document.getElementById("showOption").addEventListener("change", async () => {
+  showOption.addEventListener("change", async () => {
     await renderCards(allStoreData, googleMapInfoMap);
   });
 

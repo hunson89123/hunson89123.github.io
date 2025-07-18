@@ -467,8 +467,8 @@
         function timeAgo(dateStr) {
             const timestamp = new Date(dateStr).getTime();
             const now = Date.now();
-            const difference = now - timestamp;
-
+            const difference = Math.abs(now - timestamp);
+            const agoOrLater = (now - timestamp) > 0 ? '前' : '後'
             const seconds = difference / 1000;
             const minutes = seconds / 60;
             const hours = minutes / 60;
@@ -477,17 +477,17 @@
             const years = days / 365.25;
 
             if (years >= 1) {
-                return `${years.toFixed(1)} 年前`;
+                return `${years.toFixed(1)} 年${agoOrLater}`;
             } else if (months >= 1) {
-                return `${months.toFixed(1)} 個月前`;
+                return `${months.toFixed(1)} 個月${agoOrLater}`;
             } else if (days >= 1) {
-                return `${Math.floor(days)} 天前`;
+                return `${Math.floor(days)} 天${agoOrLater}`;
             } else if (hours >= 1) {
-                return `${Math.floor(hours)} 小時前`;
+                return `${Math.floor(hours)} 小時${agoOrLater}`;
             } else if (minutes >= 1) {
-                return `${Math.floor(minutes)} 分鐘前`;
+                return `${Math.floor(minutes)} 分鐘${agoOrLater}`;
             } else {
-                return `${Math.floor(seconds)} 秒前`;
+                return `${Math.floor(seconds)} 秒${agoOrLater}`;
             }
         }
     </script>
