@@ -222,14 +222,14 @@ async function renderCards(data, googleMapInfoMap) {
     const card = document.createElement("div");
     card.className = "col-xxl-4 col-xl-6";
     const logoUrl = `./assets/images/stores/logo/${placeId}.png`;
-    const isOpenNowBorder = ['border-light-gray', 'border-success border-2', 'border-danger', 'border']
+    const isOpenNowBorder = ['border-light-gray bg-light-gray', 'border-success', 'border-dark bg-light-gray', 'border-dark']
     card.innerHTML = `
       <div class="card rounded-3 position-relative ${isOpenNowBorder[Number(formatOpeningHoursWithStatus(store["營業時間"]).isOpenNow)]}">
         <div class="card-body d-flex align-items-center" style="height: 100px;">
           <div class="d-flex justify-content-center align-items-center w-100 cursor-pointer" data-name="${store["店家名稱"]}" data-branch="${store["分店名稱"]}" data-place-id="${store["Place ID"]}" data-bs-toggle="modal" data-bs-target="#storeInfoModal">
             ${logoUrl && store["是否有店家圖示"] ? `
               <div class="position-relative" style="height:100%; aspect-ratio: 1/1;">
-                <img src="${logoUrl}" alt="Logo" class="rounded-3 shadow-sm" style="height: auto; width:clamp(50px, 10vw, 60px); object-fit: cover;">
+                <img src="${logoUrl}" alt="Logo" class="rounded-3 shadow-sm" style="height: auto; width:clamp(50px, 10vw, 60px); object-fit: cover;${Number(formatOpeningHoursWithStatus(store["營業時間"]).isOpenNow) % 2 === 1 ? '' : 'filter: grayscale(1);'}">
               </div>
             ` : ''}
             <div class="overflow-hidden w-100 ms-3">
@@ -364,7 +364,7 @@ function formatOpeningHoursWithStatus(hoursText) {
         }
 
         isOpenNow = now >= openTime && now <= closeTime;
-        const statusClass = isOpenNow ? "bg-primary" : "bg-secondary";
+        const statusClass = isOpenNow ? "bg-success" : "bg-secondary";
         return `<b class="text-light ${statusClass}">${line}</b>`;
       } else {
         isOpenNow = 2;

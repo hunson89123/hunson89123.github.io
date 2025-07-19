@@ -32,7 +32,7 @@
 }
 
 #store-list {
-    height: calc(100vh - 150px);
+    height: calc(100vh - 170px);
     overflow: auto;
 }
 
@@ -102,6 +102,10 @@ details summary {
 .border-light-gray {
     --bs-border-opacity: 1;
     border-color: rgb(173, 181, 189) !important;
+}
+
+.bg-light-gray {
+    background-color: rgb(206, 212, 218) !important;
 }
 
 @keyframes highlightAnim {
