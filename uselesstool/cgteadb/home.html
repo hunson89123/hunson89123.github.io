@@ -1,34 +1,10 @@
 <div class="sticky-top bg-light d-flex flex-column" style="top:60px;">
     <button class="btn ms-auto" data-bs-toggle="modal" data-bs-target="#homeSettingModal"><span class="bi bi-eye">
             檢視設定</span></button>
-    <!-- <div class="mb-3 w-50 align-items-center input-group d-none">
-        <span class="input-group-text">
-            <i class="bi bi-eye"></i>
-        </span>
-        <select id="showOption" class="form-select">
-            <option value="menu">顯示菜單選項</option>
-            <option value="reviews">顯示Google評分及評論數</option>
-            <option value="開幕時間">顯示開幕時間</option>
-        </select>
-    </div>
-    <div class="mb-3 w-50 align-items-center input-group d-none">
-        <span class="input-group-text">
-            <i class="bi bi-sort-alpha-down"></i>
-        </span>
-        <select id="sortOption" class="form-select">
-            <option value="default">預設排序</option>
-            <option value="rating">依評分(高→低)</option>
-            <option value="rating-reverse">依評分(低→高)</option>
-            <option value="reviews">依評論數(多→少)</option>
-            <option value="reviews-reverse">依評論數(少→多)</option>
-            <option value="開幕時間">依開幕時間(最新→最早)</option>
-            <option value="開幕時間-reverse">依開幕時間(最早→最新)</option>
-        </select>
-    </div> -->
-
 </div>
 <!-- [ Main Content ] start -->
-<div class="row overflow-auto pt-2" id="store-list">
+<div class="overflow-auto pt-2" id="store-list-container">
+    <div class="row ms-0 me-0" id="store-list"></div>
     <!-- <div class="col-md-4">
         <div class="card">
             <div class="card-body d-flex justify-content-between align-items-center">
@@ -43,7 +19,7 @@
 </div>
 <div class="modal fade" id="homeSettingModal" tabindex="-1" aria-labelledby="homeSettingModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content" style="height: 90vh;">
+        <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="homeSettingModalLabel">檢視設定</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button>
@@ -56,7 +32,7 @@
                       
                     </div>
                 </div> -->
-                <div class="row align-items-center mb-3">
+                <div class="row align-items-center mb-3 d-none">
                     <div class="col-4">
                         <label class="form-label mb-0 h4">檢視模式</label>
                     </div>
@@ -75,7 +51,7 @@
                         </div>
                     </div>
                 </div>
-                <hr>
+                <!-- <hr> -->
                 <div class="row align-items-center mb-3">
                     <div class="col-4">
                         <label class="form-label mb-0 h4">顯示資訊</label>
@@ -112,15 +88,15 @@
                     </div>
                     <div class="col-8">
                         <div class="form-check">
-                            <input type="radio" class="form-check-input" name="radio-view-mode" id="radio-view-mode-1"
-                                autocomplete="off">
-                            <label class="form-check-label" for="radio-view-mode-1">
+                            <input type="radio" class="form-check-input" name="radio-business_status"
+                                id="radio-business_status-1" autocomplete="off">
+                            <label class="form-check-label" for="radio-business_status-1">
                                 全部顯示</label>
                         </div>
                         <div class="form-check">
-                            <input type="radio" class="form-check-input" name="radio-view-mode" id="radio-view-mode-2"
-                                autocomplete="off">
-                            <label class="form-check-label" for="radio-view-mode-2">
+                            <input type="radio" class="form-check-input" name="radio-business_status"
+                                id="radio-business_status-2" autocomplete="off">
+                            <label class="form-check-label" for="radio-business_status-2">
                                 僅顯示營業中</label>
                         </div>
                     </div>

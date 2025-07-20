@@ -44,8 +44,8 @@
                 <ul class="pc-navbar">
                     <li class="pc-item">
                         <a href="#" class="pc-link" data-page="home">
-                            <span class="pc-micon"><i class="bi bi-card-list"></i></span>
-                            <span class="pc-mtext">菜單</span>
+                            <span class="pc-micon"><i class="bi bi-house"></i></span>
+                            <span class="pc-mtext">首頁</span>
                         </a>
                     </li>
                     <li class="pc-item">
@@ -333,7 +333,6 @@
 
             // 檢查是否已經是當前頁面
             if (currentPage === pageName) {
-                console.log(`${pageName} is already loaded.`);
                 return;
             }
 
@@ -370,6 +369,7 @@
                     } else {
                         const initFunc = getInitFunctionName(scriptName);
                         if (pageName === 'home') {
+                            isHomeInitialized = false;
                             window["renderCards"](allStoreData, googleMapInfoMap);
                         } else if (typeof window[initFunc] === "function") {
                             window[initFunc]();

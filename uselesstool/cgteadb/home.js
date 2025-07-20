@@ -3,7 +3,14 @@ let allStoreData = {};
 let allMenuData = {};
 let allGoogleMapsInfoData = {};
 let googleMapInfoMap = new Map();
-let sortSelected = "default";
+let isHomeInitialized = false;
+const STORAGE_KEY = 'homeSettings';
+const defaultSettings = {
+  viewMode: 'radio-view-mode-1',
+  showOption: 'menu',
+  sortOption: 'default',
+  businessStatus: 'radio-business_status-1'
+};
 
 async function getStoreData(forceUpdate = false) {
   const cacheKey = 'storeData';
@@ -216,20 +223,23 @@ async function renderCards(data, googleMapInfoMap) {
     const placeId = store["Place ID"];
     const mapInfo = googleMapInfoMap.get(placeId);
     const showOptionValue = document.getElementById("showOption").value;
+    const businesStatus = document.querySelector('input[name="radio-business_status"]:checked')?.id === 'radio-business_status-1';
+    const isOpenNow = Number(formatOpeningHoursWithStatus(store["營業時間"]).isOpenNow);
+    const isDisplay = businesStatus ? '' : isOpenNow % 2 === 1 ? '' : 'd-none'
     store.rating = mapInfo ? parseFloat(mapInfo["評分"]) || 0 : 0;
     store.reviews = mapInfo ? parseInt(mapInfo["評分人數"]) || 0 : 0;
 
     const card = document.createElement("div");
-    card.className = "col-xxl-4 col-xl-6";
+    card.className = `col-xxl-4 col-xl-6 ${isDisplay}`;
     const logoUrl = `./assets/images/stores/logo/${placeId}.png`;
     const isOpenNowBorder = ['border-light-gray bg-light-gray', 'border-success', 'border-dark bg-light-gray', 'border-dark']
     card.innerHTML = `
-      <div class="card rounded-3 position-relative ${isOpenNowBorder[Number(formatOpeningHoursWithStatus(store["營業時間"]).isOpenNow)]}">
+      <div class="card rounded-3 position-relative ${isOpenNowBorder[isOpenNow]}">
         <div class="card-body d-flex align-items-center" style="height: 100px;">
           <div class="d-flex justify-content-center align-items-center w-100 cursor-pointer" data-name="${store["店家名稱"]}" data-branch="${store["分店名稱"]}" data-place-id="${store["Place ID"]}" data-bs-toggle="modal" data-bs-target="#storeInfoModal">
             ${logoUrl && store["是否有店家圖示"] ? `
               <div class="position-relative" style="height:100%; aspect-ratio: 1/1;">
-                <img src="${logoUrl}" alt="Logo" class="rounded-3 shadow-sm" style="height: auto; width:clamp(50px, 10vw, 60px); object-fit: cover;${Number(formatOpeningHoursWithStatus(store["營業時間"]).isOpenNow) % 2 === 1 ? '' : 'filter: grayscale(1);'}">
+                <img src="${logoUrl}" alt="Logo" class="rounded-3 shadow-sm" style="height: auto; width:clamp(50px, 10vw, 60px); object-fit: cover;${isOpenNow % 2 === 1 ? '' : 'filter: grayscale(1);'}">
               </div>
             ` : ''}
             <div class="overflow-hidden w-100 ms-3">
@@ -246,68 +256,70 @@ async function renderCards(data, googleMapInfoMap) {
     container.appendChild(card);
   });
 
-  const sortOption = document.getElementById("sortOption");
-  const showOption = document.getElementById("showOption");
-  sortOption.value = sortSelected
+  if (!isHomeInitialized) {
+    const sortOption = document.getElementById("sortOption");
+    const showOption = document.getElementById("showOption");
 
-  sortOption.addEventListener("change", async function () {
-    const key = this.value;
-    sortSelected = key;
-    if (key === "default") {
-      allStoreData.sort((a, b) => a._originalIndex - b._originalIndex);
-    } else if (key === "開幕時間") {
-      allStoreData.sort((a, b) => new Date(b["開幕時間"]) - new Date(a["開幕時間"])); // 新→舊
-      showOption.value = "開幕時間";
-    } else if (key === "開幕時間-reverse") {
-      allStoreData.sort((a, b) => new Date(a["開幕時間"]) - new Date(b["開幕時間"])); // 舊→新
-      showOption.value = "開幕時間";
-    } else if (key.endsWith("-reverse")) {
-      const baseKey = key.replace("-reverse", "");
-      allStoreData.sort((a, b) => a[baseKey] - b[baseKey]);
-      showOption.value = baseKey == 'rating' ? 'reviews' : baseKey;
-    } else {
-      allStoreData.sort((a, b) => b[key] - a[key]);
-      showOption.value = key == 'rating' ? 'reviews' : key;
-    }
-    await renderCards(allStoreData, googleMapInfoMap);
-  });
-
-  showOption.addEventListener("change", async () => {
-    await renderCards(allStoreData, googleMapInfoMap);
-  });
-
-  document.querySelectorAll('.btn-menu-viewer').forEach(btn => {
-    btn.addEventListener('click', () => {
-      showLoading();
-      const imgUrl = btn.getAttribute('data-image-link');
-      if (!imgUrl || imgUrl === '#') return;
-
-      const img = new Image();
-      img.src = imgUrl;
-      img.id = 'menuImage';
-      img.alt = '菜單圖片';
-      img.style.maxWidth = '100%';
-      img.style.height = 'auto';
-
-      img.onload = () => {
-        const viewer = new Viewer(img, {
-          navbar: false,
-          title: false,
-          toolbar: false,
-          toggleOnDblclick: false,
-          transition: false,
-          loading: true
-        });
-        viewer.show();
-        hideLoading();
-      };
-
-      img.onerror = () => {
-        alert('載入失敗，請稍後再試');
-        hideLoading();
-      };
+    sortOption.addEventListener("change", async function () {
+      const key = this.value;
+      sortSelected = key;
+      if (key === "default") {
+        allStoreData.sort((a, b) => a._originalIndex - b._originalIndex);
+      } else if (key === "開幕時間") {
+        allStoreData.sort((a, b) => new Date(b["開幕時間"]) - new Date(a["開幕時間"])); // 新→舊
+        showOption.value = "開幕時間";
+      } else if (key === "開幕時間-reverse") {
+        allStoreData.sort((a, b) => new Date(a["開幕時間"]) - new Date(b["開幕時間"])); // 舊→新
+        showOption.value = "開幕時間";
+      } else if (key.endsWith("-reverse")) {
+        const baseKey = key.replace("-reverse", "");
+        allStoreData.sort((a, b) => a[baseKey] - b[baseKey]);
+        showOption.value = baseKey == 'rating' ? 'reviews' : baseKey;
+      } else {
+        allStoreData.sort((a, b) => b[key] - a[key]);
+        showOption.value = key == 'rating' ? 'reviews' : key;
+      }
+      saveSettings();
     });
-  });
+
+    showOption.addEventListener("change", async () => {
+      saveSettings();
+    });
+
+    document.querySelectorAll('.btn-menu-viewer').forEach(btn => {
+      btn.addEventListener('click', () => {
+        showLoading();
+        const imgUrl = btn.getAttribute('data-image-link');
+        if (!imgUrl || imgUrl === '#') return;
+
+        const img = new Image();
+        img.src = imgUrl;
+        img.id = 'menuImage';
+        img.alt = '菜單圖片';
+        img.style.maxWidth = '100%';
+        img.style.height = 'auto';
+
+        img.onload = () => {
+          const viewer = new Viewer(img, {
+            navbar: false,
+            title: false,
+            toolbar: false,
+            toggleOnDblclick: false,
+            transition: false,
+            loading: true
+          });
+          viewer.show();
+          hideLoading();
+        };
+
+        img.onerror = () => {
+          alert('載入失敗，請稍後再試');
+          hideLoading();
+        };
+      });
+    });
+    isHomeInitialized = true;
+  }
 }
 
 function renderStars(rating, reviews) {
@@ -400,6 +412,58 @@ function loadFromLocalStorage(key) {
   }
 }
 
+
+// 載入設定
+function loadSettings() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  const settings = saved ? JSON.parse(saved) : defaultSettings;
+
+  // 檢視模式
+  if (settings.viewMode) {
+    document.getElementById(settings.viewMode).checked = true;
+  }
+
+  // 顯示資訊
+  document.getElementById('showOption').value = settings.showOption || defaultSettings.showOption;
+
+  // 排序方式
+  document.getElementById('sortOption').value = settings.sortOption || defaultSettings.sortOption;
+
+  // 營業狀態
+  if (settings.businessStatus) {
+    document.getElementById(settings.businessStatus).checked = true;
+  }
+
+  setTimeout(() => {
+    document.getElementById('sortOption').dispatchEvent(new Event('change'));
+  }, 0);
+}
+
+// 儲存設定
+function saveSettings() {
+  const settings = {
+    viewMode: document.querySelector('input[name="radio-view-mode"]:checked')?.id || defaultSettings.viewMode,
+    showOption: document.getElementById('showOption').value,
+    sortOption: document.getElementById('sortOption').value,
+    businessStatus: document.querySelector('input[name="radio-business_status"]:checked')?.id || defaultSettings.businessStatus
+  };
+  renderCards(allStoreData, googleMapInfoMap);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+}
+
+// 綁定事件（儲存時機）
+function bindEvents() {
+  document.querySelectorAll('input[name="radio-view-mode"]').forEach(el => {
+    el.addEventListener('change', saveSettings);
+  });
+
+  document.querySelectorAll('input[name="radio-business_status"]').forEach(el => {
+    el.addEventListener('change', saveSettings);
+  });
+}
+
 function initHomePage() {
   initData();
+  loadSettings();
+  bindEvents();
 }

@@ -31,8 +31,9 @@
     visibility: hidden;
 }
 
-#store-list {
-    height: calc(100vh - 170px);
+#store-list-container {
+    height: calc(100dvh - 170px);
+    width: 100%;
     overflow: auto;
 }
 
