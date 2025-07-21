@@ -285,41 +285,40 @@ async function renderCards(data, googleMapInfoMap) {
     showOption.addEventListener("change", async () => {
       saveSettings();
     });
-
-    document.querySelectorAll('.btn-menu-viewer').forEach(btn => {
-      btn.addEventListener('click', () => {
-        showLoading();
-        const imgUrl = btn.getAttribute('data-image-link');
-        if (!imgUrl || imgUrl === '#') return;
-
-        const img = new Image();
-        img.src = imgUrl;
-        img.id = 'menuImage';
-        img.alt = '菜單圖片';
-        img.style.maxWidth = '100%';
-        img.style.height = 'auto';
-
-        img.onload = () => {
-          const viewer = new Viewer(img, {
-            navbar: false,
-            title: false,
-            toolbar: false,
-            toggleOnDblclick: false,
-            transition: false,
-            loading: true
-          });
-          viewer.show();
-          hideLoading();
-        };
-
-        img.onerror = () => {
-          alert('載入失敗，請稍後再試');
-          hideLoading();
-        };
-      });
-    });
     isHomeInitialized = true;
   }
+  document.querySelectorAll('.btn-menu-viewer').forEach(btn => {
+    btn.addEventListener('click', () => {
+      showLoading();
+      const imgUrl = btn.getAttribute('data-image-link');
+      if (!imgUrl || imgUrl === '#') return;
+
+      const img = new Image();
+      img.src = imgUrl;
+      img.id = 'menuImage';
+      img.alt = '菜單圖片';
+      img.style.maxWidth = '100%';
+      img.style.height = 'auto';
+
+      img.onload = () => {
+        const viewer = new Viewer(img, {
+          navbar: false,
+          title: false,
+          toolbar: false,
+          toggleOnDblclick: false,
+          transition: false,
+          loading: true
+        });
+        viewer.show();
+        hideLoading();
+      };
+
+      img.onerror = () => {
+        alert('載入失敗，請稍後再試');
+        hideLoading();
+      };
+    });
+  });
 }
 
 function renderStars(rating, reviews) {
