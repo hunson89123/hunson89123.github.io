@@ -32,7 +32,7 @@
 }
 
 #store-list-container {
-    height: calc(100dvh - 170px);
+    height: calc(100dvh - 130px);
     width: 100%;
     overflow: auto;
 }
