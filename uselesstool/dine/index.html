@@ -766,24 +766,26 @@
 
       reader.onloadend = async function () {
         const base64Image = reader.result.split(',')[1];
-        const response = await fetch('https://script.google.com/macros/s/AKfycbxPoZSN1POMkytT33Ng55T1BjEFM9m4_iQMgj22KoZOguj_H4xVrTRmN51aeP8hSVRqdg/exec', {
-          method: 'POST',
-          body: JSON.stringify({
-            filename: file.name,
-            mimeType: file.type,
-            imageData: base64Image
-          }),
-          headers: {
-            'Content-Type': 'application/json'
-          }
+
+        const formData = new FormData();
+        formData.append("filename", file.name);
+        formData.append("mimeType", file.type);
+        formData.append("imageData", base64Image);
+
+        const response = await fetch("https://script.google.com/macros/s/AKfycbxPoZSN1POMkytT33Ng55T1BjEFM9m4_iQMgj22KoZOguj_H4xVrTRmN51aeP8hSVRqdg/exec", {
+          method: "POST",
+          body: formData, // 這裡改為 FormData
+          // 🚫 不要加 headers，保持預設，避免預檢請求
         });
 
-        const result = await response.json();
+        const result = await response;
+        console.log(result);
         alert("圖片網址：" + result.url);
       };
 
       reader.readAsDataURL(file);
     }
+
   </script>
 </body>
 
