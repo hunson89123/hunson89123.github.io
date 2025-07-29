@@ -34,6 +34,7 @@ async function getMenuData(forceUpdate = false) {
   showLoading('取得菜單資訊中');
   const res = await fetch(`${GAS_URL}?action=getMenu`);
   const data = await res.json();
+  console.log(data);
   saveToLocalStorage(cacheKey, data);
   return data;
 }
@@ -74,7 +75,7 @@ async function initData(forceUpdate = false) {
     const card = event.relatedTarget;
     const storeName = card.getAttribute('data-name');
     const branchName = card.getAttribute('data-branch');
-
+    const storePlaceId = card.getAttribute('data-place-id');
     document.getElementById('menuModalLabel').innerHTML = `${storeName} <small class="text-secondary">${branchName}</small>`;
     const body = document.getElementById('menuModalBody');
     body.innerHTML = `<p>載入中...</p>`;
@@ -82,8 +83,9 @@ async function initData(forceUpdate = false) {
     const footer = document.getElementById('menuModalFooter');
     footer.innerHTML = '';
     try {
-      const menuItems = allMenuData[storeName] || [];
-
+      const menuItems = allMenuData[storePlaceId] || [];
+      console.log(storePlaceId);
+      console.log(allMenuData);
       const grouped = {};
       menuItems.forEach(item => {
         const series = item["飲料系列"] || "未分類";
