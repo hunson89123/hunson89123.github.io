@@ -84,8 +84,6 @@ async function initData(forceUpdate = false) {
     footer.innerHTML = '';
     try {
       const menuItems = allMenuData[storePlaceId] || [];
-      console.log(storePlaceId);
-      console.log(allMenuData);
       const grouped = {};
       menuItems.forEach(item => {
         const series = item["飲料系列"] || "未分類";
@@ -160,7 +158,13 @@ async function initData(forceUpdate = false) {
             </a>
           </div>
         </div>
-        <div class="row my-3 ${storeItem.電話號碼 === '無提供' ? 'd-none' : ''}">
+        <div class="row my-3 ${storeItem.會員連結 === '' ? 'd-none' : ''}">
+          <div class="col-auto"><i class="bi bi-person"></i></div>
+          <div class="col">
+            <a href="${storeItem.會員連結}" target="_blank">會員</a>
+          </div>
+        </div>
+        <div class="row my-3 ${storeItem.電話號碼 === '無提供' || storeItem.電話號碼 === '' ? 'd-none' : ''}">
           <div class="col-auto"><i class="bi bi-telephone h5"></i></div>
           <div class="col">
             <a href="tel:${storeItem.電話號碼}" class="text-decoration-none">
@@ -168,7 +172,7 @@ async function initData(forceUpdate = false) {
             </a>
           </div >
         </div>
-        <div class="row my-3">
+        <div class="row my-3 ${formatOpeningHoursWithStatus(storeItem.營業時間).html === '' ? 'd-none' : ''}">
           <div class="col-auto"><i class="bi bi-clock h5"></i></div>
           <div class="col">${formatOpeningHoursWithStatus(storeItem.營業時間).html}</div >
         </div>
@@ -176,6 +180,24 @@ async function initData(forceUpdate = false) {
           <div class="col-auto"><i class="bi bi-calendar3-event h5"></i></div>
           <div class="col">${formatDateToYMD(storeItem.開幕時間)}(<a href="${storeItem.開幕時間來源網址}" target="_blank">開幕時間來源</a>)</div >
         </div>
+      `;
+      footer.innerHTML = `
+      <button class="btn btn-link text-dark"
+                data-bs-toggle="modal"
+                data-bs-target="#menuModal"
+                data-name="${storeItem.店家名稱}"
+                data-branch="${storeItem.分店名稱}"
+                data-place-id="${storeItem["Place ID"]}"
+                ${storeItem.菜單已完全加入 ? '' : 'hidden'}>
+                <i class="bi bi-journal-text"></i>
+              </button>
+              <button class="btn btn-link text-dark btn-menu-viewer"
+                data-name="${storeItem.店家名稱}"
+                data-image-link="${!storeItem.是否有菜單圖片 ? '#' : `./assets/images/stores/menu/${storeItem["Place ID"]}.png`}"
+                data-place-id="${storeItem["Place ID"]}"
+                ${storeItem.是否有菜單圖片 ? '' : 'hidden'}>
+                <i class="bi bi-file-image"></i>
+              </button>
       `;
     } catch (err) {
       body.innerHTML = `<p class="text-muted">尚無店家資訊，敬請期待</p>`;
@@ -289,38 +311,6 @@ async function renderCards(data, googleMapInfoMap) {
     });
     isHomeInitialized = true;
   }
-  document.querySelectorAll('.btn-menu-viewer').forEach(btn => {
-    btn.addEventListener('click', () => {
-      showLoading();
-      const imgUrl = btn.getAttribute('data-image-link');
-      if (!imgUrl || imgUrl === '#') return;
-
-      const img = new Image();
-      img.src = imgUrl;
-      img.id = 'menuImage';
-      img.alt = '菜單圖片';
-      img.style.maxWidth = '100%';
-      img.style.height = 'auto';
-
-      img.onload = () => {
-        const viewer = new Viewer(img, {
-          navbar: false,
-          title: false,
-          toolbar: false,
-          toggleOnDblclick: false,
-          transition: false,
-          loading: true
-        });
-        viewer.show();
-        hideLoading();
-      };
-
-      img.onerror = () => {
-        alert('載入失敗，請稍後再試');
-        hideLoading();
-      };
-    });
-  });
 }
 
 function renderStars(rating, reviews) {
@@ -454,13 +444,50 @@ function saveSettings() {
 
 // 綁定事件（儲存時機）
 function bindEvents() {
-  document.querySelectorAll('input[name="radio-view-mode"]').forEach(el => {
-    el.addEventListener('change', saveSettings);
-  });
+  window.onload = function () {
+    console.log("DOM 已經載入完成！");
+    document.querySelectorAll('input[name="radio-view-mode"]').forEach(el => {
+      el.addEventListener('change', saveSettings);
+    });
 
-  document.querySelectorAll('input[name="radio-business_status"]').forEach(el => {
-    el.addEventListener('change', saveSettings);
-  });
+    document.querySelectorAll('input[name="radio-business_status"]').forEach(el => {
+      el.addEventListener('change', saveSettings);
+    });
+
+    document.addEventListener('click', function (e) {
+      if (e.target.closest('.btn-menu-viewer')) {
+        const btn = e.target.closest('.btn-menu-viewer');
+        showLoading();
+        const imgUrl = btn.getAttribute('data-image-link');
+        if (!imgUrl || imgUrl === '#') return;
+
+        const img = new Image();
+        img.src = imgUrl;
+        img.id = 'menuImage';
+        img.alt = '菜單圖片';
+        img.style.maxWidth = '100%';
+        img.style.height = 'auto';
+
+        img.onload = () => {
+          const viewer = new Viewer(img, {
+            navbar: false,
+            title: false,
+            toolbar: false,
+            toggleOnDblclick: false,
+            transition: false,
+            loading: true
+          });
+          viewer.show();
+          hideLoading();
+        };
+
+        img.onerror = () => {
+          alert('載入失敗，請稍後再試');
+          hideLoading();
+        };
+      }
+    });
+  };
 }
 
 function initHomePage() {
