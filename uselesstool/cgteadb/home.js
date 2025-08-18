@@ -4,6 +4,7 @@ let allMenuData = {};
 let allGoogleMapsInfoData = {};
 let googleMapInfoMap = new Map();
 let isHomeInitialized = false;
+let eventsBound = false;
 const STORAGE_KEY = 'homeSettings';
 const defaultSettings = {
   viewMode: 'radio-view-mode-1',
@@ -309,8 +310,10 @@ async function renderCards(data, googleMapInfoMap) {
     showOption.addEventListener("change", async () => {
       saveSettings();
     });
+    loadSettings();
     isHomeInitialized = true;
   }
+  bindEvents();
 }
 
 function renderStars(rating, reviews) {
@@ -442,18 +445,16 @@ function saveSettings() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
 }
 
-// 綁定事件（儲存時機）
+// 綁定事件
 function bindEvents() {
-  window.onload = function () {
-    console.log("DOM 已經載入完成！");
-    document.querySelectorAll('input[name="radio-view-mode"]').forEach(el => {
-      el.addEventListener('change', saveSettings);
-    });
+  document.querySelectorAll('input[name="radio-view-mode"]').forEach(el => {
+    el.addEventListener('change', saveSettings);
+  });
 
-    document.querySelectorAll('input[name="radio-business_status"]').forEach(el => {
-      el.addEventListener('change', saveSettings);
-    });
-
+  document.querySelectorAll('input[name="radio-business_status"]').forEach(el => {
+    el.addEventListener('change', saveSettings);
+  });
+  if (!eventsBound) {
     document.addEventListener('click', function (e) {
       if (e.target.closest('.btn-menu-viewer')) {
         const btn = e.target.closest('.btn-menu-viewer');
@@ -487,11 +488,12 @@ function bindEvents() {
         };
       }
     });
-  };
+    eventsBound = true;
+  }
 }
 
 function initHomePage() {
   initData();
-  loadSettings();
   bindEvents();
+  loadSettings();
 }
