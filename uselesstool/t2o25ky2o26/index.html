@@ -1,99 +1,309 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
 
 <head>
-    <meta charset="UTF-8">
-    <title>東京行程表</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .date-header {
-            background-color: #f8f9fa;
-            font-weight: bold;
-            padding: 10px;
-            border-left: 4px solid #0d6efd;
-            margin-top: 20px;
-        }
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title class="text-center">東京8日遊 旅遊手冊</title>
+    <link rel="stylesheet" href="css/pico.green.min.css">
+    <link rel="stylesheet" href="css/flipdown.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <!--
+  ===================================
+  Google Apps Script（GAS）端 API 範例（請部署為 Web App）
+  -----------------------------------
+  1) 將下列程式貼到 Google Apps Script，換上你的工作表 ID 與工作表名稱。
+  2) 專案 > 部署 > 新部署 > 類型選「網頁應用程式」，存取權限建議「任何擁有連結者」。
+  3) 取得 Web App URL，貼回本頁「設定」中的輸入框。
 
-        .table td,
-        .table th {
-            vertical-align: middle;
-        }
+  // ======= GAS: Code.gs =======
 
-        .icon-col {
-            font-size: 1.2em;
-        }
-    </style>
+  // =============================
+
+  回傳 JSON 期望格式：
+  {
+    "items": [
+      {"date":"2025-12-25","time":"08:00","title":"出發","location":"台北 → 東京","notes":"NRT 第2航站","link":""},
+      {"date":"2025-12-27","time":"09:00","title":"越後GALA滑雪場","location":"GALA 湯沢","notes":"租板/滑雪課程","link":"https://gala.co.jp/"}
+    ]
+  }
+  ===================================
+  -->
 </head>
 
-<body class="container py-4">
+<body>
+    <header class="CDTimerContainer">
+        <small>2025-12-25 → 2026-01-01</small>
+        <h1>東京8日遊 旅遊手冊</h1>
+        <hgroup>
+            <h4 id="countdownStatus" style="display:block; text-align:center;font-weight:bold;color:#eee"></h4>
+            <div id="CDTimer" class="flipdown"></div>
+        </hgroup>
+    </header>
 
-    <h1 class="mb-4">🗼 東京自由行行程表</h1>
-    <div id="schedule-container"></div>
+    <!-- <h2>按鈕</h2>
+    <button>主要按鈕</button>
+    <button class="secondary">次要按鈕</button>
+    <button class="contrast">強調按鈕</button>
 
-    <script>
-        function init(data) {
+    <h2>表單</h2>
+    <form>
+        <label for="email">電子郵件</label>
+        <input type="email" id="email" name="email" placeholder="your@email.com" required>
+        <label for="message">訊息</label>
+        <textarea id="message" name="message" rows="3" placeholder="輸入內容..."></textarea>
+        <button type="submit">送出</button>
+    </form>
 
-            const scheduleData = data;
-            console.log(scheduleData);
-            const container = document.getElementById('schedule-container');
-            let currentDate = "";
-
-            scheduleData.forEach(row => {
-                const [date, spot, dep, arr, transport, note, address] = row;
-
-                if (date) {
-                    currentDate = date;
-                    const header = document.createElement("div");
-                    header.className = "date-header";
-                    header.textContent = currentDate;
-                    container.appendChild(header);
-
-                    const table = document.createElement("table");
-                    table.className = "table table-bordered table-hover";
-                    table.innerHTML = `
-          <thead class="table-light">
+    <h2>表格</h2>
+    <table>
+        <thead>
             <tr>
-              <th scope="col">景點</th>
-              <th scope="col">出發</th>
-              <th scope="col">抵達</th>
-              <th scope="col">交通</th>
-              <th scope="col">備註</th>
-              <th scope="col">地址</th>
+                <th>日期</th>
+                <th>活動</th>
+                <th>地點</th>
             </tr>
-          </thead>
-          <tbody></tbody>
-        `;
-                    container.appendChild(table);
-                }
+        </thead>
+        <tbody>
+            <tr>
+                <td>2025/12/25</td>
+                <td>出發</td>
+                <td>台北 → 東京</td>
+            </tr>
+            <tr>
+                <td>2025/12/27</td>
+                <td>滑雪</td>
+                <td>GALA 湯沢</td>
+            </tr>
+        </tbody>
+    </table>
 
-                const tbody = container.lastElementChild.querySelector("tbody");
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-        <td class="icon-col">${spot}</td>
-        <td>${dep}</td>
-        <td>${arr}</td>
-        <td>${transport}</td>
-        <td>${note}</td>
-        <td>${address}</td>
-      `;
-                tbody.appendChild(tr);
-            });
+    <h2>卡片區塊</h2>
+    <article>
+        <h3>東京迪士尼</h3>
+        <p>享受歡樂的遊樂設施與表演，別忘了提前購票！</p>
+        <footer>
+            <a href="https://www.tokyodisneyresort.jp/" target="_blank">官方網站</a>
+        </footer>
+    </article>
+    <header class="hero">
+        <div class="container">
+            <div class="trip-badge" role="status" aria-live="polite">
+                <span>行程日期</span>
+                <strong>2025/12/25</strong>
+                <span>→</span>
+                <strong>2026/01/01</strong>
+            </div>
+            <h1>東京8日遊手冊</h1>
+            <p class="sub">越後湯澤車站・GALA 湯沢・東京迪士尼・淺草雷門・仲見世商店街</p>
+
+            <section aria-labelledby="countdown-title">
+                <h2 id="countdown-title" class="visually-hidden">出發倒數</h2>
+                <div class="countdown" id="countdown">
+                </div>
+                <div class="progress" aria-label="倒數進度">
+                    <span id="progressBar"></span>
+                </div>
+
+            </section>
+
+            <details style="margin-top:1rem">
+                <summary>⚙️ 設定：Google Apps Script Web App URL</summary>
+                <div class="grid" style="margin-top:.5rem">
+                    <div>
+                        <label for="gasUrl">GAS URL</label>
+                        <input id="gasUrl" type="url" placeholder="https://script.google.com/macros/s/XXXX/exec" />
+                        <small>儲存後會同步到 localStorage</small>
+                    </div>
+                    <div style="align-self:end">
+                        <button id="saveGasUrl" class="contrast">儲存 & 重新載入行程</button>
+                    </div>
+                </div>
+            </details>
+        </div>
+    </header> -->
+
+    <!-- 行程清單 -->
+    <!-- <main class="container" style="margin-top:2rem">
+        <h2>行程總覽</h2>
+        <p class="muted">資料將自 Google 試算表（透過 GAS）讀取；若無設定，將顯示離線範例資料。</p>
+
+        <div id="itinerary"></div>
+    </main>
+
+    <footer class="container" style="margin:3rem auto 4rem">
+        <hr />
+        <small>Made with ♥︎ for your Tokyo trip. 時區：Asia/Tokyo（避免跨年跨時區誤差）。</small>
+    </footer> -->
+    <script src="js/flipdown.js"></script>
+    <script>
+        // === 旅程日期 ===
+        const TZ_OFFSET = '+09:00'; // 日本時區
+        const TRIP_START = new Date('2025-12-25T13:30:00' + TZ_OFFSET);
+        const TRIP_END = new Date('2026-01-01T18:40:40' + TZ_OFFSET);
+
+        // === 倒數計時 ===
+        const countdownEl = document.getElementById('countdown');
+        const statusEl = document.getElementById('countdownStatus');
+        const progressBar = document.getElementById('progressBar');
+
+        function fmt(n) { return String(n).padStart(2, '0'); }
+        function renderCountdown(d, h, m, s) {
+            countdownEl.innerHTML = '' +
+                block(fmt(d), '天') +
+                block(fmt(h), '小時') +
+                block(fmt(m), '分鐘') +
+                block(fmt(s), '秒');
         }
-        async function GetSheetData() {
-            const sheetURL = 'https://script.google.com/macros/s/AKfycbx8CmYZgY915X3eGO84idsSB11dGa2vC7kA8qGeIYFFU3dgmFn1e9gd8Ffzgl92VzyJDg/exec?type=detail';
+        function block(value, label) {
+            return `<div class="block"><div class="digit" aria-label="${label}">${value}</div><div class="label">${label}</div></div>`;
+        }
+        function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
 
-            try {
-                await fetch(sheetURL)
-                    .then(res => res.json())
-                    .then(data => {
-                        init(data);
-                    })
-                    .catch(err => console.error("讀取失敗:", err));
-            } catch (error) {
-                console.error('發生錯誤:', error);
+        function tick() {
+            const now = new Date();
+            if (now < TRIP_START) {
+                const diff = TRIP_START - now;
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor(diff / (1000 * 60 * 60)) % 24;
+                const mins = Math.floor(diff / (1000 * 60)) % 60;
+                const secs = Math.floor(diff / 1000) % 60;
+                statusEl.textContent = `距離行程開始還有...`;
+
+                /*const totalSpan = TRIP_START - new Date('2025-01-01T00:00:00' + TZ_OFFSET); // 參考用：從年初到出發
+                const elapsed = now - new Date('2025-01-01T00:00:00' + TZ_OFFSET);
+                const pct = clamp((elapsed / totalSpan) * 100, 0, 100);
+                progressBar.style.width = pct + '%';*/
+            } else if (now <= TRIP_END) {
+                // 旅程中：倒數到結束
+                const diff = TRIP_END - now;
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor(diff / (1000 * 60 * 60)) % 24;
+                const mins = Math.floor(diff / (1000 * 60)) % 60;
+                const secs = Math.floor(diff / 1000) % 60;
+                statusEl.textContent = `正在旅程中！距離結束還有...`;
+            } else {
+                // 旅程結束
+                statusEl.textContent = '旅程已結束，期待下次冒險！';
             }
         }
-        GetSheetData();
+        tick();
+        setInterval(tick, 1000);
+
+        // === 行程載入（GAS 或離線範例）===
+        /*const itineraryEl = document.getElementById('itinerary');
+        const gasInput = document.getElementById('gasUrl');
+        const saveBtn = document.getElementById('saveGasUrl');
+
+        gasInput.value = localStorage.getItem('gasUrl') || '';
+        saveBtn.addEventListener('click', () => {
+            const url = gasInput.value.trim();
+            if (url) { localStorage.setItem('gasUrl', url); }
+            loadItinerary();
+        });*/
+
+        async function loadItinerary() {
+            const url = localStorage.getItem('gasUrl');
+            let items = [];
+            try {
+                if (url) {
+                    const res = await fetch(url, { cache: 'no-store' });
+                    const data = await res.json();
+                    items = (data && data.items) ? data.items : [];
+                }
+            } catch (err) {
+                console.warn('GAS 載入失敗，改用離線資料', err);
+            }
+            if (!items.length) { items = offlineSample(); }
+            renderItinerary(items);
+        }
+
+        function offlineSample() {
+            return [
+                { date: '2025-12-25', time: '07:30', title: '出發日', location: '台北 → 東京', notes: 'NRT 入境，Suica 充值', link: '' },
+                { date: '2025-12-26', time: '09:30', title: '越後湯澤車站', location: '越後湯澤', notes: 'JR 上越新幹線；午餐站內美食街', link: '' },
+                { date: '2025-12-27', time: '08:30', title: '越後 GALA 滑雪場', location: 'GALA 湯沢', notes: '租裝備／初學課程，注意車班', link: 'https://gala.co.jp/' },
+                { date: '2025-12-28', time: '10:00', title: '東京迪士尼', location: '舞濱', notes: '事先購票，下載 App 預約', link: 'https://www.tokyodisneyresort.jp/' },
+                { date: '2025-12-29', time: '09:00', title: '淺草雷門', location: '淺草', notes: '拍照人潮多，早點到', link: '' },
+                { date: '2025-12-29', time: '11:00', title: '仲見世商店街', location: '淺草', notes: '伴手禮散策、淺草寺', link: '' },
+                { date: '2026-01-01', time: '', title: '返程', location: '東京 → 台北', notes: '預留機場時間', link: '' }
+            ];
+        }
+
+        function groupByDate(items) {
+            const map = new Map();
+            for (const it of items) {
+                const key = it.date || '未指定日期';
+                if (!map.has(key)) map.set(key, []);
+                map.get(key).push(it);
+            }
+            // 依日期排序（字串 yyyy-MM-dd 可直接排序）
+            return [...map.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+        }
+
+        function renderItinerary(items) {
+            const groups = groupByDate(items);
+            itineraryEl.innerHTML = groups.map(([date, arr]) => {
+                const cards = arr
+                    .sort((a, b) => (a.time || '').localeCompare(b.time || ''))
+                    .map(it => card(it))
+                    .join('');
+                const dateLabel = dateFmt(date);
+                return `<article>
+          <header style="margin:.5rem 0 1rem"><h3 style="margin:0">📅 ${dateLabel}</h3></header>
+          <div class="grid">${cards}</div>
+        </article>`;
+            }).join('');
+        }
+
+        function card(it) {
+            const link = it.link ? `<a href="${it.link}" target="_blank" rel="noopener">官方 / 參考連結</a>` : '';
+            const time = it.time ? `<span class="chip" aria-label="時間"><strong>⏰ ${it.time}</strong></span>` : '';
+            const loc = it.location ? `<span class="chip" aria-label="地點">📍 ${escapeHtml(it.location)}</span>` : '';
+            return `<div class="card">
+        <h4 style="margin:.25rem 0 .5rem">${escapeHtml(it.title || '未命名')}</h4>
+        <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.5rem">${time}${loc}</div>
+        <p class="muted" style="min-height:2.5em">${escapeHtml(it.notes || '')}</p>
+        ${link}
+      </div>`;
+        }
+
+        function dateFmt(s) {
+            if (!/\d{4}-\d{2}-\d{2}/.test(s)) return s;
+            const [y, m, d] = s.split('-');
+            return `${y}/${m}/${d}`;
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>"] /g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', ' ': '&nbsp;' }[s]));
+        }
+
+        // 初始載入
+        //loadItinerary();
+
+        console.log(TRIP_START.getTime())
+        let flipdown = new FlipDown(Math.floor(TRIP_START.getTime() / 1000), "CDTimer", {
+            headings: ["天", "時", "分", "秒"],
+            theme: getSystemThemeReverse(),
+        }).start();
+
+        function getSystemThemeReverse() {
+            return window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? "light"
+                : "dark";
+        }
+
+        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+        function updateTheme(e) {
+            const newTheme = e.matches ? "light" : "dark";
+            let body = document.body;
+            body.querySelector('#CDTimer').classList.toggle('flipdown__theme-dark');
+            body.querySelector('#CDTimer').classList.toggle('flipdown__theme-light');
+        }
+
+        mediaQuery.addEventListener("change", updateTheme);
+
     </script>
 </body>
 
