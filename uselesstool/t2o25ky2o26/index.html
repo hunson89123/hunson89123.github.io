@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="css/pico.green.min.css">
     <link rel="stylesheet" href="css/flipdown.css">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/pico.colors.min.css">
     <!--
   ===================================
   Google Apps Script（GAS）端 API 範例（請部署為 Web App）
@@ -31,16 +33,183 @@
   -->
 </head>
 
-<body>
-    <header class="CDTimerContainer">
-        <small>2025-12-25 → 2026-01-01</small>
-        <h1>東京8日遊 旅遊手冊</h1>
+<body class="container-fluid">
+
+    <header>
+        <nav>
+            <ul>
+                <li>
+                    <hgroup>
+                        <h2>東京8日遊 旅遊手冊</h2>
+                        <small>2025-12-25 → 2026-01-01</small>
+                    </hgroup>
+                </li>
+            </ul>
+            <ul>
+                <li><a href="#" class=""></a></li>
+            </ul>
+        </nav>
+
         <hgroup>
-            <h4 id="countdownStatus" style="display:block; text-align:center;font-weight:bold;color:#eee"></h4>
+            <small id="countdownStatus" style="display:block; text-align:center;font-weight:bold;"></small>
             <div id="CDTimer" class="flipdown"></div>
         </hgroup>
+        <div class="center-container">
+            <button data-target="modal-flight-info" onclick="toggleModal(event)"
+                class="outline contrast bi bi-airplane-fill"> 航班資訊</button>
+            <button data-target="modal-transport-tickets" onclick="toggleModal(event)"
+                class="outline contrast bi bi-ticket-perforated-fill"> 交通票券</button>
+            <button id="flight-info" class="outline contrast bi bi-house-door-fill">住宿資訊</button>
+        </div>
     </header>
 
+    <main>
+
+        <h2>行程簡介</h2>
+        <article>
+            123456
+        </article>
+    </main>
+    <dialog id="modal-flight-info">
+        <article>
+            <header>
+                <p><small class="bi bi-airplane"></small> 航班資訊</p>
+            </header>
+            <article class="pico-background-grey-50 container-fluid">
+                <div class="row">
+                    <small class="col"><strong>2025-12-25</strong></small>
+                    <img src="images/china-airlines-logo-0.png" width="120">
+                    <small class="col" dir="rtl"><strong>CI100</strong></small>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <small class="pico-color-blue-700">09:30</small>
+                        <hgroup class="mb-0">
+                            <h1 class="pico-color-grey-950">TPE</h1>
+                            <small class="pico-color-grey-400">桃園國際機場T2</small>
+                            <p></p>
+                        </hgroup>
+                    </div>
+                    <div class="center-container flex-column gap-0">
+                        <div class="bi bi-airplane-fill turn-right-90"></div>
+                        <small>3h</small>
+                    </div>
+                    <div class="col" dir="rtl">
+                        <small class="pico-color-blue-700">13:30</small>
+                        <hgroup class="mb-0">
+                            <h1 class="pico-color-grey-950">NRT</h1>
+                            <small class="pico-color-grey-400">成田國際機場T2</small>
+                            <p></p>
+                        </hgroup>
+                    </div>
+                </div>
+            </article>
+            <article class="pico-background-grey-50 container-fluid">
+                <div class="row">
+                    <small class="col"><strong>2026-01-01</strong></small>
+                    <img src="images/china-airlines-logo-0.png" width="120">
+                    <div class="col" dir="rtl"><strong>CI101</strong></div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <small class="pico-color-blue-700">14:35</small>
+                        <hgroup class="mb-0">
+                            <h1 class="pico-color-grey-950">NRT</h1>
+                            <small class="pico-color-grey-400">成田國際機場T2</small>
+                            <p></p>
+                        </hgroup>
+                    </div>
+                    <div class="center-container flex-column gap-0">
+                        <div class="bi bi-airplane-fill turn-right-90"></div>
+                        <small>4h 5m</small>
+                    </div>
+                    <div class="col" dir="rtl">
+                        <small class="pico-color-blue-700">17:40</small>
+                        <hgroup class="mb-0">
+                            <h1 class="pico-color-grey-950">TPE</h1>
+                            <small class="pico-color-grey-400">桃園國際機場T2</small>
+                            <p></p>
+                        </hgroup>
+                    </div>
+                </div>
+            </article>
+            <footer>
+                <small>※時間皆為當地時間</small>
+            </footer>
+        </article>
+    </dialog>
+    <dialog id="modal-transport-tickets">
+        <article>
+            <header>
+                <p><small class="bi bi-ticket-perforated"></small> 交通票券</p>
+            </header>
+            <div class="center-container flex-column">
+                <img src="images/coming-soon.svg" width="100">
+                <p>建置中，敬請期待:)</p>
+            </div>
+            <!-- <article class="pico-background-grey-50 container-fluid">
+                <div class="row">
+                    <small class="col"><strong>2025-12-25</strong></small>
+                    <img src="images/china-airlines-logo-0.png" width="120">
+                    <small class="col" dir="rtl"><strong>CI100</strong></small>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <small class="pico-color-blue-700">09:30</small>
+                        <hgroup class="mb-0">
+                            <h1 class="pico-color-grey-950">TPE</h1>
+                            <small class="pico-color-grey-400">桃園國際機場T2</small>
+                            <p></p>
+                        </hgroup>
+                    </div>
+                    <div class="center-container flex-column gap-0">
+                        <div class="bi bi-airplane-fill turn-right-90"></div>
+                        <small>3h</small>
+                    </div>
+                    <div class="col" dir="rtl">
+                        <small class="pico-color-blue-700">13:30</small>
+                        <hgroup class="mb-0">
+                            <h1 class="pico-color-grey-950">NRT</h1>
+                            <small class="pico-color-grey-400">成田國際機場T2</small>
+                            <p></p>
+                        </hgroup>
+                    </div>
+                </div>
+            </article>
+            <article class="pico-background-grey-50 container-fluid">
+                <div class="row">
+                    <small class="col"><strong>2026-01-01</strong></small>
+                    <img src="images/china-airlines-logo-0.png" width="120">
+                    <div class="col" dir="rtl"><strong>CI101</strong></div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <small class="pico-color-blue-700">14:35</small>
+                        <hgroup class="mb-0">
+                            <h1 class="pico-color-grey-950">NRT</h1>
+                            <small class="pico-color-grey-400">成田國際機場T2</small>
+                            <p></p>
+                        </hgroup>
+                    </div>
+                    <div class="center-container flex-column gap-0">
+                        <div class="bi bi-airplane-fill turn-right-90"></div>
+                        <small>4h 5m</small>
+                    </div>
+                    <div class="col" dir="rtl">
+                        <small class="pico-color-blue-700">17:40</small>
+                        <hgroup class="mb-0">
+                            <h1 class="pico-color-grey-950">TPE</h1>
+                            <small class="pico-color-grey-400">桃園國際機場T2</small>
+                            <p></p>
+                        </hgroup>
+                    </div>
+                </div>
+            </article> -->
+            <!-- <footer>
+                <small>※時間皆為當地時間</small>
+            </footer> -->
+        </article>
+    </dialog>
     <!-- <h2>按鈕</h2>
     <button>主要按鈕</button>
     <button class="secondary">次要按鈕</button>
@@ -136,6 +305,7 @@
         <small>Made with ♥︎ for your Tokyo trip. 時區：Asia/Tokyo（避免跨年跨時區誤差）。</small>
     </footer> -->
     <script src="js/flipdown.js"></script>
+    <script src="js/modal.js"></script>
     <script>
         // === 旅程日期 ===
         const TZ_OFFSET = '+09:00'; // 日本時區
@@ -280,13 +450,12 @@
 
         // 初始載入
         //loadItinerary();
-
-        console.log(TRIP_START.getTime())
-        let flipdown = new FlipDown(Math.floor(TRIP_START.getTime() / 1000), "CDTimer", {
-            headings: ["天", "時", "分", "秒"],
-            theme: getSystemThemeReverse(),
-        }).start();
-
+        document.addEventListener('DOMContentLoaded', () => {
+            let flipdown = new FlipDown(Math.floor(TRIP_START.getTime() / 1000), "CDTimer", {
+                headings: ["天", "時", "分", "秒"],
+                theme: getSystemThemeReverse(),
+            }).start();
+        });
         function getSystemThemeReverse() {
             return window.matchMedia('(prefers-color-scheme: dark)').matches
                 ? "light"
@@ -304,6 +473,17 @@
 
         mediaQuery.addEventListener("change", updateTheme);
 
+        const modal = document.getElementById("myModal");
+        const openBtn = document.getElementById("flight-info");
+        const closeBtn = document.getElementById("closeModal");
+
+        openBtn.addEventListener("click", () => {
+            modal.showModal(); // 顯示 modal
+        });
+
+        closeBtn.addEventListener("click", () => {
+            modal.close(); // 關閉 modal
+        });
     </script>
 </body>
 

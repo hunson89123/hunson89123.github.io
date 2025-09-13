@@ -3,9 +3,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-bottom: 2rem;
 }
 
-.CDTimerContainer {
+.CDTimer-container {
     height: 100dvh;
     width: 100%;
     position: absolute;
@@ -15,4 +16,43 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    text-wrap: nowrap;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.gap-0 {
+    gap: 0;
+}
+
+.font-dark {
+    color: var(--pico-color-zinc-950);
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.col {
+    flex: 1;
+    align-self: center;
+}
+
+.mb-0 {
+    margin-bottom: 0;
+}
+
+.turn-right-90 {
+    transform: rotate(90deg);
 }
