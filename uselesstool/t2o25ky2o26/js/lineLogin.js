@@ -5,15 +5,21 @@ const out = document.getElementById('accountOut');
 const btn = document.getElementById('loginBtn');
 
 async function init() {
-    await liff.init({ liffId: LIFF_ID });
-    // 若未登入，顯示登入按鈕；已登入就直接處理
-    if (!liff.isLoggedIn()) {
-        btn.onclick = () => liff.login(); // 走 LINE 登入流程（會回到同一頁）
+    try {
+        await liff.init({ liffId: LIFF_ID });
+        // 若未登入，顯示登入按鈕；已登入就直接處理
+        if (!liff.isLoggedIn()) {
+            btn.onclick = () => liff.login(); // 走 LINE 登入流程（會回到同一頁）
+            btn.style.display = 'block';
+            out.textContent = '尚未登入，請點「使用 LINE 登入」';
+        } else {
+            await afterLogin();
+        }
+    } catch {
         btn.style.display = 'block';
-        out.textContent = '尚未登入，請點「使用 LINE 登入」';
-    } else {
-        await afterLogin();
+        out.textContent = '登入已過期，請點「使用 LINE 登入」以重新登入';
     }
+
 }
 
 async function afterLogin() {
