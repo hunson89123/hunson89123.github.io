@@ -9,6 +9,7 @@ async function init() {
     // 若未登入，顯示登入按鈕；已登入就直接處理
     if (!liff.isLoggedIn()) {
         btn.onclick = () => liff.login(); // 走 LINE 登入流程（會回到同一頁）
+        btn.style.display = 'block';
         out.textContent = '尚未登入，請點「使用 LINE 登入」';
     } else {
         await afterLogin();
@@ -21,9 +22,7 @@ async function afterLogin() {
     const idToken = liff.getIDToken();              // 用來給後端驗證 (需要 scope: openid)
     const decoded = liff.getDecodedIDToken?.();     // 可在前端查看 sub/email 等（僅參考）
 
-    out.textContent = `已登入
-userId: ${profile.userId}
-name: ${profile.displayName}`;
+    out.textContent = `您好 ${profile.displayName}`;
 
     // 傳給 GAS 記錄
     try {
@@ -38,10 +37,8 @@ name: ${profile.displayName}`;
         });
 
         const data = await res.json();
-        if (data.ok) {
-            out.textContent += `\n已寫入試算表 ✅`;
-        } else {
-            out.textContent += `\n寫入失敗：${data.error || 'unknown'}`;
+        if (!data.ok) {
+            out.textContent += `\n登入失敗`;
         }
     } catch (e) {
         out.textContent += `\n送出至 GAS 失敗：${e}`;
