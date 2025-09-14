@@ -16,6 +16,7 @@ async function init() {
             await afterLogin();
         }
     } catch {
+        liff.logout();
         btn.style.display = 'block';
         out.textContent = '登入已過期，請點「使用 LINE 登入」以重新登入';
     }
