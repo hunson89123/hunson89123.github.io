@@ -163,15 +163,3 @@ function updateTheme(e) {
 }
 
 mediaQuery.addEventListener("change", updateTheme);
-
-const modal = document.getElementById("myModal");
-const openBtn = document.getElementById("flight-info");
-const closeBtn = document.getElementById("closeModal");
-
-openBtn.addEventListener("click", () => {
-    modal.showModal(); // 顯示 modal
-});
-
-closeBtn.addEventListener("click", () => {
-    modal.close(); // 關閉 modal
-});
