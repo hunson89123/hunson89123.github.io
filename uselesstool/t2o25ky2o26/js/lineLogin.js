@@ -27,11 +27,16 @@ name: ${profile.displayName}`;
 
     // 傳給 GAS 記錄
     try {
+        console.log(JSON.stringify({ idToken, profile }));
         const res = await fetch(GAS_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ idToken, profile })
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+                idToken: liff.getIDToken(),
+                profile: JSON.stringify(await liff.getProfile())
+            })
         });
+
         const data = await res.json();
         if (data.ok) {
             out.textContent += `\n已寫入試算表 ✅`;
