@@ -3,25 +3,26 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbx8CmYZgY915X3eGO84idsS
 
 const img = document.getElementById('accountImage');
 const out = document.getElementById('accountOut');
-const btn = document.getElementById('loginBtn');
+const loginBtn = document.getElementById('loginBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+
 
 async function init() {
     try {
+        loginBtn.onclick = () => liff.login();
         await liff.init({ liffId: LIFF_ID });
         // 若未登入，顯示登入按鈕；已登入就直接處理
         if (!liff.isLoggedIn()) {
-            btn.onclick = () => liff.login(); // 走 LINE 登入流程（會回到同一頁）
-            btn.style.display = 'block';
+            loginBtn.style.display = 'block';
             out.textContent = '尚未登入，請點「使用 LINE 登入」';
         } else {
             await afterLogin();
         }
     } catch {
         liff.logout();
-        btn.style.display = 'block';
+        loginBtn.style.display = 'block';
         out.textContent = '登入已過期，請點「使用 LINE 登入」以重新登入';
     }
-
 }
 
 async function afterLogin() {
@@ -31,8 +32,8 @@ async function afterLogin() {
     const decoded = liff.getDecodedIDToken?.();     // 可在前端查看 sub/email 等（僅參考）
 
     img.src = profile.pictureUrl;
-    out.textContent = `您好 ${profile.displayName} (${profile.statusMessage})`;
-
+    out.innerHTML = `<strong>${profile.displayName}</strong>`;
+    console.log(profile);
     // 傳給 GAS 記錄
     // try {
     //     const res = await fetch(GAS_URL, {

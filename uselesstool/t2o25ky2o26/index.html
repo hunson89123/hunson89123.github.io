@@ -109,7 +109,7 @@
                 <div class="row">
                     <small class="col"><strong>2026-01-01</strong></small>
                     <img src="images/china-airlines-logo-0.png" width="120">
-                    <div class="col" dir="rtl"><strong>CI101</strong></div>
+                    <small class="col" dir="rtl"><strong>CI101</strong></small>
                 </div>
                 <div class="row">
                     <div class="col">
@@ -227,12 +227,25 @@
             <header>
                 <p><small class="bi bi-person"></small> 帳號</p>
             </header>
-            <div class="center-container flex-column gap-0">
+            <div class="center-container flex-column">
                 <img id="accountImage">
-                <p id="accountOut">登入中...</p>
+                <span id="accountOut">登入中...</span>
                 <button id="loginBtn" class="bi bi-line d-none"> 使用 LINE 登入</button>
-                <p></p>
             </div>
+        </article>
+    </dialog>
+    <dialog id="modal-alert-warning">
+        <article>
+            <header>
+                <p class="pico-color-amber-200"><small class="bi bi-exclamation-lg"></small> 提示</p>
+            </header>
+            <div class="center-container flex-column">
+                <span id="warningMsg"></span>
+            </div>
+            <footer>
+                <button class="outline secondary">取消</button>
+                <button>確定</button>
+            </footer>
         </article>
     </dialog>
     <!-- <h2>按鈕</h2>

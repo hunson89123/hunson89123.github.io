@@ -66,3 +66,8 @@
 .d-none {
     display: none;
 }
+
+#accountImage {
+    width: 100px;
+    border-radius: 50%;
+}
