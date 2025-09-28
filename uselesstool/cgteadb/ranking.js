@@ -20,7 +20,7 @@ function getTopCheapDrinks(data) {
             }));
 
         result.push({
-            brand,
+            brand: allStoreData.find(x => x["Place ID"] === brand).店家名稱,
             price: minPrice,
             drinks: cheapestList
         });
@@ -53,7 +53,7 @@ function getTopExpensiveDrinks(data) {
             }));
 
         result.push({
-            brand,
+            brand: allStoreData.find(x => x["Place ID"] === brand).店家名稱,
             price: maxPrice,
             drinks: cheapestList
         });
@@ -66,7 +66,7 @@ function getTopExpensiveDrinks(data) {
 
 function getTopMostItems(data, topN = 10) {
     const brandCounts = Object.entries(data).map(([brand, drinks]) => ({
-        brand,
+        brand: allStoreData.find(x => x["Place ID"] === brand).店家名稱,
         count: drinks.length
     }));
 
@@ -77,7 +77,7 @@ function getTopMostItems(data, topN = 10) {
 
 function getTopLeastItems(data, topN = 10) {
     const brandCounts = Object.entries(data).map(([brand, drinks]) => ({
-        brand,
+        brand: allStoreData.find(x => x["Place ID"] === brand).店家名稱,
         count: drinks.length
     }));
 
@@ -246,6 +246,7 @@ function renderLeastItemsList() {
 
 
 function initRankingPage() {
+    console.log(allStoreData);
     renderCheapList();
     renderExpensiveList();
     renderMostItemsList();
