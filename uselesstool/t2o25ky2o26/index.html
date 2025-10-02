@@ -32,10 +32,14 @@
   ===================================
   -->
 </head>
+<hgroup>
+    <small id="countdownStatus" style="display:block; text-align:center;font-weight:bold;"></small>
+    <div id="CDTimer" class="flipdown"></div>
+</hgroup>
 
 <body class="container-fluid">
 
-    <header>
+    <!--<header>
         <nav>
             <ul>
                 <li>
@@ -51,15 +55,12 @@
             </ul>
         </nav>
 
-        <hgroup>
-            <small id="countdownStatus" style="display:block; text-align:center;font-weight:bold;"></small>
-            <div id="CDTimer" class="flipdown"></div>
-        </hgroup>
+
         <div class="center-container">
             <button data-target="modal-flight-info" onclick="toggleModal(event)"
                 class="outline contrast bi bi-airplane-fill"> 航班資訊</button>
-            <!-- <button data-target="modal-transport-tickets" onclick="toggleModal(event)"
-                class="outline contrast bi bi-ticket-perforated-fill"> 交通票券</button> -->
+             <button data-target="modal-transport-tickets" onclick="toggleModal(event)"
+                class="outline contrast bi bi-ticket-perforated-fill"> 交通票券</button>
             <button data-target="modal-room-info" onclick="toggleModal(event)"
                 class="outline contrast bi bi-house-door-fill">住宿資訊</button>
         </div>
@@ -162,7 +163,7 @@
                 <img src="images/coming-soon.svg" width="100">
                 <p>建置中，敬請期待:)</p>
             </div>
-            <!-- <article class="pico-background-grey-50 container-fluid">
+             <article class="pico-background-grey-50 container-fluid">
                 <div class="row">
                     <small class="col"><strong>2025-12-25</strong></small>
                     <img src="images/china-airlines-logo-0.png" width="120">
@@ -219,10 +220,10 @@
                         </hgroup>
                     </div>
                 </div>
-            </article> -->
-            <!-- <footer>
+            </article> 
+             <footer>
                 <small>※時間皆為當地時間</small>
-            </footer> -->
+            </footer> 
         </article>
     </dialog>
     <dialog id="modal-room-info">
@@ -262,7 +263,7 @@
             </footer>
         </article>
     </dialog>
-    <!-- <h2>按鈕</h2>
+     <h2>按鈕</h2>
     <button>主要按鈕</button>
     <button class="secondary">次要按鈕</button>
     <button class="contrast">強調按鈕</button>
