@@ -144,22 +144,22 @@ function escapeHtml(str) {
 document.addEventListener('DOMContentLoaded', () => {
     let flipdown = new FlipDown(Math.floor(TRIP_START.getTime() / 1000), "CDTimer", {
         headings: ["天", "時", "分", "秒"],
-        theme: getSystemThemeReverse(),
+        theme: 'dark',
     }).start();
 });
-function getSystemThemeReverse() {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? "light"
-        : "dark";
-}
+// function getSystemThemeReverse() {
+//     return window.matchMedia('(prefers-color-scheme: dark)').matches
+//         ? "light"
+//         : "dark";
+// }
 
-const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+// const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
-function updateTheme(e) {
-    const newTheme = e.matches ? "light" : "dark";
-    let body = document.body;
-    body.querySelector('#CDTimer').classList.toggle('flipdown__theme-dark');
-    body.querySelector('#CDTimer').classList.toggle('flipdown__theme-light');
-}
+// function updateTheme(e) {
+//     const newTheme = e.matches ? "light" : "dark";
+//     let body = document.body;
+//     body.querySelector('#CDTimer').classList.toggle('flipdown__theme-dark');
+//     body.querySelector('#CDTimer').classList.toggle('flipdown__theme-light');
+// }
 
-mediaQuery.addEventListener("change", updateTheme);
+// mediaQuery.addEventListener("change", updateTheme);
