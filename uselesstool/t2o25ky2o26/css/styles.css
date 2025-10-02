@@ -4,7 +4,11 @@
 
 html,
 body {
-    background: #ffffff00;
+    background-image: url('../images/bg.jpg');
+    background-position: center;
+    background-repeat: none;
+    background-size: cover;
+    background-attachment: fixed;
     color: #111827;
     /* 深灰文字 */
 }
