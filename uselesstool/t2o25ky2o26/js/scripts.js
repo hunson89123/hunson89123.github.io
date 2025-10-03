@@ -146,6 +146,9 @@ document.addEventListener('DOMContentLoaded', () => {
         headings: ["天", "時", "分", "秒"],
         theme: 'dark',
     }).start();
+
+    document.documentElement.style.background = 'transparent';
+    document.body.style.background = 'transparent';
 });
 // function getSystemThemeReverse() {
 //     return window.matchMedia('(prefers-color-scheme: dark)').matches

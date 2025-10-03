@@ -12,7 +12,29 @@ body {
     background-color: transparent !important;
     background: transparent !important;
     color: #000000 !important;
-    /* 深灰文字 */
+    background-color: rgba(0, 0, 0, 0) !important;
+    background: transparent !important;
+}
+
+/* 再保險一層：所有第一層容器也透明 */
+body>* {
+    background: transparent !important;
+}
+
+/* 若有全螢幕容器（常見 .app/.container），也一起清掉 */
+.app,
+.container,
+#root {
+    background: transparent !important;
+}
+
+/* iOS Safari 有時仍會幫你上色：再加一個媒體查詢保險 */
+@media (prefers-color-scheme: dark) {
+
+    html,
+    body {
+        background: transparent !important;
+    }
 }
 
 .flipdown {
