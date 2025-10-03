@@ -10,6 +10,7 @@ body {
     background-size: cover;
     background-attachment: fixed;
     background-color: transparent !important;
+    background: transparent !important;
     color: #000000 !important;
     /* 深灰文字 */
 }
