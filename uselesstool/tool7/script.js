@@ -128,7 +128,7 @@ function GetCoordinatesByGeoCode(geoCode) {
 
 async function GetSheetData() {
     // Google Sheets 分享連結
-    const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRMEKKrENW31pjUmAMjZYf0K2OuydrPOx5QSKdSaAJva75jlbsZVsCxM0qFVVI9jf1skPoNFvGSxWZ2/pubhtml?gid=2066098648&single=true';
+    const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRMEKKrENW31pjUmAMjZYf0K2OuydrPOx5QSKdSaAJva75jlbsZVsCxM0qFVVI9jf1skPoNFvGSxWZ2/pubhtml/sheet?headers=false&gid=0';
 
     try {
         const response = await fetch(sheetURL);
@@ -139,7 +139,7 @@ async function GetSheetData() {
         // 將文本轉換為DOM
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
-
+        console.log(doc);
         // 取得工作表
         const table = doc.querySelector('table');
 

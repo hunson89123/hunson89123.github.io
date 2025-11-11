@@ -47,7 +47,7 @@ function initSearchPage() {
 
                     const brandHeader = document.createElement('div');
                     brandHeader.className = 'card-header fw-bold bg-primary text-white p-3';
-                    brandHeader.textContent = `${brand}(${matched.length})`;
+                    brandHeader.textContent = `${allStoreData.find(i => i["Place ID"] === brand).店家名稱} (${matched.length})`;
                     brandCard.appendChild(brandHeader);
 
                     const listGroup = document.createElement('ul');
@@ -56,7 +56,7 @@ function initSearchPage() {
                     matched.forEach(drink => {
                         const item = document.createElement('li');
                         item.className = 'list-group-item';
-                        item.innerHTML = `<strong>${drink["飲料名稱"]}</strong> <small class="text-muted">${drink["飲料系列"]}</small> <span class="float-end">$${drink["價格"]}</span>`;
+                        item.innerHTML = `<strong> ${drink["飲料名稱"]}</strong > <small class="text-muted">${drink["飲料系列"]}</small> <span class="float-end">$${drink["價格"]}</span>`;
                         listGroup.appendChild(item);
                     });
 
