@@ -1,8 +1,8 @@
 // === 旅程日期 ===
 const TZ_OFFSET = '+09:00'; // 日本時區
-const TRIP_START = new Date('2025-12-25T13:30:00' + TZ_OFFSET);
-const TRIP_END = new Date('2026-01-01T18:40:40' + TZ_OFFSET);
-
+const TRIP_START = new Date('2025-12-25T09:30:00' + TZ_OFFSET);
+const TRIP_END = new Date('2026-01-01T17:40:40');
+let flipdown = null;
 // === 倒數計時 ===
 const countdownEl = document.getElementById('countdown');
 const statusEl = document.getElementById('countdownStatus');
@@ -142,11 +142,21 @@ function escapeHtml(str) {
 // 初始載入
 //loadItinerary();
 document.addEventListener('DOMContentLoaded', () => {
-    let flipdown = new FlipDown(Math.floor(TRIP_START.getTime() / 1000), "CDTimer", {
-        headings: ["天", "時", "分", "秒"],
-        theme: 'dark',
-    }).start();
-
+    const now = new Date();
+    if (now < TRIP_START) {
+        flipdown = new FlipDown(Math.floor(TRIP_START.getTime() / 1000), "CDTimer", {
+            headings: ["天", "時", "分", "秒"],
+            theme: 'dark',
+        }).start();
+    } else if (now <= TRIP_END) {
+        flipdown = new FlipDown(Math.floor(TRIP_END.getTime() / 1000), "CDTimer", {
+            headings: ["天", "時", "分", "秒"],
+            theme: 'dark',
+        }).start();
+    } else {
+        statusEl.style.fontSize = "2em";
+        document.getElementById("CDTimer").style.display = 'none';
+    }
     document.documentElement.style.background = 'transparent';
     document.body.style.background = 'transparent';
 });
