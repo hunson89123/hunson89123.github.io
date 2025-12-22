@@ -82,6 +82,7 @@ function getTopLeastItems(data, topN = 10) {
     }));
 
     return brandCounts
+        .filter(item => item.count > 0)
         .sort((a, b) => a.count - b.count)
         .slice(0, topN);
 }
