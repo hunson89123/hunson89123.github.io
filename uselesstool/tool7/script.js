@@ -2,6 +2,7 @@ const TW_center_coord = [23.71537674452611, 120.99937407526494];
 const TW_center_zoomlv = 8;
 const loadingContainer = document.getElementById('loadingContainer');
 const loadingText = document.getElementById('loadingText');
+const loader = document.getElementsByClassName('loader')[0];
 const alertList = document.getElementById('alertList');
 const lastUpdate = document.getElementById('last_update');
 var areaL = [];
@@ -127,35 +128,27 @@ function GetCoordinatesByGeoCode(geoCode) {
 }
 
 async function GetSheetData() {
-    // Google Sheets 分享連結
-    const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRMEKKrENW31pjUmAMjZYf0K2OuydrPOx5QSKdSaAJva75jlbsZVsCxM0qFVVI9jf1skPoNFvGSxWZ2/pubhtml/sheet?headers=false&gid=0';
+    // 你的 GAS Web App URL
+    const gasURL = 'https://script.google.com/macros/s/AKfycbzGyrIHkZJbBS7C9h35WdMWzw348SPpy-8zPMNJZzYWtqtAOPgqHaJavJ1L9gCgAbCmqg/exec';
 
     try {
-        const response = await fetch(sheetURL);
+        const response = await fetch(gasURL, {
+            method: 'GET',
+        });
+
         if (!response.ok) {
             throw new Error('網路連線發生錯誤!');
         }
-        const html = await response.text();
-        // 將文本轉換為DOM
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        console.log(doc);
-        // 取得工作表
-        const table = doc.querySelector('table');
 
-        // 將表格轉換為2D陣列
-        const tableArray = [];
-        const rows = table.querySelectorAll('tr');
-        rows.forEach(row => {
-            const rowArray = [];
-            const cells = row.querySelectorAll('td, th');
+        const json = await response.json();
+        if (!json.ok) {
+            throw new Error(json.error || 'GAS 回傳失敗');
+        }
 
-            cells.forEach(cell => {
-                rowArray.push(cell.textContent.trim());
-            });
-            // if (rowArray[rowArray.length - 1].length !== 0) //檢查資料最後一欄不為空
-            tableArray.push(rowArray);
-        });
+        let tableArray = json.values;
+
+        // 如果第一列是標題列想跳過，可用：
+        tableArray = tableArray.slice(1);
 
         tableArray.sort((a, b) => {
             const dateA = new Date(a[2]);
@@ -164,12 +157,12 @@ async function GetSheetData() {
         });
 
         for (var i = 1; i < tableArray.length; i++) {
-            var alertContent = tableArray[i][15];
-            var areaData = tableArray[i][16];
-            var color = severityColor[tableArray[i][11]]
+            var alertContent = tableArray[i][14];
+            var areaData = tableArray[i][15];
+            var color = severityColor[tableArray[i][10]]
             var onMap = false;
             var notOnMapArea = [];
-            var alertExpiresTime = new Date(tableArray[i][14]);
+            var alertExpiresTime = new Date(tableArray[i][13]);
             const areas = [];
             areaL.push([]);
             if (Date.now() < alertExpiresTime) {
@@ -255,13 +248,13 @@ async function GetSheetData() {
                 }
 
                 //alertList
-                var date = new Date(tableArray[i][2]);
+                var date = new Date(tableArray[i][1]);
                 var timeAgo = GetTimeAgo(date);
                 var notOnMapString = (notOnMapArea.length > 0) ? `※示警區域<b><u>${notOnMapArea.join('、')}</u></b>因地圖資料問題而無出現警示範圍在地圖上` : "";
-                var effectiveDate = new Date(tableArray[i][13]);
-                var expiresDate = new Date(tableArray[i][14]);
+                var effectiveDate = new Date(tableArray[i][12]);
+                var expiresDate = new Date(tableArray[i][13]);
                 AddAlertListItem(`
-                <h1>${tableArray[i][9]}<h6>發布於${timeAgo}
+                <h1>${tableArray[i][8]}<h6>發布於${timeAgo}
                 <br>示警有效期間：${DateFormater(effectiveDate)} ~ ${DateFormater(expiresDate)}</h6></h1>
                 <span>${alertContent}</span><br><span class="text-warning">${notOnMapString}</span>
                 `, i);
@@ -273,6 +266,8 @@ async function GetSheetData() {
         loadingContainer.classList.add('hidden_anim_fadeOut');
     } catch (error) {
         console.error('發生錯誤:', error);
+        loadingText.textContent = '讀取時發生錯誤，請稍後再試 :('
+        loader.style.display = 'none';
     }
 }
 
@@ -380,7 +375,6 @@ function ReloadData() {
 function OnAlertItemClick(e) {
     var alertId = e.id;
     var bounds = L.latLngBounds([]);
-    console.log(areaL[alertId - 1]);
     areaL[alertId - 1].forEach(function (a) {
         if (!(a instanceof L.Marker)) {
             bounds.extend(a.getBounds());
