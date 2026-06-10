@@ -1,3 +1,4 @@
 {
-    "livePreview.defaultPreviewPath": "/uselesstool/tool1/index.html"
+    "livePreview.defaultPreviewPath": "/uselesstool/tool1/index.html",
+    "liveServer.settings.port": 5501
 }

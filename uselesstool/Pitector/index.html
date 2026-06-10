@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Pitector</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        html,
+        body,
+        #map {
+            height: 100%;
+            margin: 0;
+        }
+
+        .map-controls {
+            position: absolute;
+            z-index: 1000;
+            left: 50%;
+            bottom: 24px;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px 10px;
+            border-radius: 999px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        .map-controls button {
+            border: 0;
+            border-radius: 6px;
+            padding: 8px 12px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .map-controls button:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        #searchStatus {
+            font-size: 13px;
+            color: #334155;
+            white-space: nowrap;
+        }
+
+        .s2-popup-list {
+            margin: 6px 0 0;
+            padding-left: 18px;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+
+    <div class="map-controls">
+        <button id="searchNearbyBtn" type="button">搜尋附近地點</button>
+        <span id="searchStatus">尚未搜尋</span>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/jquery-loadingModal@1.0.2/css/jquery.loadingModal.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery-loadingModal@1.0.2/js/jquery.loadingModal.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/s2-geometry@1.2.10/src/s2geometry.js"></script>
+    <script>
+        const map = L.map("map").setView([25.05717472524907, 121.36508365158228], 16);
+
+        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 19,
+            attribution: "&copy; OpenStreetMap contributors"
+        }).addTo(map);
+
+        const s2Layer = L.layerGroup().addTo(map);
+        const scanLayer = L.layerGroup().addTo(map);
+        const s2Cells = new Map();
+        let scannedS2Keys = new Set();
+
+        const poiLayer = L.layerGroup().addTo(map);
+        const poiCircles = [];
+        let abortController = null;
+        let debounceTimer = null;
+        let lastFetchTime = 0;
+        let selectedS2Key = null;
+        let selectedS2Layer = null;
+        const SCAN_RADIUS_METERS = 100;
+
+        const S2_NORMAL_STYLE = {
+            color: "#2563eb",
+            weight: 1,
+            opacity: 0.2,
+            fillColor: "#60a5fa",
+            fillOpacity: 0.01,
+            interactive: true
+        };
+
+        const S2_SELECTED_STYLE = {
+            color: "#f97316",
+            weight: 3,
+            opacity: 0.95,
+            fillColor: "#fb923c",
+            fillOpacity: 0.25,
+            interactive: true
+        };
+
+        const S2_SCANNED_STYLE = {
+            color: "#16a34a",
+            weight: 3,
+            opacity: 0.95,
+            fillColor: "#86efac",
+            fillOpacity: 0.28,
+            interactive: true
+        };
+
+        const SCAN_CIRCLE_STYLE = {
+            radius: SCAN_RADIUS_METERS,
+            color: "#dc2626",
+            weight: 2,
+            opacity: 0.9,
+            fillColor: "#fca5a5",
+            fillOpacity: 0.18,
+            interactive: false
+        };
+
+        function buildOverpassQuery(bounds) {
+            const s = bounds.getSouth();
+            const w = bounds.getWest();
+            const n = bounds.getNorth();
+            const e = bounds.getEast();
+
+            return `
+  [out:json][timeout:25];
+            (
+            /* 洗衣 / 居家修繕 / 家電3C */
+            node["shop"~"^(laundry|dry_cleaning|doityourself|hardware|appliance|computer|electronics)$"](${s},${w},${n},${e});
+            way["shop"~"^(laundry|dry_cleaning|doityourself|hardware|appliance|computer|electronics)$"](${s},${w},${n},${e});
+            relation["shop"~"^(laundry|dry_cleaning|doityourself|hardware|appliance|computer|electronics)$"](${s},${w},${n},${e});
+
+            /* 超市 / 超商 / 百貨 / 服飾 / 鞋店 / 麵包甜點 / 藝術 / 書店 */
+            node["shop"~"^(supermarket|convenience|department_store|clothes|shoes|bakery|pastry|art|books|hairdresser|chemist)$"](${s},${w},${n},${e});
+            way["shop"~"^(supermarket|convenience|department_store|clothes|shoes|bakery|pastry|art|books|hairdresser|chemist)$"](${s},${w},${n},${e});
+            relation["shop"~"^(supermarket|convenience|department_store|clothes|shoes|bakery|pastry|art|books|hairdresser|chemist)$"](${s},${w},${n},${e});
+
+            /* 一般餐飲 */
+            node["amenity"~"^(restaurant|fast_food|cafe)$"](${s},${w},${n},${e});
+            way["amenity"~"^(restaurant|fast_food|cafe)$"](${s},${w},${n},${e});
+            relation["amenity"~"^(restaurant|fast_food|cafe)$"](${s},${w},${n},${e});
+
+            /* 指定料理類型 */
+            node["amenity"~"^(restaurant|fast_food|cafe)$"]["cuisine"~"(^|;)(mexican|korean|curry|indian|sri_lankan|sushi|pizza|mediterranean|chinese|noodle|ramen|udon|soba)(;|$)"](${s},${w},${n},${e});
+            way["amenity"~"^(restaurant|fast_food|cafe)$"]["cuisine"~"(^|;)(mexican|korean|curry|indian|sri_lankan|sushi|pizza|mediterranean|chinese|noodle|ramen|udon|soba)(;|$)"](${s},${w},${n},${e});
+            relation["amenity"~"^(restaurant|fast_food|cafe)$"]["cuisine"~"(^|;)(mexican|korean|curry|indian|sri_lankan|sushi|pizza|mediterranean|chinese|noodle|ramen|udon|soba)(;|$)"](${s},${w},${n},${e});
+
+            /* 教育 / 宗教 / 郵局 / 藥局 / 圖書館 / 電影院 */
+            node["amenity"~"^(university|college|post_office|pharmacy|library|cinema)$"](${s},${w},${n},${e});
+            way["amenity"~"^(university|college|post_office|pharmacy|library|cinema)$"](${s},${w},${n},${e});
+            relation["amenity"~"^(university|college|post_office|pharmacy|library|cinema)$"](${s},${w},${n},${e});
+
+            /* 動物園 / 主題樂園 / 飯店 */
+            node["tourism"~"^(zoo|theme_park|hotel)$"](${s},${w},${n},${e});
+            way["tourism"~"^(zoo|theme_park|hotel)$"](${s},${w},${n},${e});
+            relation["tourism"~"^(zoo|theme_park|hotel)$"](${s},${w},${n},${e});
+
+            /* 車站 / 公車站 / 機場 */
+            node["railway"="station"](${s},${w},${n},${e});
+            way["railway"="station"](${s},${w},${n},${e});
+            relation["railway"="station"](${s},${w},${n},${e});
+
+            node["building"="train_station"](${s},${w},${n},${e});
+            way["building"="train_station"](${s},${w},${n},${e});
+            relation["building"="train_station"](${s},${w},${n},${e});
+
+            node["highway"="bus_stop"](${s},${w},${n},${e});
+            way["highway"="bus_stop"](${s},${w},${n},${e});
+            relation["highway"="bus_stop"](${s},${w},${n},${e});
+
+            node["aeroway"="aerodrome"](${s},${w},${n},${e});
+            way["aeroway"="aerodrome"](${s},${w},${n},${e});
+            relation["aeroway"="aerodrome"](${s},${w},${n},${e});
+
+            /* 公園 / 體育場 */
+            node["leisure"~"^(park|stadium)$"](${s},${w},${n},${e});
+            way["leisure"~"^(park|stadium)$"](${s},${w},${n},${e});
+            relation["leisure"~"^(park|stadium)$"](${s},${w},${n},${e});
+
+            /* 海灘 / 山峰 / 水域 / 森林 */
+            node["natural"~"^(water|peak|beach|wood)$"](${s},${w},${n},${e});
+            way["natural"~"^(water|peak|beach|wood)$"](${s},${w},${n},${e});
+            relation["natural"~"^(water|peak|beach|wood)$"](${s},${w},${n},${e});
+
+            node["landuse"="forest"](${s},${w},${n},${e});
+            way["landuse"="forest"](${s},${w},${n},${e});
+            relation["landuse"="forest"](${s},${w},${n},${e});
+
+            /* 橋 */
+            node["bridge"="yes"](${s},${w},${n},${e});
+            way["bridge"="yes"](${s},${w},${n},${e});
+            relation["bridge"="yes"](${s},${w},${n},${e});
+            );
+            out center tags 1000;
+            `.trim();
+
+        }
+        function getLatLng(el) {
+            if (typeof el.lat === "number" && typeof el.lon === "number") {
+                return [el.lat, el.lon];
+            }
+            if (el.center && typeof el.center.lat === "number" && typeof el.center.lon === "number") {
+                return [el.center.lat, el.center.lon];
+            }
+            return null;
+        }
+
+        function getLabel(el) {
+            const tags = el.tags || {};
+            return (
+                tags.name ||
+                tags.brand ||
+                tags.amenity ||
+                tags.shop ||
+                tags.tourism ||
+                tags.leisure ||
+                `${el.type}/${el.id}`
+            );
+        }
+
+        const S2_LEVEL = 17;
+
+        // level 16 大約是 100～150m 級別。
+        // 掃描間距故意設小一點，避免漏掉畫面邊緣的 cell。
+        const S2_SCAN_STEP_METERS = 60;
+
+        function metersToLatDegrees(meters) {
+            return meters / 111320;
+        }
+
+        function metersToLngDegrees(meters, lat) {
+            return meters / (111320 * Math.cos(lat * Math.PI / 180));
+        }
+
+        function getS2KeyFromLatLng(lat, lng, level) {
+            const cell = S2.S2Cell.FromLatLng({ lat, lng }, level);
+            return cell.toHilbertQuadkey();
+        }
+
+        function getS2PolygonFromKey(key) {
+            const cell = S2.S2Cell.FromHilbertQuadKey(key);
+            const corners = cell.getCornerLatLngs();
+
+            const latlngs = corners.map(corner => [
+                corner.lat,
+                corner.lng
+            ]);
+
+            // Leaflet polygon 不一定要手動閉合，但閉合後比較直覺
+            latlngs.push(latlngs[0]);
+
+            return latlngs;
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+
+        function resetS2CellStyles() {
+            s2Cells.forEach((cellInfo, key) => {
+                cellInfo.layer.setStyle(key === selectedS2Key ? S2_SELECTED_STYLE : S2_NORMAL_STYLE);
+            });
+        }
+
+        function getS2CenterFromPolygon(polygonLatLngs) {
+            // polygonLatLngs 最後一點是閉合用，計算中心時排除最後一點。
+            const corners = polygonLatLngs.slice(0, 4);
+            const avgLat = corners.reduce((sum, point) => sum + point[0], 0) / corners.length;
+            const avgLng = corners.reduce((sum, point) => sum + point[1], 0) / corners.length;
+            return L.latLng(avgLat, avgLng);
+        }
+
+        function getPoisInS2Keys(s2Keys) {
+            return poiCircles
+                .filter((poi) => s2Keys.has(getS2KeyFromLatLng(poi.latlng.lat, poi.latlng.lng, S2_LEVEL)))
+                .sort((a, b) => a.name.localeCompare(b.name, "zh-Hant"));
+        }
+
+        function scanS2CellsByPoint(clicked) {
+            selectedS2Key = null;
+            selectedS2Layer = null;
+
+            scanLayer.clearLayers();
+            L.circle(clicked, SCAN_CIRCLE_STYLE).addTo(scanLayer);
+
+            resetS2CellStyles();
+
+            scannedS2Keys = new Set();
+
+            s2Cells.forEach((cellInfo, key) => {
+                const distanceToCenter = clicked.distanceTo(cellInfo.center);
+
+                // 「圓圈有接觸到 S2 Cell 正中心」= S2 中心點距離點擊位置 <= 100 公尺。
+                if (distanceToCenter <= SCAN_RADIUS_METERS) {
+                    scannedS2Keys.add(key);
+                    cellInfo.layer.setStyle(S2_SCANNED_STYLE);
+                    cellInfo.layer.bringToFront();
+                }
+            });
+
+            const matchedPois = getPoisInS2Keys(scannedS2Keys);
+
+            const html = matchedPois.length === 0
+                ? `
+                    <b>探測器應探測之地點</b><br>
+                    目前沒有已搜尋到的地點。
+                `
+                : `
+                    <b>探測器應探測之${matchedPois.length}個地點</b><br>
+                    <ul class="s2-popup-list">
+                        ${matchedPois.map((poi) => `<li>${escapeHtml(poi.name)}</li>`).join("")}
+                    </ul>
+                `;
+
+            L.popup()
+                .setLatLng(clicked)
+                .setContent(html)
+                .openOn(map);
+        }
+        function getPoisInS2Cell(s2Key) {
+            return poiCircles
+                .filter((poi) => getS2KeyFromLatLng(poi.latlng.lat, poi.latlng.lng, S2_LEVEL) === s2Key)
+                .sort((a, b) => a.name.localeCompare(b.name, "zh-Hant"));
+        }
+
+        function selectS2Cell(s2Key, polygonLatLngs, layer) {
+            if (selectedS2Layer && selectedS2Layer !== layer) {
+                selectedS2Layer.setStyle(S2_NORMAL_STYLE);
+            }
+
+            selectedS2Key = s2Key;
+            selectedS2Layer = layer;
+            layer.setStyle(S2_SELECTED_STYLE);
+            layer.bringToFront();
+
+            const poisInCell = getPoisInS2Cell(s2Key);
+
+            const content = poisInCell.length === 0
+                ? `<b>S2 Cell</b><br><code>${escapeHtml(s2Key)}</code><br>此區域目前沒有已搜尋到的地點。`
+                : `
+                    <b>S2 Cell 內的地點：${poisInCell.length} 個</b><br>
+                    <code>${escapeHtml(s2Key)}</code>
+                    <ul class="s2-popup-list">
+                        ${poisInCell.map((poi) => `<li>${escapeHtml(poi.name)}</li>`).join("")}
+                    </ul>
+                `;
+
+            const popupLatLng = L.latLngBounds(polygonLatLngs).getCenter();
+            L.popup()
+                .setLatLng(popupLatLng)
+                .setContent(content)
+                .openOn(map);
+        }
+
+        function drawS2Cells() {
+            s2Layer.clearLayers();
+            s2Cells.clear();
+
+            if (map.getZoom() < 15) {
+                return;
+            }
+
+            const bounds = map.getBounds();
+
+            const south = bounds.getSouth();
+            const west = bounds.getWest();
+            const north = bounds.getNorth();
+            const east = bounds.getEast();
+
+            const centerLat = bounds.getCenter().lat;
+
+            const latStep = metersToLatDegrees(S2_SCAN_STEP_METERS);
+            const lngStep = metersToLngDegrees(S2_SCAN_STEP_METERS, centerLat);
+
+            const keys = new Set();
+
+            // 多掃一圈，避免畫面邊緣有破洞
+            for (let lat = south - latStep; lat <= north + latStep; lat += latStep) {
+                for (let lng = west - lngStep; lng <= east + lngStep; lng += lngStep) {
+                    const key = getS2KeyFromLatLng(lat, lng, S2_LEVEL);
+                    keys.add(key);
+                }
+            }
+
+            selectedS2Layer = null;
+
+            for (const key of keys) {
+                const polygon = getS2PolygonFromKey(key);
+                const style = scannedS2Keys.has(key)
+                    ? S2_SCANNED_STYLE
+                    : (key === selectedS2Key ? S2_SELECTED_STYLE : S2_NORMAL_STYLE);
+
+                const layer = L.polygon(polygon, style).addTo(s2Layer);
+                const center = getS2CenterFromPolygon(polygon);
+
+                s2Cells.set(key, {
+                    key,
+                    polygon,
+                    center,
+                    layer
+                });
+
+                if (scannedS2Keys.has(key) || key === selectedS2Key) {
+                    if (key === selectedS2Key) {
+                        selectedS2Layer = layer;
+                    }
+                    layer.bringToFront();
+                }
+
+                layer.on("click", (e) => {
+                    L.DomEvent.stopPropagation(e);
+                    scanS2CellsByPoint(e.latlng);
+                });
+            }
+
+            console.log(`已繪製 ${keys.size} 個 S2 Cell`);
+        }
+
+        function scheduleRefresh() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                drawS2Cells();
+            }, 700);
+        }
+
+        function setSearchLoading(isLoading, message = "") {
+            $("#searchNearbyBtn").prop("disabled", isLoading);
+            if (message) {
+                $("#searchStatus").text(message);
+            }
+
+            if (isLoading) {
+                $("body").loadingModal({
+                    text: "搜尋附近地點中...",
+                    animation: "fadingCircle",
+                    backgroundColor: "rgba(0, 0, 0, 0.65)",
+                    color: "#ffffff",
+                    opacity: "0.7"
+                });
+            } else {
+                $("body").loadingModal("hide");
+            }
+        }
+
+        async function refreshPOIs() {
+            if (map.getZoom() < 15) {
+                poiLayer.clearLayers();
+                poiCircles.length = 0;
+                setSearchLoading(false, "請放大到 15 級以上再搜尋");
+                return;
+            }
+
+            const now = Date.now();
+            if (now - lastFetchTime < 2000) {
+                setSearchLoading(false, "搜尋太頻繁，請稍後再試");
+                return;
+            }
+            lastFetchTime = now;
+
+            if (abortController) abortController.abort();
+            abortController = new AbortController();
+
+            const query = buildOverpassQuery(map.getBounds());
+
+            setSearchLoading(true, "搜尋中...");
+
+            try {
+                const res = await fetch("https://overpass-api.de/api/interpreter", {
+                    method: "POST",
+                    body: query,
+                    signal: abortController.signal
+                });
+
+                if (res.status === 429 || res.status === 504) {
+                    console.warn("呼叫API次數過於頻繁，請於1分鐘後再試");
+                    setSearchLoading(false, "呼叫API次數過於頻繁，請於1分鐘後再試");
+                    $("body").loadingModal("hide");
+                    return;
+                }
+
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}`);
+                }
+
+                const data = await res.json();
+
+                poiLayer.clearLayers();
+                poiCircles.length = 0;
+
+                const seen = new Set();
+
+                for (const el of data.elements || []) {
+                    const latlng = getLatLng(el);
+                    if (!latlng) continue;
+
+                    const key = `${el.type}-${el.id}`;
+                    if (seen.has(key)) continue;
+                    seen.add(key);
+
+                    const label = getLabel(el);
+                    const latLngObj = L.latLng(latlng[0], latlng[1]);
+
+                    L.marker(latLngObj)
+                        .bindPopup(label)
+                        .addTo(poiLayer);
+
+                    poiCircles.push({
+                        id: key,
+                        name: label,
+                        latlng: latLngObj,
+                        radius: 100
+                    });
+                }
+
+                if (scannedS2Keys.size > 0) {
+                    resetS2CellStyles();
+                    scannedS2Keys.forEach((key) => {
+                        const cellInfo = s2Cells.get(key);
+                        if (cellInfo) {
+                            cellInfo.layer.setStyle(S2_SCANNED_STYLE);
+                            cellInfo.layer.bringToFront();
+                        }
+                    });
+                }
+
+                setSearchLoading(false, `已完成搜尋，共 ${poiCircles.length} 個地點`);
+                console.log(`已完成掃描，共計${poiCircles.length}個地點!`);
+            } catch (err) {
+                if (err.name !== "AbortError") {
+                    console.error(err);
+                    setSearchLoading(false, "搜尋失敗，請查看 console");
+                }
+            } finally {
+                if (!abortController?.signal.aborted) {
+                    $("#searchNearbyBtn").prop("disabled", false);
+                    $("body").loadingModal("hide");
+                }
+            }
+        }
+
+        map.on("click", (e) => {
+            scanS2CellsByPoint(e.latlng);
+        });
+
+        $("#searchNearbyBtn").on("click", () => {
+            refreshPOIs();
+        });
+
+        drawS2Cells();
+
+        map.on("moveend zoomend", scheduleRefresh);
+
+        // 隨著使用者定位移動圖標
+        let userMarker = null;
+        let userAccuracyCircle = null;
+        let isFirstLocation = true;
+
+        map.locate({
+            watch: true,
+            enableHighAccuracy: true,
+            maximumAge: 1000,
+            timeout: 10000
+        });
+
+        map.on("locationfound", (e) => {
+            const latlng = e.latlng;
+            const accuracy = e.accuracy;
+
+            if (!userMarker) {
+                userMarker = L.marker(latlng).addTo(map)
+                    .bindPopup("你目前的位置");
+            } else {
+                userMarker.setLatLng(latlng);
+            }
+
+            if (!userAccuracyCircle) {
+                userAccuracyCircle = L.circle(latlng, {
+                    radius: accuracy,
+                    weight: 1,
+                    fillOpacity: 0.12
+                }).addTo(map);
+            } else {
+                userAccuracyCircle.setLatLng(latlng);
+                userAccuracyCircle.setRadius(accuracy);
+            }
+
+            if (isFirstLocation) {
+                map.setView(latlng, 17);
+                isFirstLocation = false;
+            }
+
+            map.panTo(e.latlng);
+            scanS2CellsByPoint(e.latlng);
+        });
+
+        map.on("locationerror", (e) => {
+            console.warn(e.message);
+            //alert("無法取得定位，請確認瀏覽器定位權限已開啟。");
+        });
+    </script>
+</body>
+
+</html>

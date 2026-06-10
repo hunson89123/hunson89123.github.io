@@ -1,0 +1,69 @@
+ [out:json][timeout:25];
+            (
+            /* 洗衣 / 居家修繕 / 家電3C */
+            node["shop"~"^(laundry|dry_cleaning|doityourself|hardware|appliance|computer|electronics)$"](${s},${w},${n},${e});
+            way["shop"~"^(laundry|dry_cleaning|doityourself|hardware|appliance|computer|electronics)$"](${s},${w},${n},${e});
+            relation["shop"~"^(laundry|dry_cleaning|doityourself|hardware|appliance|computer|electronics)$"](${s},${w},${n},${e});
+
+            /* 超市 / 超商 / 百貨 / 服飾 / 鞋店 / 麵包甜點 / 藝術 / 書店 */
+            node["shop"~"^(supermarket|convenience|department_store|clothes|shoes|bakery|pastry|art|books|hairdresser|chemist)$"](${s},${w},${n},${e});
+            way["shop"~"^(supermarket|convenience|department_store|clothes|shoes|bakery|pastry|art|books|hairdresser|chemist)$"](${s},${w},${n},${e});
+            relation["shop"~"^(supermarket|convenience|department_store|clothes|shoes|bakery|pastry|art|books|hairdresser|chemist)$"](${s},${w},${n},${e});
+
+            /* 一般餐飲 */
+            node["amenity"~"^(restaurant|fast_food|cafe)$"](${s},${w},${n},${e});
+            way["amenity"~"^(restaurant|fast_food|cafe)$"](${s},${w},${n},${e});
+            relation["amenity"~"^(restaurant|fast_food|cafe)$"](${s},${w},${n},${e});
+
+            /* 指定料理類型 */
+            node["amenity"~"^(restaurant|fast_food|cafe)$"]["cuisine"~"(^|;)(mexican|korean|curry|indian|sri_lankan|sushi|pizza|mediterranean|chinese|noodle|ramen|udon|soba)(;|$)"](${s},${w},${n},${e});
+            way["amenity"~"^(restaurant|fast_food|cafe)$"]["cuisine"~"(^|;)(mexican|korean|curry|indian|sri_lankan|sushi|pizza|mediterranean|chinese|noodle|ramen|udon|soba)(;|$)"](${s},${w},${n},${e});
+            relation["amenity"~"^(restaurant|fast_food|cafe)$"]["cuisine"~"(^|;)(mexican|korean|curry|indian|sri_lankan|sushi|pizza|mediterranean|chinese|noodle|ramen|udon|soba)(;|$)"](${s},${w},${n},${e});
+
+            /* 教育 / 宗教 / 郵局 / 藥局 / 圖書館 / 電影院 */
+            node["amenity"~"^(university|college|post_office|pharmacy|library|cinema)$"](${s},${w},${n},${e});
+            way["amenity"~"^(university|college|post_office|pharmacy|library|cinema)$"](${s},${w},${n},${e});
+            relation["amenity"~"^(university|college|post_office|pharmacy|library|cinema)$"](${s},${w},${n},${e});
+
+            /* 動物園 / 主題樂園 / 飯店 */
+            node["tourism"~"^(zoo|theme_park|hotel)$"](${s},${w},${n},${e});
+            way["tourism"~"^(zoo|theme_park|hotel)$"](${s},${w},${n},${e});
+            relation["tourism"~"^(zoo|theme_park|hotel)$"](${s},${w},${n},${e});
+
+            /* 車站 / 公車站 / 機場 */
+            node["railway"="station"](${s},${w},${n},${e});
+            way["railway"="station"](${s},${w},${n},${e});
+            relation["railway"="station"](${s},${w},${n},${e});
+
+            node["building"="train_station"](${s},${w},${n},${e});
+            way["building"="train_station"](${s},${w},${n},${e});
+            relation["building"="train_station"](${s},${w},${n},${e});
+
+            node["highway"="bus_stop"](${s},${w},${n},${e});
+            way["highway"="bus_stop"](${s},${w},${n},${e});
+            relation["highway"="bus_stop"](${s},${w},${n},${e});
+
+            node["aeroway"="aerodrome"](${s},${w},${n},${e});
+            way["aeroway"="aerodrome"](${s},${w},${n},${e});
+            relation["aeroway"="aerodrome"](${s},${w},${n},${e});
+
+            /* 公園 / 體育場 */
+            node["leisure"~"^(park|stadium)$"](${s},${w},${n},${e});
+            way["leisure"~"^(park|stadium)$"](${s},${w},${n},${e});
+            relation["leisure"~"^(park|stadium)$"](${s},${w},${n},${e});
+
+            /* 海灘 / 山峰 / 水域 / 森林 */
+            node["natural"~"^(water|peak|beach|wood)$"](${s},${w},${n},${e});
+            way["natural"~"^(water|peak|beach|wood)$"](${s},${w},${n},${e});
+            relation["natural"~"^(water|peak|beach|wood)$"](${s},${w},${n},${e});
+
+            node["landuse"="forest"](${s},${w},${n},${e});
+            way["landuse"="forest"](${s},${w},${n},${e});
+            relation["landuse"="forest"](${s},${w},${n},${e});
+
+            /* 橋 */
+            node["bridge"="yes"](${s},${w},${n},${e});
+            way["bridge"="yes"](${s},${w},${n},${e});
+            relation["bridge"="yes"](${s},${w},${n},${e});
+            );
+            out center tags 1000;

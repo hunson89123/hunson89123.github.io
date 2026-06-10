@@ -1,24 +1,421 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="zh-Hant">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content=" user-scalable=0">
-  <title>煙火試驗場</title>
-  <link rel="icon" href="particle.png" type="image/x-icon" />
-  <link href="style.css" rel="stylesheet" type="text/css">
-  <link href="/styles/anim.css" rel="stylesheet" type="text/css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Music → Fireworks (Web Audio + Three.js)</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+
+    #ui {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 10;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      color: #fff;
+      font: 14px/1.2 system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans TC";
+      background: rgba(0, 0, 0, .45);
+      padding: 10px 12px;
+      border-radius: 12px;
+      backdrop-filter: blur(6px);
+    }
+
+    button {
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 10px;
+      border: 1px solid #444;
+      background: #111;
+      color: #fff;
+    }
+
+    input[type="file"] {
+      color: #fff;
+    }
+  </style>
 </head>
 
 <body>
+  <div id="ui">
+    <input id="file" type="file" accept="audio/*" />
+    <button id="start">Start</button>
+    <span id="status">選一首歌後按 Start</span>
+  </div>
+  <canvas id="timeline" style="
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:120px;
+    background:#050505;
+    z-index:5;
+  "></canvas>
+  <script type="module">
+    import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 
-  <div id="fireworkArea"></div>
-  <script src="https://cdn.jsdelivr.net/npm/pixi.js@7.x/dist/pixi.min.js"></script>
-  <script src="https://unpkg.com/gsap@3.9.0/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@pixi/sound@5.2.3/dist/pixi-sound.min.js"></script>
-  <script src="https://unpkg.com/@pixi/layers/dist/pixi-layers.js"></script>
-  <script src="./pixi-lights.js"></script>
-  <script src="firework.js"></script>
+    // ---------- Three.js scene ----------
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    document.body.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
+    camera.position.set(0, 20, 120);
+
+    // subtle fog for depth
+    scene.fog = new THREE.FogExp2(0x000000, 0.008);
+
+    // ---------- Particle system (firework bursts) ----------
+    const MAX_PARTICLES = 60000;
+    const positions = new Float32Array(MAX_PARTICLES * 3);
+    const velocities = new Float32Array(MAX_PARTICLES * 3);
+    const colors = new Float32Array(MAX_PARTICLES * 3);
+    const ages = new Float32Array(MAX_PARTICLES);
+    const lifes = new Float32Array(MAX_PARTICLES);
+    let aliveCount = 0;
+
+    const geom = new THREE.BufferGeometry();
+    geom.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geom.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    geom.setDrawRange(0, 0);
+
+    const mat = new THREE.PointsMaterial({
+      size: 1.6,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.95,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending
+    });
+
+    const points = new THREE.Points(geom, mat);
+    scene.add(points);
+
+    function randBetween(a, b) { return a + Math.random() * (b - a); }
+
+    // Spawn one burst of particles
+    function spawnBurst({
+      x = 0, y = 0, z = 0,
+      count = 800,
+      speed = 50,
+      hue = Math.random(),
+      life = 1.6
+    } = {}) {
+      const start = aliveCount;
+      const end = Math.min(MAX_PARTICLES, start + count);
+      for (let i = start; i < end; i++) {
+        const idx3 = i * 3;
+
+        // initial position
+        positions[idx3 + 0] = x;
+        positions[idx3 + 1] = y;
+        positions[idx3 + 2] = z;
+
+        // random direction on sphere
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(randBetween(-1, 1));
+        const dirx = Math.sin(phi) * Math.cos(theta);
+        const diry = Math.cos(phi);
+        const dirz = Math.sin(phi) * Math.sin(theta);
+
+        const v = speed * randBetween(0.35, 1.0);
+        velocities[idx3 + 0] = dirx * v;
+        velocities[idx3 + 1] = diry * v;
+        velocities[idx3 + 2] = dirz * v;
+
+        // HSV-ish to RGB via THREE.Color
+        const c = new THREE.Color().setHSL(hue, 1.0, 0.6);
+        colors[idx3 + 0] = c.r;
+        colors[idx3 + 1] = c.g;
+        colors[idx3 + 2] = c.b;
+
+        ages[i] = 0;
+        lifes[i] = life * randBetween(0.7, 1.25);
+      }
+      aliveCount = end;
+      geom.setDrawRange(0, aliveCount);
+      geom.attributes.position.needsUpdate = true;
+      geom.attributes.color.needsUpdate = true;
+    }
+
+    // Simple physics update
+    const GRAVITY = -40;        // y gravity
+    const DRAG = 0.985;         // velocity decay
+    function stepParticles(dt) {
+      let write = 0; // compact alive particles in-place
+      for (let read = 0; read < aliveCount; read++) {
+        const age = (ages[read] += dt);
+        const life = lifes[read];
+        if (age >= life) continue; // dead
+
+        const r3 = read * 3;
+        const w3 = write * 3;
+
+        // update velocity
+        velocities[r3 + 1] += GRAVITY * dt;
+        velocities[r3 + 0] *= DRAG;
+        velocities[r3 + 1] *= DRAG;
+        velocities[r3 + 2] *= DRAG;
+
+        // integrate position
+        positions[w3 + 0] = positions[r3 + 0] + velocities[r3 + 0] * dt;
+        positions[w3 + 1] = positions[r3 + 1] + velocities[r3 + 1] * dt;
+        positions[w3 + 2] = positions[r3 + 2] + velocities[r3 + 2] * dt;
+
+        // copy velocity
+        velocities[w3 + 0] = velocities[r3 + 0];
+        velocities[w3 + 1] = velocities[r3 + 1];
+        velocities[w3 + 2] = velocities[r3 + 2];
+
+        // fade by age (we fake via color darkening)
+        const t = 1 - age / life;
+        colors[w3 + 0] = colors[r3 + 0] * (0.6 + 0.4 * t);
+        colors[w3 + 1] = colors[r3 + 1] * (0.6 + 0.4 * t);
+        colors[w3 + 2] = colors[r3 + 2] * (0.6 + 0.4 * t);
+
+        ages[write] = age;
+        lifes[write] = life;
+
+        write++;
+      }
+      aliveCount = write;
+      geom.setDrawRange(0, aliveCount);
+      geom.attributes.position.needsUpdate = true;
+      geom.attributes.color.needsUpdate = true;
+    }
+
+    // ---------- Web Audio ----------
+    let audioCtx, analyser, sourceNode, audioEl;
+    const fftSize = 2048;
+
+    // beat-ish trigger (energy spike)
+    let smoothedEnergy = 0;
+    let lastBurstAt = 0;
+
+    function computeBands(freqData) {
+      // Split into low/mid/high bands (simple)
+      // freqData length = fftSize/2
+      const n = freqData.length;
+
+      const lowEnd = Math.floor(n * 0.12);
+      const midEnd = Math.floor(n * 0.45);
+
+      let low = 0, mid = 0, high = 0;
+
+      for (let i = 0; i < lowEnd; i++) low += freqData[i];
+      for (let i = lowEnd; i < midEnd; i++) mid += freqData[i];
+      for (let i = midEnd; i < n; i++) high += freqData[i];
+
+      low /= lowEnd;
+      mid /= (midEnd - lowEnd);
+      high /= (n - midEnd);
+
+      // Normalize 0..1 (rough)
+      return {
+        low: Math.min(1, low / 180),
+        mid: Math.min(1, mid / 180),
+        high: Math.min(1, high / 180),
+      };
+    }
+
+    async function initAudio(file) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = fftSize;
+      analyser.smoothingTimeConstant = 0.8;
+
+      audioEl = new Audio();
+      audioEl.crossOrigin = "anonymous";
+
+      const url = URL.createObjectURL(file);
+      audioEl.src = url;
+
+      sourceNode = audioCtx.createMediaElementSource(audioEl);
+      sourceNode.connect(analyser);
+      analyser.connect(audioCtx.destination);
+
+      await audioEl.play();
+      document.getElementById("status").textContent = "播放中…";
+    }
+
+    // ---------- Animation loop ----------
+    const freqData = new Uint8Array(fftSize / 2);
+    let prevT = performance.now();
+
+    function animate(now) {
+      requestAnimationFrame(animate);
+
+      const dt = Math.min(0.033, (now - prevT) / 1000);
+      prevT = now;
+
+      // audio-driven fireworks
+      if (analyser) {
+        analyser.getByteFrequencyData(freqData);
+        const { low, mid, high } = computeBands(freqData);
+
+        // overall energy
+        const energy = (low * 0.55 + mid * 0.30 + high * 0.15);
+
+        // exponential smoothing
+        smoothedEnergy = smoothedEnergy * 0.92 + energy * 0.08;
+
+        // spike detection
+        const spike = energy - smoothedEnergy;
+
+        // throttle bursts
+        const minInterval = 0.0; // seconds
+        const tSec = now / 1000;
+
+        // low band influences "big" bursts
+        const bigChance = spike > 0.02 && low > 0.05;
+        const smallChance = spike > 0.08 && high > 0.02;
+
+        if ((bigChance || smallChance) && (tSec - lastBurstAt) > minInterval) {
+          lastBurstAt = tSec;
+
+          const intensity = Math.min(1, Math.max(0, spike * 3.2));
+          const count = Math.floor(400 + intensity * 1600 + low * 1200);
+          const speed = 30 + low * 65 + intensity * 50;
+
+          // map high freq to hue shift
+          const hue = (0.55 + high * 0.45 + Math.random() * 0.08) % 1;
+
+          // random sky position, but centered
+          const x = randBetween(-60, 60);
+          const y = randBetween(10 + mid * 20, 65 + low * 25);
+          const z = randBetween(-40, 40);
+
+          spawnBurst({ x, y, z, count, speed, hue, life: 1.2 + mid * 1.2 });
+        }
+
+        // gently move camera a bit with mid band
+        camera.position.x = Math.sin(tSec * 0.4) * (6 + mid * 10);
+        camera.lookAt(0, 30, 0);
+      }
+
+      stepParticles(dt);
+      if (audioEl && durationSec > 0) {
+        const progress = audioEl.currentTime / durationSec;
+        drawTimeline(progress);
+      }
+      renderer.render(scene, camera);
+    }
+    requestAnimationFrame(animate);
+
+    // ---------- UI wiring ----------
+    const fileInput = document.getElementById("file");
+    const startBtn = document.getElementById("start");
+    const statusEl = document.getElementById("status");
+
+    startBtn.addEventListener("click", async () => {
+      const file = fileInput.files?.[0];
+      if (!file) return;
+
+      startBtn.disabled = true;
+      statusEl.textContent = "分析整首歌曲中...";
+
+      await analyzeWholeTrack(file);
+      await initAudio(file);
+
+      statusEl.textContent = "播放中...";
+    });
+
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+    let timelineData = [];
+
+    let durationSec = 0;
+
+    async function analyzeWholeTrack(file) {
+      const arrayBuffer = await file.arrayBuffer();
+      const tempCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const audioBuffer = await tempCtx.decodeAudioData(arrayBuffer);
+
+      durationSec = audioBuffer.duration;
+
+      const offlineCtx = new OfflineAudioContext(
+        audioBuffer.numberOfChannels,
+        audioBuffer.length,
+        audioBuffer.sampleRate
+      );
+
+      const source = offlineCtx.createBufferSource();
+      source.buffer = audioBuffer;
+
+      const analyser = offlineCtx.createAnalyser();
+      analyser.fftSize = 2048;
+
+      source.connect(analyser);
+      analyser.connect(offlineCtx.destination);
+      source.start();
+
+      const freqData = new Uint8Array(analyser.frequencyBinCount);
+      const frameSize = 1024;
+      const totalFrames = Math.floor(audioBuffer.length / frameSize);
+
+      timelineData = [];
+
+      for (let i = 0; i < totalFrames; i++) {
+        analyser.getByteFrequencyData(freqData);
+        const bands = computeBands(freqData);
+        timelineData.push(bands);
+      }
+
+      await offlineCtx.startRendering();
+      tempCtx.close();
+    }
+
+    const timelineCanvas = document.getElementById("timeline");
+    const tlCtx = timelineCanvas.getContext("2d");
+
+    function drawTimeline(progress) {
+      const w = timelineCanvas.width = window.innerWidth;
+      const h = timelineCanvas.height = 120;
+
+      tlCtx.clearRect(0, 0, w, h);
+
+      const barWidth = w / timelineData.length;
+
+      timelineData.forEach((frame, i) => {
+        const x = i * barWidth;
+
+        // low = 紅
+        tlCtx.fillStyle = `rgba(${frame.low * 255},50,50,0.8)`;
+        tlCtx.fillRect(x, h, barWidth, -frame.low * h);
+
+        // mid = 綠
+        tlCtx.fillStyle = `rgba(50,${frame.mid * 255},50,0.6)`;
+        tlCtx.fillRect(x, h, barWidth, -frame.mid * h * 0.6);
+
+        // high = 藍
+        tlCtx.fillStyle = `rgba(50,50,${frame.high * 255},0.5)`;
+        tlCtx.fillRect(x, h, barWidth, -frame.high * h * 0.4);
+      });
+
+      // 畫播放游標
+      tlCtx.strokeStyle = "#ffffff";
+      tlCtx.lineWidth = 2;
+      const cursorX = progress * w;
+      tlCtx.beginPath();
+      tlCtx.moveTo(cursorX, 0);
+      tlCtx.lineTo(cursorX, h);
+      tlCtx.stroke();
+    }
+  </script>
 </body>
 
 </html>
