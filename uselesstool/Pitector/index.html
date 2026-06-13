@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <style>
         html,
         body,
@@ -15,7 +16,7 @@
             margin: 0;
         }
 
-        .map-controls {
+        #mapController {
             position: absolute;
             z-index: 1000;
             left: 50%;
@@ -23,33 +24,35 @@
             transform: translateX(-50%);
             display: flex;
             gap: 8px;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 8px 10px;
-            border-radius: 999px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
 
-        .map-controls button {
+        #searchNearbyBtn,
+        #myLocation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.5);
+            background-color: #ffffff;
             border: 0;
-            border-radius: 6px;
-            padding: 8px 12px;
-            background: #2563eb;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            background-size: cover;
             color: white;
             cursor: pointer;
-            font-weight: 600;
+            font-size: 20pt;
+            font-weight: bold;
+            color: #666666;
+        }
+
+        #myLocation.is-following {
+            background-color: #2563eb;
+            color: #ffffff;
         }
 
         .map-controls button:disabled {
             background: #94a3b8;
             cursor: not-allowed;
-        }
-
-        #searchStatus {
-            font-size: 13px;
-            color: #334155;
-            white-space: nowrap;
         }
 
         .s2-popup-list {
@@ -63,12 +66,10 @@
 
 <body>
     <div id="map"></div>
-
-    <div class="map-controls">
-        <button id="searchNearbyBtn" type="button">搜尋附近地點</button>
-        <span id="searchStatus">尚未搜尋</span>
+    <div id="mapController">
+        <button id="searchNearbyBtn" type="button"><i class="bi bi-radar"></i></button>
+        <button id="myLocation"> <i class="bi bi-crosshair"></i></button>
     </div>
-
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/jquery-loadingModal@1.0.2/css/jquery.loadingModal.min.css" />
@@ -141,17 +142,17 @@
             const e = bounds.getEast();
 
             return `
-  [out:json][timeout:25];
+   [out:json][timeout:25];
             (
             /* 洗衣 / 居家修繕 / 家電3C */
             node["shop"~"^(laundry|dry_cleaning|doityourself|hardware|appliance|computer|electronics)$"](${s},${w},${n},${e});
             way["shop"~"^(laundry|dry_cleaning|doityourself|hardware|appliance|computer|electronics)$"](${s},${w},${n},${e});
             relation["shop"~"^(laundry|dry_cleaning|doityourself|hardware|appliance|computer|electronics)$"](${s},${w},${n},${e});
 
-            /* 超市 / 超商 / 百貨 / 服飾 / 鞋店 / 麵包甜點 / 藝術 / 書店 */
-            node["shop"~"^(supermarket|convenience|department_store|clothes|shoes|bakery|pastry|art|books|hairdresser|chemist)$"](${s},${w},${n},${e});
-            way["shop"~"^(supermarket|convenience|department_store|clothes|shoes|bakery|pastry|art|books|hairdresser|chemist)$"](${s},${w},${n},${e});
-            relation["shop"~"^(supermarket|convenience|department_store|clothes|shoes|bakery|pastry|art|books|hairdresser|chemist)$"](${s},${w},${n},${e});
+            /* 超市 / 超商 / 百貨 / 服飾 / 鞋店 / 麵包甜點 / 藝術 / 書店 / 文具店 */
+            node["shop"~"^(supermarket|convenience|department_store|clothes|shoes|bakery|pastry|art|books|hairdresser|chemist|stationery)$"](${s},${w},${n},${e});
+            way["shop"~"^(supermarket|convenience|department_store|clothes|shoes|bakery|pastry|art|books|hairdresser|chemist|stationery)$"](${s},${w},${n},${e});
+            relation["shop"~"^(supermarket|convenience|department_store|clothes|shoes|bakery|pastry|art|books|hairdresser|chemist|stationery)$"](${s},${w},${n},${e});
 
             /* 一般餐飲 */
             node["amenity"~"^(restaurant|fast_food|cafe)$"](${s},${w},${n},${e});
@@ -322,7 +323,6 @@
             });
 
             const matchedPois = getPoisInS2Keys(scannedS2Keys);
-
             const html = matchedPois.length === 0
                 ? `
                     <b>探測器應探測之地點</b><br>
@@ -335,10 +335,10 @@
                     </ul>
                 `;
 
-            L.popup()
+            /*L.popup()
                 .setLatLng(clicked)
                 .setContent(html)
-                .openOn(map);
+                .openOn(map);*/
         }
         function getPoisInS2Cell(s2Key) {
             return poiCircles
@@ -435,8 +435,6 @@
                     scanS2CellsByPoint(e.latlng);
                 });
             }
-
-            console.log(`已繪製 ${keys.size} 個 S2 Cell`);
         }
 
         function scheduleRefresh() {
@@ -448,14 +446,11 @@
 
         function setSearchLoading(isLoading, message = "") {
             $("#searchNearbyBtn").prop("disabled", isLoading);
-            if (message) {
-                $("#searchStatus").text(message);
-            }
 
             if (isLoading) {
                 $("body").loadingModal({
                     text: "搜尋附近地點中...",
-                    animation: "fadingCircle",
+                    animation: "cubeGrid",
                     backgroundColor: "rgba(0, 0, 0, 0.65)",
                     color: "#ffffff",
                     opacity: "0.7"
@@ -506,7 +501,7 @@
                 }
 
                 const data = await res.json();
-
+                console.table(data);
                 poiLayer.clearLayers();
                 poiCircles.length = 0;
 
@@ -573,10 +568,23 @@
 
         map.on("moveend zoomend", scheduleRefresh);
 
-        // 隨著使用者定位移動圖標
+        // 使用者定位：預設只更新圖標，不自動置中；按下 myLocation 後才鎖定跟隨。
         let userMarker = null;
         let userAccuracyCircle = null;
-        let isFirstLocation = true;
+        let lastUserLatLng = null;
+        let isFollowingUser = false;
+
+        function updateMyLocationButton() {
+            $("#myLocation").toggleClass("is-following", isFollowingUser);
+        }
+
+        function focusUserLocation(latlng) {
+            map.setView(latlng, Math.max(map.getZoom(), 17), {
+                animate: true
+            });
+
+            scanS2CellsByPoint(latlng);
+        }
 
         map.locate({
             watch: true,
@@ -588,6 +596,7 @@
         map.on("locationfound", (e) => {
             const latlng = e.latlng;
             const accuracy = e.accuracy;
+            lastUserLatLng = latlng;
 
             if (!userMarker) {
                 userMarker = L.marker(latlng).addTo(map)
@@ -607,18 +616,46 @@
                 userAccuracyCircle.setRadius(accuracy);
             }
 
-            if (isFirstLocation) {
-                map.setView(latlng, 17);
-                isFirstLocation = false;
+            // 只有按下 myLocation 進入鎖定狀態後，才會隨定位移動自動置中。
+            if (isFollowingUser) {
+                map.panTo(latlng, {
+                    animate: true
+                });
+
+                scanS2CellsByPoint(latlng);
+            }
+        });
+
+        $("#myLocation").on("click", () => {
+            isFollowingUser = true;
+            updateMyLocationButton();
+
+            if (lastUserLatLng) {
+                focusUserLocation(lastUserLatLng);
+                return;
             }
 
-            map.panTo(e.latlng);
-            scanS2CellsByPoint(e.latlng);
+            // 還沒有拿到定位時，重新要求一次目前位置。
+            map.locate({
+                setView: false,
+                watch: false,
+                enableHighAccuracy: true,
+                maximumAge: 0,
+                timeout: 10000
+            });
+        });
+
+        map.on("dragstart", () => {
+            // 使用者手動拖曳地圖時解除鎖定，避免地圖一直被拉回定位點。
+            isFollowingUser = false;
+            updateMyLocationButton();
         });
 
         map.on("locationerror", (e) => {
             console.warn(e.message);
-            //alert("無法取得定位，請確認瀏覽器定位權限已開啟。");
+            isFollowingUser = false;
+            updateMyLocationButton();
+            // alert("無法取得定位，請確認瀏覽器定位權限已開啟。");
         });
     </script>
 </body>

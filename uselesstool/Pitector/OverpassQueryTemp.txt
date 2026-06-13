@@ -5,10 +5,10 @@
             way["shop"~"^(laundry|dry_cleaning|doityourself|hardware|appliance|computer|electronics)$"](${s},${w},${n},${e});
             relation["shop"~"^(laundry|dry_cleaning|doityourself|hardware|appliance|computer|electronics)$"](${s},${w},${n},${e});
 
-            /* 超市 / 超商 / 百貨 / 服飾 / 鞋店 / 麵包甜點 / 藝術 / 書店 */
-            node["shop"~"^(supermarket|convenience|department_store|clothes|shoes|bakery|pastry|art|books|hairdresser|chemist)$"](${s},${w},${n},${e});
-            way["shop"~"^(supermarket|convenience|department_store|clothes|shoes|bakery|pastry|art|books|hairdresser|chemist)$"](${s},${w},${n},${e});
-            relation["shop"~"^(supermarket|convenience|department_store|clothes|shoes|bakery|pastry|art|books|hairdresser|chemist)$"](${s},${w},${n},${e});
+            /* 超市 / 超商 / 百貨 / 服飾 / 鞋店 / 麵包甜點 / 藝術 / 書店 / 文具店 */
+            node["shop"~"^(supermarket|convenience|department_store|clothes|shoes|bakery|pastry|art|books|hairdresser|chemist|stationery)$"](${s},${w},${n},${e});
+            way["shop"~"^(supermarket|convenience|department_store|clothes|shoes|bakery|pastry|art|books|hairdresser|chemist|stationery)$"](${s},${w},${n},${e});
+            relation["shop"~"^(supermarket|convenience|department_store|clothes|shoes|bakery|pastry|art|books|hairdresser|chemist|stationery)$"](${s},${w},${n},${e});
 
             /* 一般餐飲 */
             node["amenity"~"^(restaurant|fast_food|cafe)$"](${s},${w},${n},${e});
