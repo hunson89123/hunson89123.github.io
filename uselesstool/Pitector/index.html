@@ -8,12 +8,23 @@
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/jquery-loadingModal@1.0.2/css/jquery.loadingModal.min.css" />
     <style>
         html,
-        body,
-        #map {
+        body {
             height: 100%;
             margin: 0;
+            font-family: sans-serif;
+            text-align: center;
+        }
+
+        #map {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 0;
         }
 
         #mapController {
@@ -27,7 +38,8 @@
         }
 
         #searchNearbyBtn,
-        #myLocation {
+        #myLocation,
+        #nearbyLocationBtn {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -55,6 +67,16 @@
             cursor: not-allowed;
         }
 
+        #nearbyLocationBtn {
+            position: absolute;
+            z-index: 1000;
+            right: 0;
+            bottom: 24px;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+
         .s2-popup-list {
             margin: 6px 0 0;
             padding-left: 18px;
@@ -70,15 +92,14 @@
         <button id="searchNearbyBtn" type="button"><i class="bi bi-radar"></i></button>
         <button id="myLocation"> <i class="bi bi-crosshair"></i></button>
     </div>
+    <button id="nearbyLocationBtn" type="button"><i class="bi bi-list"></i></button>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/jquery-loadingModal@1.0.2/css/jquery.loadingModal.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/jquery-loadingModal@1.0.2/js/jquery.loadingModal.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/s2-geometry@1.2.10/src/s2geometry.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26/dist/sweetalert2.all.min.js"></script>
     <script>
         const map = L.map("map").setView([25.05717472524907, 121.36508365158228], 16);
-
         L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
             maxZoom: 19,
             attribution: "&copy; OpenStreetMap contributors"
@@ -456,7 +477,7 @@
                     opacity: "0.7"
                 });
             } else {
-                $("body").loadingModal("hide");
+                $('body').loadingModal('destroy');
             }
         }
 
@@ -492,7 +513,7 @@
                 if (res.status === 429 || res.status === 504) {
                     console.warn("呼叫API次數過於頻繁，請於1分鐘後再試");
                     setSearchLoading(false, "呼叫API次數過於頻繁，請於1分鐘後再試");
-                    $("body").loadingModal("hide");
+                    $('body').loadingModal('destroy');
                     return;
                 }
 
@@ -551,7 +572,7 @@
             } finally {
                 if (!abortController?.signal.aborted) {
                     $("#searchNearbyBtn").prop("disabled", false);
-                    $("body").loadingModal("hide");
+                    $('body').loadingModal('destroy');
                 }
             }
         }
@@ -562,6 +583,15 @@
 
         $("#searchNearbyBtn").on("click", () => {
             refreshPOIs();
+        });
+
+        $("#nearbyLocationBtn").on("click", () => {
+            Swal.fire({
+                icon: "info",
+                title: "功能尚未開放",
+                text: "這項功能正在開發中，敬請期待！",
+                confirmButtonText: "好吧😥"
+            });
         });
 
         drawS2Cells();
@@ -629,12 +659,10 @@
         $("#myLocation").on("click", () => {
             isFollowingUser = true;
             updateMyLocationButton();
-
             if (lastUserLatLng) {
                 focusUserLocation(lastUserLatLng);
                 return;
             }
-
             // 還沒有拿到定位時，重新要求一次目前位置。
             map.locate({
                 setView: false,
