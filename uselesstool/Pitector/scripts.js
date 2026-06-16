@@ -336,6 +336,7 @@ function groupPoisByDecor(pois) {
             decorMap.set(decorKey, {
                 decorLabel: poi.decorLabel || "未知飾品",
                 decorIcon: poi.decorIcon,
+                decorList: poi.decorList,
                 pois: []
             });
         }
@@ -364,40 +365,60 @@ function buildNearbyPoiListHtml(pois) {
     const decorGroups = groupPoisByDecor(safePois);
 
     return `
-        <div style="text-align:center;">
-            <div style="text-align:center; margin-bottom:10px;">
-                共找到 <b>${safePois.length}</b> 個地點，
-                對應 <b>${decorGroups.length}</b> 種飾品
-            </div>
-
-            <ul style="
-                list-style:none;
-                padding:0;
-                margin:0;
-                display:flex;
-                flex-wrap:wrap;
-                gap:8px;
-                justify-content:center;
-                align-items:flex-start;
-            ">
-                ${decorGroups.map((group) => `
-                    <li style="
-                        border:1px solid #ddd;
-                        border-radius: 5px;
-                        padding:10px 12px;
-                        background:#fff;
-                        text-wrap:nowrap;
-                    ">
-                        <div>
-                            <b>
-                                ${escapeHtml(group.decorLabel)}
-                            </b>
-                        </div>
-                    </li>
-                `).join("")}
-            </ul>
+    <div style="text-align:center;">
+        <div style="text-align:center; margin-bottom:10px;">
+            共找到 <b>${safePois.length}</b> 個地點，
+            對應 <b>${decorGroups.length}</b> 種飾品
         </div>
-    `;
+
+        <ul style="
+            list-style:none;
+            padding:0;
+            margin:0;
+            display:flex;
+            flex-wrap:wrap;
+            gap:8px;
+            justify-content:center;
+            align-items:flex-start;
+        ">
+            ${decorGroups.map((group) => `
+                <li style="
+                    border:1px solid #ddd;
+                    border-radius:9999px;
+                    padding:10px 12px;
+                    background:#fff;
+                    text-wrap:nowrap;
+                ">
+                    <div style="
+                        display:flex;
+                        align-items:center;
+                        gap:6px;
+                    ">
+                        <span style="
+                            width:20px;
+                            height:20px;
+                            display:inline-block;
+                            background-color:#545454;
+                            mask-image:url('decor_icon/${escapeHtml(group.decorIcon)}.png');
+                            mask-size:contain;
+                            mask-repeat:no-repeat;
+                            mask-position:center;
+                            -webkit-mask-image:url('decor_icon/${escapeHtml(group.decorIcon)}.png');
+                            -webkit-mask-size:contain;
+                            -webkit-mask-repeat:no-repeat;
+                            -webkit-mask-position:center;
+                            flex-shrink:0;
+                        "></span>
+                        |
+                        <b>
+                            ${escapeHtml(group.decorList)}
+                        </b>
+                    </div>
+                </li>
+            `).join("")}
+        </ul>
+    </div>
+`;
 }
 
 function updateNearbyLocationDialog() {
@@ -412,13 +433,15 @@ function openNearbyLocationDialog() {
     nearbySwalIsOpen = true;
 
     Swal.fire({
-        iconHtml: `<i class="fa-solid fa-map-location-dot"></i>`,
-        customClass: {
-            icon: "swal-radar-icon"
-        },
-        title: '附近地點',
+        // iconHtml: `<i class="fa-solid fa-map-location-dot"></i>`,
+        // customClass: {
+        //     icon: "swal-radar-icon"
+        // },
+        // title: '附近地點',
         html: buildNearbyPoiListHtml(currentNearbyPois),
-        width: 520,
+        position: "top",
+        backdrop: false,
+        width: "auto",
         confirmButtonText: "關閉",
         didClose: () => {
             nearbySwalIsOpen = false;
@@ -832,14 +855,24 @@ async function refreshPOIs() {
     if (map.getZoom() < 15) {
         poiLayer.clearLayers();
         poiCircles.length = 0;
-        setSearchLoading(false, "請放大到 15 級以上再搜尋");
+        Swal.fire({
+            icon: "info",
+            title: "無法探測",
+            text: "請放大到15級以上再搜尋",
+            confirmButtonText: "好吧😐"
+        });
         return;
     }
 
     const now = Date.now();
 
-    if (now - lastFetchTime < 2000) {
-        setSearchLoading(false, "搜尋太頻繁，請稍後再試");
+    if (now - lastFetchTime < 30000) {
+        Swal.fire({
+            icon: "error",
+            title: "探測失敗",
+            text: "搜尋太頻繁，請稍後再試",
+            confirmButtonText: "好吧😐"
+        });
         return;
     }
 
@@ -912,7 +945,6 @@ async function refreshPOIs() {
 
             const label = getLabel(el);
             const decor = getPikminDecor(el);
-
             const poiDisplayLayer = getPoiLayer(el, label, decor);
             if (!poiDisplayLayer) continue;
 
@@ -926,6 +958,7 @@ async function refreshPOIs() {
                 name: label,
                 decorLabel: decor.label,
                 decorIcon: decor.icon,
+                decorList: decor.decor.join(", "),
                 latlng: poiGeometry.latlng,
 
                 geometryType: poiGeometry.type,
@@ -987,7 +1020,6 @@ $("#nearbyLocationBtn").on("click", () => {
 async function init() {
     try {
         await loadDecorRules();
-        console.log("decor.json 載入完成", pikminDecorRules);
     } catch (err) {
         console.error(err);
 
@@ -1020,11 +1052,13 @@ function updateMyLocationButton() {
 }
 
 function focusUserLocation(latlng) {
-    map.setView(latlng, Math.max(map.getZoom(), 17), {
-        animate: true
-    });
+    if (isFollowingUser) {
+        map.setView(latlng, Math.max(map.getZoom(), 17), {
+            animate: true
+        });
 
-    scanS2CellsByPoint(latlng);
+        scanS2CellsByPoint(latlng);
+    }
 }
 
 map.locate({
