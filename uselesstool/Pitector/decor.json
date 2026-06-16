@@ -1,0 +1,513 @@
+[
+    {
+        "label": "餐廳",
+        "decor": [
+            "廚師帽子"
+        ],
+        "icon": "Restaurant",
+        "match": {
+            "amenity": [
+                "restaurant"
+            ]
+        }
+    },
+    {
+        "label": "咖啡廳",
+        "decor": [
+            "咖啡杯"
+        ],
+        "icon": "Cafe",
+        "match": {
+            "amenity": [
+                "cafe"
+            ]
+        }
+    },
+    {
+        "label": "甜點店",
+        "decor": [
+            "馬卡龍",
+            "甜甜圈"
+        ],
+        "icon": "Sweetshop",
+        "match": {
+            "shop": [
+                "pastry"
+            ]
+        }
+    },
+    {
+        "label": "電影院",
+        "decor": [
+            "爆米花"
+        ],
+        "icon": "Movie_Theater",
+        "match": {
+            "amenity": [
+                "cinema"
+            ]
+        }
+    },
+    {
+        "label": "藥局",
+        "decor": [
+            "牙刷"
+        ],
+        "icon": "Pharmacy",
+        "match": {
+            "amenity": [
+                "pharmacy"
+            ]
+        }
+    },
+    {
+        "label": "動物園",
+        "decor": [
+            "蒲公英"
+        ],
+        "icon": "Zoo",
+        "match": {
+            "tourism": [
+                "zoo"
+            ]
+        }
+    },
+    {
+        "label": "森林",
+        "decor": [
+            "鍬形蟲",
+            "橡栗"
+        ],
+        "icon": "Forest",
+        "match": {
+            "natural": [
+                "wood"
+            ],
+            "landuse": [
+                "forest"
+            ]
+        }
+    },
+    {
+        "label": "水邊",
+        "decor": [
+            "擬餌"
+        ],
+        "icon": "Waterside",
+        "match": {
+            "natural": [
+                "water"
+            ]
+        }
+    },
+    {
+        "label": "郵局",
+        "decor": [
+            "郵票"
+        ],
+        "icon": "Post_Office",
+        "match": {
+            "amenity": [
+                "post_office"
+            ]
+        }
+    },
+    {
+        "label": "美術館",
+        "decor": [
+            "畫框"
+        ],
+        "icon": "Art_Gallery",
+        "match": {
+            "shop": [
+                "art"
+            ]
+        }
+    },
+    {
+        "label": "機場",
+        "decor": [
+            "飛機玩具"
+        ],
+        "icon": "Airport",
+        "match": {
+            "aeroway": [
+                "aerodrome"
+            ]
+        }
+    },
+    {
+        "label": "車站",
+        "decor": [
+            "電車紙模型",
+            "票券"
+        ],
+        "icon": "Station",
+        "match": {
+            "railway": [
+                "station"
+            ],
+            "building": [
+                "train_station"
+            ]
+        }
+    },
+    {
+        "label": "海灘",
+        "decor": [
+            "貝殼"
+        ],
+        "icon": "Beach",
+        "match": {
+            "natural": [
+                "beach"
+            ]
+        }
+    },
+    {
+        "label": "漢堡店",
+        "decor": [
+            "漢堡"
+        ],
+        "icon": "Burger_Place",
+        "match": {
+            "amenity": [
+                "fast_food"
+            ]
+        }
+    },
+    {
+        "label": "便利店",
+        "decor": [
+            "瓶蓋",
+            "零食"
+        ],
+        "icon": "Mini-mart",
+        "match": {
+            "shop": [
+                "convenience"
+            ]
+        }
+    },
+    {
+        "label": "超市",
+        "decor": [
+            "蘑菇",
+            "香蕉"
+        ],
+        "icon": "Supermarket",
+        "match": {
+            "shop": [
+                "supermarket"
+            ]
+        }
+    },
+    {
+        "label": "麵包店",
+        "decor": [
+            "法國麵包"
+        ],
+        "icon": "Bakery",
+        "match": {
+            "shop": [
+                "bakery"
+            ]
+        }
+    },
+    {
+        "label": "美容院",
+        "decor": [
+            "剪刀"
+        ],
+        "icon": "Hair_Salon",
+        "match": {
+            "shop": [
+                "hairdresser"
+            ]
+        }
+    },
+    {
+        "label": "服裝店",
+        "decor": [
+            "髮圈"
+        ],
+        "icon": "Clothes_Store",
+        "match": {
+            "shop": [
+                "clothes",
+                "shoes"
+            ]
+        }
+    },
+    {
+        "label": "公園",
+        "decor": [
+            "幸運草",
+            "四葉幸運草"
+        ],
+        "icon": "Park",
+        "match": {
+            "leisure": [
+                "park"
+            ]
+        }
+    },
+    {
+        "label": "圖書館",
+        "decor": [
+            "迷你書"
+        ],
+        "icon": "Library",
+        "match": {
+            "amenity": [
+                "library"
+            ],
+            "shop": [
+                "book"
+            ]
+        }
+    },
+    {
+        "label": "壽司餐廳",
+        "decor": [
+            "壽司"
+        ],
+        "icon": "Sushi_Restaurant",
+        "match": {
+            "cuisine": [
+                "sushi"
+            ]
+        }
+    },
+    {
+        "label": "山丘",
+        "decor": [
+            "山丘別針徽章"
+        ],
+        "icon": "Mountain",
+        "match": {
+            "natural": [
+                "peak"
+            ]
+        }
+    },
+    {
+        "label": "體育館",
+        "decor": [
+            "體育館鑰匙圈"
+        ],
+        "icon": "Stadium",
+        "match": {
+            "leisure": [
+                "stadium"
+            ]
+        }
+    },
+    {
+        "label": "主題樂園",
+        "decor": [
+            "主題樂園門票"
+        ],
+        "icon": "ThemePark",
+        "match": {
+            "tourism": [
+                "theme_park"
+            ]
+        }
+    },
+    {
+        "label": "公車站",
+        "decor": [
+            "公車紙模型"
+        ],
+        "icon": "Bus_Stop",
+        "match": {
+            "highway": [
+                "bus_stop"
+            ]
+        }
+    },
+    {
+        "label": "義式餐廳",
+        "decor": [
+            "披薩",
+            "義大利麵"
+        ],
+        "icon": "Italian_Restaurant",
+        "match": {
+            "cuisine": [
+                "pizza",
+                "mediterranean"
+            ]
+        }
+    },
+    {
+        "label": "拉麵店",
+        "decor": [
+            "拉麵鑰匙圈"
+        ],
+        "icon": "Ramen_Restaurant",
+        "match": {
+            "cuisine": [
+                "chinese",
+                "noodle",
+                "ramen",
+                "udon",
+                "soba"
+            ]
+        }
+    },
+    {
+        "label": "橋梁",
+        "decor": [
+            "橋梁別針"
+        ],
+        "icon": "Bridge",
+        "match": {
+            "bridge": [
+                "yes"
+            ]
+        }
+    },
+    {
+        "label": "飯店",
+        "decor": [
+            "飯店備品"
+        ],
+        "icon": "Hotel",
+        "match": {
+            "tourism": [
+                "hotel"
+            ]
+        }
+    },
+    {
+        "label": "化妝品商店",
+        "decor": [
+            "化妝品"
+        ],
+        "icon": "Makeup",
+        "match": {
+            "shop": [
+                "department_store"
+            ]
+        }
+    },
+    {
+        "label": "神社和寺廟",
+        "decor": [
+            "運勢（吉）"
+        ],
+        "icon": "Shrine",
+        "match": {
+            "amenity": [
+                "place_of_worship"
+            ]
+        }
+    },
+    {
+        "label": "電器行",
+        "decor": [
+            "電池",
+            "仙女燈"
+        ],
+        "icon": "Appliances_Store",
+        "match": {
+            "shop": [
+                "appliance",
+                "computer",
+                "electronics"
+            ]
+        }
+    },
+    {
+        "label": "咖哩餐廳",
+        "decor": [
+            "一碗咖哩"
+        ],
+        "icon": "Curry_Restaurant",
+        "match": {
+            "cuisine": [
+                "curry",
+                "indian",
+                "sri_lankan"
+            ]
+        }
+    },
+    {
+        "label": "五金行",
+        "decor": [
+            "工具"
+        ],
+        "icon": "DIY_Store",
+        "match": {
+            "shop": [
+                "doityourself",
+                "hardware"
+            ]
+        }
+    },
+    {
+        "label": "大學&學院",
+        "decor": [
+            "校徽胸針"
+        ],
+        "icon": "University",
+        "match": {
+            "amenity": [
+                "university",
+                "college"
+            ]
+        }
+    },
+    {
+        "label": "墨西哥餐廳",
+        "decor": [
+            "塔可餅"
+        ],
+        "icon": "Mexican_Restaurant",
+        "match": {
+            "cuisine": [
+                "mexican"
+            ]
+        }
+    },
+    {
+        "label": "自助洗衣店&乾洗店",
+        "decor": [
+            "洗衣用品"
+        ],
+        "icon": "Laundry",
+        "match": {
+            "shop": [
+                "laundry",
+                "dry_cleaning"
+            ]
+        }
+    },
+    {
+        "label": "韓國餐廳",
+        "decor": [
+            "韓國泡菜"
+        ],
+        "icon": "Korean_Restaurant",
+        "match": {
+            "cuisine": [
+                "korean"
+            ]
+        }
+    },
+    {
+        "label": "文具店",
+        "decor": [
+            "文具"
+        ],
+        "icon": "Stationery_Store",
+        "match": {
+            "shop": [
+                "stationery",
+                "craft"
+            ]
+        }
+    }
+]

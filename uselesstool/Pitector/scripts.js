@@ -22,6 +22,8 @@ let lastFetchTime = 0;
 let selectedS2Key = null;
 let selectedS2Layer = null;
 
+let pikminDecorRules = [];
+
 const SCAN_RADIUS_METERS = 100;
 
 const S2_NORMAL_STYLE = {
@@ -75,83 +77,94 @@ const POI_LINE_STYLE = {
     opacity: 0.9
 };
 
-function buildOverpassQuery(bounds) {
+const MOCK_POIS_ENABLED = false;
+
+const MOCK_POIS = [
+    {
+        type: "node",
+        id: "mock-restaurant-001",
+        lat: 25.05717472524907,
+        lon: 121.36508365158228,
+        tags: {
+            name: "測試餐廳",
+            amenity: "restaurant"
+        }
+    },
+    {
+        type: "node",
+        id: "mock-convenience-001",
+        lat: 25.05745,
+        lon: 121.36535,
+        tags: {
+            name: "測試便利商店",
+            shop: "convenience"
+        }
+    },
+    {
+        type: "way",
+        id: "mock-park-001",
+        tags: {
+            name: "測試公園範圍",
+            leisure: "park"
+        },
+        geometry: [
+            { lat: 25.05695, lon: 121.36485 },
+            { lat: 25.05695, lon: 121.36525 },
+            { lat: 25.05735, lon: 121.36525 },
+            { lat: 25.05735, lon: 121.36485 },
+            { lat: 25.05695, lon: 121.36485 }
+        ]
+    }
+];
+
+async function loadDecorRules() {
+    const res = await fetch("./decor.json");
+
+    if (!res.ok) {
+        throw new Error(`讀取 decor.json 失敗：HTTP ${res.status}`);
+    }
+
+    pikminDecorRules = await res.json();
+}
+
+function escapeOverpassRegexValue(value) {
+    return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function buildTagFilter(key, values) {
+    const escapedValues = values.map(escapeOverpassRegexValue);
+    const regex = `^(${escapedValues.join("|")})$`;
+
+    return `["${key}"~"${regex}"]`;
+}
+
+function buildOverpassQuery(bounds, decorRules) {
     const s = bounds.getSouth();
     const w = bounds.getWest();
     const n = bounds.getNorth();
     const e = bounds.getEast();
 
+    const bbox = `(${s},${w},${n},${e})`;
+
+    const queryParts = [];
+
+    decorRules.forEach(rule => {
+        Object.entries(rule.match).forEach(([key, values]) => {
+            const tagFilter = buildTagFilter(key, values);
+
+            queryParts.push(`node${tagFilter}${bbox};`);
+            queryParts.push(`way${tagFilter}${bbox};`);
+            queryParts.push(`relation${tagFilter}${bbox};`);
+        });
+    });
+
     return `
 [out:json][timeout:25];
 (
-    /* 洗衣 / 居家修繕 / 家電3C */
-    node["shop"~"^(laundry|dry_cleaning|doityourself|hardware|appliance|computer|electronics)$"](${s},${w},${n},${e});
-    way["shop"~"^(laundry|dry_cleaning|doityourself|hardware|appliance|computer|electronics)$"](${s},${w},${n},${e});
-    relation["shop"~"^(laundry|dry_cleaning|doityourself|hardware|appliance|computer|electronics)$"](${s},${w},${n},${e});
-
-    /* 超市 / 超商 / 百貨 / 服飾 / 鞋店 / 麵包甜點 / 藝術 / 書店 / 文具店 */
-    node["shop"~"^(supermarket|convenience|department_store|clothes|shoes|bakery|pastry|art|books|hairdresser|chemist|stationery)$"](${s},${w},${n},${e});
-    way["shop"~"^(supermarket|convenience|department_store|clothes|shoes|bakery|pastry|art|books|hairdresser|chemist|stationery)$"](${s},${w},${n},${e});
-    relation["shop"~"^(supermarket|convenience|department_store|clothes|shoes|bakery|pastry|art|books|hairdresser|chemist|stationery)$"](${s},${w},${n},${e});
-
-    /* 一般餐飲 */
-    node["amenity"~"^(restaurant|fast_food|cafe)$"](${s},${w},${n},${e});
-    way["amenity"~"^(restaurant|fast_food|cafe)$"](${s},${w},${n},${e});
-    relation["amenity"~"^(restaurant|fast_food|cafe)$"](${s},${w},${n},${e});
-
-    /* 指定料理類型 */
-    node["amenity"~"^(restaurant|fast_food|cafe)$"]["cuisine"~"(^|;)(mexican|korean|curry|indian|sri_lankan|sushi|pizza|mediterranean|chinese|noodle|ramen|udon|soba)(;|$)"](${s},${w},${n},${e});
-    way["amenity"~"^(restaurant|fast_food|cafe)$"]["cuisine"~"(^|;)(mexican|korean|curry|indian|sri_lankan|sushi|pizza|mediterranean|chinese|noodle|ramen|udon|soba)(;|$)"](${s},${w},${n},${e});
-    relation["amenity"~"^(restaurant|fast_food|cafe)$"]["cuisine"~"(^|;)(mexican|korean|curry|indian|sri_lankan|sushi|pizza|mediterranean|chinese|noodle|ramen|udon|soba)(;|$)"](${s},${w},${n},${e});
-
-    /* 教育 / 宗教 / 郵局 / 藥局 / 圖書館 / 電影院 */
-    node["amenity"~"^(university|college|post_office|pharmacy|library|cinema)$"](${s},${w},${n},${e});
-    way["amenity"~"^(university|college|post_office|pharmacy|library|cinema)$"](${s},${w},${n},${e});
-    relation["amenity"~"^(university|college|post_office|pharmacy|library|cinema)$"](${s},${w},${n},${e});
-
-    /* 動物園 / 主題樂園 / 飯店 */
-    node["tourism"~"^(zoo|theme_park|hotel)$"](${s},${w},${n},${e});
-    way["tourism"~"^(zoo|theme_park|hotel)$"](${s},${w},${n},${e});
-    relation["tourism"~"^(zoo|theme_park|hotel)$"](${s},${w},${n},${e});
-
-    /* 車站 / 公車站 / 機場 */
-    node["railway"="station"](${s},${w},${n},${e});
-    way["railway"="station"](${s},${w},${n},${e});
-    relation["railway"="station"](${s},${w},${n},${e});
-
-    node["building"="train_station"](${s},${w},${n},${e});
-    way["building"="train_station"](${s},${w},${n},${e});
-    relation["building"="train_station"](${s},${w},${n},${e});
-
-    node["highway"="bus_stop"](${s},${w},${n},${e});
-    way["highway"="bus_stop"](${s},${w},${n},${e});
-    relation["highway"="bus_stop"](${s},${w},${n},${e});
-
-    node["aeroway"="aerodrome"](${s},${w},${n},${e});
-    way["aeroway"="aerodrome"](${s},${w},${n},${e});
-    relation["aeroway"="aerodrome"](${s},${w},${n},${e});
-
-    /* 公園 / 體育場 */
-    node["leisure"~"^(park|stadium)$"](${s},${w},${n},${e});
-    way["leisure"~"^(park|stadium)$"](${s},${w},${n},${e});
-    relation["leisure"~"^(park|stadium)$"](${s},${w},${n},${e});
-
-    /* 海灘 / 山峰 / 水域 / 森林 */
-    node["natural"~"^(water|peak|beach|wood)$"](${s},${w},${n},${e});
-    way["natural"~"^(water|peak|beach|wood)$"](${s},${w},${n},${e});
-    relation["natural"~"^(water|peak|beach|wood)$"](${s},${w},${n},${e});
-
-    node["landuse"="forest"](${s},${w},${n},${e});
-    way["landuse"="forest"](${s},${w},${n},${e});
-    relation["landuse"="forest"](${s},${w},${n},${e});
-
-    /* 橋 */
-    node["bridge"="yes"](${s},${w},${n},${e});
-    way["bridge"="yes"](${s},${w},${n},${e});
-    relation["bridge"="yes"](${s},${w},${n},${e});
+  ${queryParts.join("\n  ")}
 );
 out geom;
-    `.trim();
+`;
 }
 
 function getLatLng(el) {
@@ -218,21 +231,23 @@ function getLabel(el) {
     );
 }
 
-function getPoiLayer(el, label) {
+function getPoiLayer(el, label, decor) {
     const latlng = getLatLng(el);
     const geometryLatLngs = getElementGeometryLatLngs(el);
+
+    const popupHtml = `<b>${escapeHtml(decor.label)}</b>`;
 
     if ((el.type === "way" || el.type === "relation") && geometryLatLngs) {
         const layer = isClosedGeometry(geometryLatLngs)
             ? L.polygon(geometryLatLngs, POI_POLYGON_STYLE)
             : L.polyline(geometryLatLngs, POI_LINE_STYLE);
 
-        layer.bindPopup(label);
+        layer.bindPopup(popupHtml);
         return layer;
     }
 
     if (latlng) {
-        return L.marker(latlng).bindPopup(label);
+        return L.marker(latlng).bindPopup(popupHtml);
     }
 
     return null;
@@ -269,6 +284,33 @@ function getPoiGeometry(el) {
     return null;
 }
 
+
+
+function tagValueIncludes(tagValue, expectedValues) {
+    if (!tagValue) return false;
+
+    const values = String(tagValue)
+        .split(";")
+        .map((value) => value.trim());
+
+    return expectedValues.some((expectedValue) => values.includes(expectedValue));
+}
+
+function getPikminDecor(el) {
+    const tags = el.tags || {};
+
+    const matchedDecor = pikminDecorRules.find((rule) => {
+        return Object.entries(rule.match).some(([tagKey, expectedValues]) => {
+            return tagValueIncludes(tags[tagKey], expectedValues);
+        });
+    });
+
+    return matchedDecor || {
+        label: "未知飾品",
+        emoji: "❓"
+    };
+}
+
 function escapeHtml(value) {
     return String(value)
         .replaceAll("&", "&amp;")
@@ -284,26 +326,48 @@ function getPoiTypeLabel(poi) {
     return "點";
 }
 
+function groupPoisByDecor(pois) {
+    const decorMap = new Map();
+
+    for (const poi of pois) {
+        const decorKey = poi.decorLabel || "未知飾品";
+
+        if (!decorMap.has(decorKey)) {
+            decorMap.set(decorKey, {
+                decorLabel: poi.decorLabel || "未知飾品",
+                decorIcon: poi.decorIcon,
+                pois: []
+            });
+        }
+
+        decorMap.get(decorKey).pois.push(poi);
+    }
+
+    return [...decorMap.values()]
+        .map((group) => ({
+            ...group,
+            pois: group.pois.sort((a, b) => a.name.localeCompare(b.name, "zh-Hant"))
+        }))
+        .sort((a, b) => a.decorLabel.localeCompare(b.decorLabel, "zh-Hant"));
+}
+
 function buildNearbyPoiListHtml(pois) {
     if ((!pois || pois.length === 0) && poiCircles.length === 0) {
         return `
             <div style="text-align:center;">
-                <p>目前沒有已搜尋到、且與圈選 S2 Cell 重疊的地點。</p>
-                <p>請先按「<i class="fa-solid fa-satellite-dish"></i>」，再點擊地圖或定位按鈕進行探測。</p>
+                <p>目前無地點資訊，請先按「<i class="fa-solid fa-satellite-dish"></i>」掃描附近地點</p>
             </div>
         `;
     }
 
-    if (pois.length === 0) {
-        pois.push({
-            name: "路邊"
-        })
-    }
+    const safePois = Array.isArray(pois) ? [...pois] : [];
+    const decorGroups = groupPoisByDecor(safePois);
 
     return `
-        <div style="text-align:center; max-height:420px; overflow:auto;">
-            <div style="margin-bottom:8px;">
-                共找到 <b>${pois.length}</b> 個地點
+        <div style="text-align:center;">
+            <div style="text-align:center; margin-bottom:10px;">
+                共找到 <b>${safePois.length}</b> 個地點，
+                對應 <b>${decorGroups.length}</b> 種飾品
             </div>
 
             <ul style="
@@ -316,14 +380,19 @@ function buildNearbyPoiListHtml(pois) {
                 justify-content:center;
                 align-items:flex-start;
             ">
-                ${pois.map((poi) => `
+                ${decorGroups.map((group) => `
                     <li style="
-                        white-space:nowrap;
-                        padding:4px 8px;
                         border:1px solid #ddd;
-                        border-radius:999px;
+                        border-radius: 5px;
+                        padding:10px 12px;
+                        background:#fff;
+                        text-wrap:nowrap;
                     ">
-                        <b>${escapeHtml(poi.name)}</b>
+                        <div>
+                            <b>
+                                ${escapeHtml(group.decorLabel)}
+                            </b>
+                        </div>
                     </li>
                 `).join("")}
             </ul>
@@ -782,74 +851,69 @@ async function refreshPOIs() {
 
     abortController = new AbortController();
 
-    const query = buildOverpassQuery(map.getBounds());
+    const query = buildOverpassQuery(map.getBounds(), pikminDecorRules);
 
     setSearchLoading(true, "搜尋中...");
 
     try {
-        const res = await fetch("https://overpass-api.de/api/interpreter", {
-            method: "POST",
-            body: query,
-            signal: abortController.signal
-        });
+        let data = [];
+        if (!MOCK_POIS_ENABLED) {
 
-        if (res.status === 429 || res.status === 504) {
-            $("body").loadingModal("destroy");
-
-            Swal.fire({
-                icon: "error",
-                title: "探測失敗",
-                text: "呼叫API次數過於頻繁，請於1分鐘後再試",
-                confirmButtonText: "我等😐"
+            const res = await fetch("https://overpass-api.de/api/interpreter", {
+                method: "POST",
+                body: query,
+                signal: abortController.signal
             });
 
-            console.warn("呼叫API次數過於頻繁，請於1分鐘後再試");
-            setSearchLoading(false, "呼叫API次數過於頻繁，請於1分鐘後再試");
-            return;
+            if (res.status === 429 || res.status === 504) {
+                $("body").loadingModal("destroy");
+
+                Swal.fire({
+                    icon: "error",
+                    title: "探測失敗",
+                    text: "呼叫API次數過於頻繁，請於1分鐘後再試",
+                    confirmButtonText: "我等😐"
+                });
+
+                console.warn("呼叫API次數過於頻繁，請於1分鐘後再試");
+                setSearchLoading(false, "呼叫API次數過於頻繁，請於1分鐘後再試");
+                return;
+            }
+
+            if (!res.ok) {
+                $("body").loadingModal("destroy");
+
+                Swal.fire({
+                    icon: "error",
+                    title: "探測錯誤",
+                    text: `呼叫API時發生錯誤：${res.status}`,
+                    confirmButtonText: "噢不😲"
+                });
+
+                throw new Error(`HTTP ${res.status}`);
+            }
+            data = await res.json();
         }
-
-        if (!res.ok) {
-            $("body").loadingModal("destroy");
-
-            Swal.fire({
-                icon: "error",
-                title: "探測錯誤",
-                text: `呼叫API時發生錯誤：${res.status}`,
-                confirmButtonText: "噢不😲"
-            });
-
-            throw new Error(`HTTP ${res.status}`);
-        }
-
-        const data = await res.json();
-
-        console.table(
-            (data.elements || []).map((el) => ({
-                type: el.type,
-                id: el.id,
-                name: el.tags?.name,
-                hasGeometry: Array.isArray(el.geometry),
-                geometryLength: el.geometry?.length ?? 0,
-                hasCenter: !!el.center,
-                lat: el.lat,
-                lon: el.lon
-            }))
-        );
 
         poiLayer.clearLayers();
         poiCircles.length = 0;
 
         const seen = new Set();
 
-        for (const el of data.elements || []) {
+        const elements = MOCK_POIS_ENABLED
+            ? [...(data.elements || []), ...MOCK_POIS]
+            : data.elements || [];
+
+        for (const el of elements) {
             const key = `${el.type}-${el.id}`;
 
             if (seen.has(key)) continue;
             seen.add(key);
 
             const label = getLabel(el);
+            const decor = getPikminDecor(el);
 
-            const poiDisplayLayer = getPoiLayer(el, label);
+            const poiDisplayLayer = getPoiLayer(el, label, decor);
             if (!poiDisplayLayer) continue;
 
             const poiGeometry = getPoiGeometry(el);
@@ -860,6 +924,8 @@ async function refreshPOIs() {
             poiCircles.push({
                 id: key,
                 name: label,
+                decorLabel: decor.label,
+                decorIcon: decor.icon,
                 latlng: poiGeometry.latlng,
 
                 geometryType: poiGeometry.type,
@@ -872,18 +938,6 @@ async function refreshPOIs() {
                 osmId: el.id
             });
         }
-
-        console.table(
-            poiCircles.map((poi) => ({
-                id: poi.id,
-                name: poi.name,
-                geometryType: poi.geometryType,
-                hasPoint: !!poi.point,
-                hasPolygon: !!poi.polygon,
-                hasLine: !!poi.line
-            }))
-        );
-
         if (scannedS2Keys.size > 0) {
             resetS2CellStyles();
 
@@ -901,7 +955,6 @@ async function refreshPOIs() {
         }
 
         setSearchLoading(false, `已完成搜尋，共 ${poiCircles.length} 個地點`);
-        console.log(`已完成掃描，共計 ${poiCircles.length} 個地點!`);
     } catch (err) {
         if (err.name !== "AbortError") {
             console.error(err);
@@ -931,9 +984,27 @@ $("#nearbyLocationBtn").on("click", () => {
     openNearbyLocationDialog();
 });
 
-drawS2Cells();
+async function init() {
+    try {
+        await loadDecorRules();
+        console.log("decor.json 載入完成", pikminDecorRules);
+    } catch (err) {
+        console.error(err);
 
-map.on("moveend zoomend", scheduleRefresh);
+        Swal.fire({
+            icon: "error",
+            title: "飾品資料載入失敗",
+            text: "無法讀取 decor.json，將無法顯示皮克敏飾品對應。",
+            confirmButtonText: "知道了"
+        });
+    }
+
+    drawS2Cells();
+
+    map.on("moveend zoomend", scheduleRefresh);
+}
+
+init();
 
 /* =========================
    使用者定位
