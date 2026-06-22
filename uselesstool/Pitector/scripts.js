@@ -235,7 +235,7 @@ function getPoiLayer(el, label, decor) {
     const latlng = getLatLng(el);
     const geometryLatLngs = getElementGeometryLatLngs(el);
 
-    const popupHtml = `<b>${escapeHtml(decor.label)}</b>`;
+    const popupHtml = `<b>${escapeHtml(el.tags.name)}</b>`;
 
     if ((el.type === "way" || el.type === "relation") && geometryLatLngs) {
         const layer = isClosedGeometry(geometryLatLngs)
@@ -300,15 +300,21 @@ function getPikminDecor(el) {
     const tags = el.tags || {};
 
     const matchedDecor = pikminDecorRules.find((rule) => {
-        return Object.entries(rule.match).some(([tagKey, expectedValues]) => {
+        const countryMatched =
+            !Array.isArray(rule.countries) ||
+            rule.countries.length === 0 ||
+            rule.countries.some((countryCode) => isPoiInCountry(el, countryCode));
+
+        if (!countryMatched) {
+            return false;
+        }
+
+        return Object.entries(rule.match || {}).some(([tagKey, expectedValues]) => {
             return tagValueIncludes(tags[tagKey], expectedValues);
         });
     });
 
-    return matchedDecor || {
-        label: "未知飾品",
-        emoji: "❓"
-    };
+    return matchedDecor;
 }
 
 function escapeHtml(value) {
@@ -599,6 +605,30 @@ function poiIntersectsS2Cell(poi, s2CellPolygon) {
 
     if (poi.geometryType === "line") {
         return lineIntersectsPolygon(poi.line, s2CellPolygon);
+    }
+
+    return false;
+}
+
+function isLatLngInJapan(lat, lng) {
+    // 日本本土 + 沖繩大致範圍
+    return (
+        lat >= 24 &&
+        lat <= 46 &&
+        lng >= 122 &&
+        lng <= 146
+    );
+}
+
+function isPoiInCountry(el, countryCode) {
+    const latlng = getLatLng(el);
+
+    if (!latlng) return false;
+
+    const [lat, lng] = latlng;
+
+    if (countryCode === "JP") {
+        return isLatLngInJapan(lat, lng);
     }
 
     return false;

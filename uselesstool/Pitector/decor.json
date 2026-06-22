@@ -1,5 +1,85 @@
 [
     {
+        "label": "韓國餐廳",
+        "decor": [
+            "韓國泡菜"
+        ],
+        "icon": "Korean_Restaurant",
+        "match": {
+            "cuisine": [
+                "korean"
+            ]
+        }
+    },
+    {
+        "label": "義式餐廳",
+        "decor": [
+            "披薩",
+            "義大利麵"
+        ],
+        "icon": "Italian_Restaurant",
+        "match": {
+            "cuisine": [
+                "pizza",
+                "mediterranean"
+            ]
+        }
+    },
+    {
+        "label": "拉麵店",
+        "decor": [
+            "拉麵鑰匙圈"
+        ],
+        "icon": "Ramen_Restaurant",
+        "match": {
+            "cuisine": [
+                "chinese",
+                "noodle",
+                "ramen",
+                "udon",
+                "soba"
+            ]
+        }
+    },
+    {
+        "label": "咖哩餐廳",
+        "decor": [
+            "一碗咖哩"
+        ],
+        "icon": "Curry_Restaurant",
+        "match": {
+            "cuisine": [
+                "curry",
+                "indian",
+                "sri_lankan"
+            ]
+        }
+    },
+    {
+        "label": "壽司餐廳",
+        "decor": [
+            "壽司"
+        ],
+        "icon": "Sushi_Restaurant",
+        "match": {
+            "cuisine": [
+                "sushi"
+            ]
+        }
+    },
+    {
+        "label": "墨西哥餐廳",
+        "decor": [
+            "塔可餅"
+        ],
+        "icon": "Mexican_Restaurant",
+        "match": {
+            "cuisine": [
+                "mexican"
+            ]
+        }
+    },
+    {
         "label": "餐廳",
         "decor": [
             "廚師帽子"
@@ -268,18 +348,6 @@
         }
     },
     {
-        "label": "壽司餐廳",
-        "decor": [
-            "壽司"
-        ],
-        "icon": "Sushi_Restaurant",
-        "match": {
-            "cuisine": [
-                "sushi"
-            ]
-        }
-    },
-    {
         "label": "山丘",
         "decor": [
             "山丘別針徽章"
@@ -328,36 +396,6 @@
         }
     },
     {
-        "label": "義式餐廳",
-        "decor": [
-            "披薩",
-            "義大利麵"
-        ],
-        "icon": "Italian_Restaurant",
-        "match": {
-            "cuisine": [
-                "pizza",
-                "mediterranean"
-            ]
-        }
-    },
-    {
-        "label": "拉麵店",
-        "decor": [
-            "拉麵鑰匙圈"
-        ],
-        "icon": "Ramen_Restaurant",
-        "match": {
-            "cuisine": [
-                "chinese",
-                "noodle",
-                "ramen",
-                "udon",
-                "soba"
-            ]
-        }
-    },
-    {
         "label": "橋梁",
         "decor": [
             "橋梁別針"
@@ -398,6 +436,9 @@
         "decor": [
             "運勢（吉）"
         ],
+        "countries": [
+            "JP"
+        ],
         "icon": "Shrine",
         "match": {
             "amenity": [
@@ -417,20 +458,6 @@
                 "appliance",
                 "computer",
                 "electronics"
-            ]
-        }
-    },
-    {
-        "label": "咖哩餐廳",
-        "decor": [
-            "一碗咖哩"
-        ],
-        "icon": "Curry_Restaurant",
-        "match": {
-            "cuisine": [
-                "curry",
-                "indian",
-                "sri_lankan"
             ]
         }
     },
@@ -461,18 +488,6 @@
         }
     },
     {
-        "label": "墨西哥餐廳",
-        "decor": [
-            "塔可餅"
-        ],
-        "icon": "Mexican_Restaurant",
-        "match": {
-            "cuisine": [
-                "mexican"
-            ]
-        }
-    },
-    {
         "label": "自助洗衣店&乾洗店",
         "decor": [
             "洗衣用品"
@@ -486,18 +501,6 @@
         }
     },
     {
-        "label": "韓國餐廳",
-        "decor": [
-            "韓國泡菜"
-        ],
-        "icon": "Korean_Restaurant",
-        "match": {
-            "cuisine": [
-                "korean"
-            ]
-        }
-    },
-    {
         "label": "文具店",
         "decor": [
             "文具"
@@ -506,7 +509,8 @@
         "match": {
             "shop": [
                 "stationery",
-                "craft"
+                "craft",
+                "variety_store"
             ]
         }
     }
