@@ -983,23 +983,25 @@ async function refreshPOIs() {
 
             poiDisplayLayer.addTo(poiLayer);
 
-            poiCircles.push({
-                id: key,
-                name: label,
-                decorLabel: decor.label,
-                decorIcon: decor.icon,
-                decorList: decor.decor.join(", "),
-                latlng: poiGeometry.latlng,
+            if (decor) {
+                poiCircles.push({
+                    id: key,
+                    name: label,
+                    decorLabel: decor.label,
+                    decorIcon: decor.icon,
+                    decorList: decor.decor.join(", "),
+                    latlng: poiGeometry.latlng,
 
-                geometryType: poiGeometry.type,
-                point: poiGeometry.point || null,
-                polygon: poiGeometry.polygon || null,
-                line: poiGeometry.line || null,
+                    geometryType: poiGeometry.type,
+                    point: poiGeometry.point || null,
+                    polygon: poiGeometry.polygon || null,
+                    line: poiGeometry.line || null,
 
-                layer: poiDisplayLayer,
-                osmType: el.type,
-                osmId: el.id
-            });
+                    layer: poiDisplayLayer,
+                    osmType: el.type,
+                    osmId: el.id
+                });
+            }
         }
         if (scannedS2Keys.size > 0) {
             resetS2CellStyles();
