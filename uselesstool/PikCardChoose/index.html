@@ -1,0 +1,158 @@
+<div id="map" style="height: 100vh;"></div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    const map = L.map("map").setView([25.04774571994052, 121.51706139977479], 14);
+
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap contributors"
+    }).addTo(map);
+
+    const wayfarerLayer = L.layerGroup().addTo(map);
+
+    async function loadWayfarerPois() {
+        const bounds = map.getBounds();
+
+        const ne = bounds.getNorthEast();
+        const sw = bounds.getSouthWest();
+
+        const url =
+            "https://wayfarer.nianticlabs.com/api/v1/vault/mapview/lowzoom/gcs" +
+            `?ne=(${ne.lat},${ne.lng})` +
+            `&sw=(${sw.lat},${sw.lng})` +
+            `&cellLevel=11`;
+
+        const response = await fetch(url, {
+            method: "GET",
+            credentials: "include"
+        });
+
+        const json = await response.json();
+
+        renderWayfarerPois(json);
+    }
+
+    function renderWayfarerPois(json) {
+        wayfarerLayer.clearLayers();
+
+        const cells = json?.result?.data ?? [];
+
+        const renderedPoiIds = new Set();
+
+        cells.forEach(cell => {
+            const metadata = cell.metadata;
+            const pois = cell.pois ?? [];
+
+            pois.forEach(poi => {
+                if (!poi.latE6 || !poi.lngE6) return;
+
+                // 避免不同 cell 之間出現重複 POI
+                if (renderedPoiIds.has(poi.poiId)) return;
+                renderedPoiIds.add(poi.poiId);
+
+                const lat = poi.latE6 / 1_000_000;
+                const lng = poi.lngE6 / 1_000_000;
+
+                const gmo = poi.gmo?.[0];
+                const gameBrand = gmo?.gameBrand ?? "UNKNOWN";
+                const entity = gmo?.entity ?? "UNKNOWN";
+                const status = gmo?.status ?? "UNKNOWN";
+
+                const marker = L.marker([lat, lng], {
+                    icon: createPoiIcon(status)
+                });
+
+                marker.bindPopup(`
+        <div style="width: 220px;">
+          ${poi.mainImage
+                        ? `<img src="${escapeHtml(poi.mainImage)}" style="width:100%;border-radius:8px;margin-bottom:8px;">`
+                        : ""
+                    }
+
+          <strong>${escapeHtml(poi.title ?? "未命名 POI")}</strong>
+
+          <div style="font-size: 12px; margin-top: 6px;">
+            <div>狀態：${escapeHtml(status)}</div>
+            <div>類型：${escapeHtml(entity)}</div>
+            <div>遊戲：${escapeHtml(gameBrand)}</div>
+            <div>S2 Cell：${escapeHtml(metadata?.s2CellId ?? "")}</div>
+          </div>
+
+          ${poi.address
+                        ? `<div style="font-size:12px;margin-top:6px;color:#666;">${escapeHtml(poi.address)}</div>`
+                        : ""
+                    }
+
+          ${poi.description
+                        ? `<div style="font-size:12px;margin-top:6px;">${escapeHtml(poi.description)}</div>`
+                        : ""
+                    }
+        </div>
+      `);
+
+                marker.addTo(wayfarerLayer);
+            });
+        });
+    }
+
+    function createPoiIcon(status) {
+        let className = "wayfarer-marker";
+
+        if (status === "ACTIVE") {
+            className += " active";
+        } else if (status === "INACTIVE") {
+            className += " inactive";
+        } else {
+            className += " unknown";
+        }
+
+        return L.divIcon({
+            className,
+            html: "",
+            iconSize: [14, 14],
+            iconAnchor: [7, 7],
+            popupAnchor: [0, -7]
+        });
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+    // 初次載入
+    loadWayfarerPois();
+
+    // 地圖移動後重新載入
+    map.on("moveend", () => {
+        loadWayfarerPois();
+    });
+</script>
+
+<style>
+    .wayfarer-marker {
+        border-radius: 50%;
+        border: 2px solid white;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.45);
+    }
+
+    .wayfarer-marker.active {
+        background: #2ecc71;
+    }
+
+    .wayfarer-marker.inactive {
+        background: #e74c3c;
+    }
+
+    .wayfarer-marker.unknown {
+        background: #3498db;
+    }
+</style>

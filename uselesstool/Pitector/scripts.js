@@ -1,6 +1,6 @@
-const map = L.map("map").setView([25.05717472524907, 121.36508365158228], 16);
+const map = L.map("map").setView([22.728143586390175, 120.27992357524298], 16);
 
-L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 20,
     attribution: "&copy; OpenStreetMap contributors &copy; CARTO"
 }).addTo(map);
@@ -921,13 +921,13 @@ async function refreshPOIs() {
     try {
         let data = [];
         if (!MOCK_POIS_ENABLED) {
-
+            console.log(query);
             const res = await fetch("https://overpass-api.de/api/interpreter", {
                 method: "POST",
                 body: query,
                 signal: abortController.signal
             });
-
+            console.log(res);
             if (res.status === 429 || res.status === 504) {
                 $("body").loadingModal("destroy");
 
@@ -958,6 +958,13 @@ async function refreshPOIs() {
             data = await res.json();
         }
 
+        Swal.fire({
+            icon: "info",
+            title: "探測完畢",
+            text: data.elements.length > 0 ? `已搜尋到${data.elements.length}筆資料` : '地圖範圍內無任何地點',
+            confirmButtonText: data.elements.length > 0 ? "來瞧瞧🧐" : "路邊飾品天堂🥰"
+        });
+
         poiLayer.clearLayers();
         poiCircles.length = 0;
 
@@ -970,16 +977,25 @@ async function refreshPOIs() {
         for (const el of elements) {
             const key = `${el.type}-${el.id}`;
 
-            if (seen.has(key)) continue;
+            if (seen.has(key)) {
+                console.log("seen.has(key)錯誤", seen, key);
+                continue;
+            }
             seen.add(key);
 
             const label = getLabel(el);
             const decor = getPikminDecor(el);
             const poiDisplayLayer = getPoiLayer(el, label, decor);
-            if (!poiDisplayLayer) continue;
+            if (!poiDisplayLayer) {
+                console.log("poiDisplayLayer錯誤", el);
+                continue;
+            }
 
             const poiGeometry = getPoiGeometry(el);
-            if (!poiGeometry) continue;
+            if (!poiGeometry) {
+                console.log("poiGeometry錯誤", el);
+                continue;
+            }
 
             poiDisplayLayer.addTo(poiLayer);
 
