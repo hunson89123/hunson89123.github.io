@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#22634c">
+  <meta name="description" content="輸入座標，串起你的散步路線。支援步行導航與中途站順序最佳化。">
+  <title>Pasufainda｜一步一步，把地點連成旅程</title>
+  <link rel="stylesheet" href="./vendor/leaflet.css"><link rel="stylesheet" href="./style.css">
+  <script defer src="./vendor/leaflet.js"></script><script type="module" src="./app.js"></script>
+</head>
+<body>
+<header class="topbar"><a class="brand" href="./"><span class="brand-icon" aria-hidden="true">⌁</span> pasufainda<span class="brand-dot">.</span></a><span class="header-tag">WALK A LITTLE. DISCOVER MORE.</span><a class="help-link" href="#settings">連線設定 <span aria-hidden="true">↗</span></a></header>
+<main>
+  <section class="intro"><div><div class="eyebrow">YOUR EVERYDAY WALK PLANNER</div><h1>把想去的地方，<span>走成一條路。</span></h1><p>貼上座標、排好順序，剩下的交給腳步。</p></div><div class="intro-note"><span class="small-icon">↟</span><div>為步行而規劃<small>沿著街道，探索日常的另一面。</small></div></div></section>
+  <div class="workspace">
+    <aside class="planner">
+      <div class="panel-heading"><h2><span class="section-number">01</span> 你的停靠點</h2><span id="point-count" class="pill">0 個地點</span></div>
+      <div class="input-label"><label for="coordinates">座標清單</label><button class="text-button" id="example">載入台北範例 ↗</button></div>
+      <p class="hint" id="coord-help">每行一個「緯度, 經度」，可在後方加上地點名稱。</p>
+      <textarea id="coordinates" rows="7" spellcheck="false" aria-describedby="coord-help" placeholder="25.03396, 121.56447, 台北 101&#10;25.03544, 121.56768, 四四南村&#10;25.03930, 121.56030, 國父紀念館"></textarea>
+      <div class="input-footer"><span>也可以點擊地圖新增地點</span><button id="clear" class="text-button">清空</button></div>
+      <div id="points" class="points" aria-label="地點順序"></div>
+      <div class="mode-heading"><h2><span class="section-number">02</span> 怎麼走？</h2></div>
+      <fieldset class="modes"><legend class="sr-only">路線模式</legend>
+        <label class="mode"><input type="radio" name="mode" value="ordered" checked><span><strong>依照輸入順序</strong><small>每一站，都照你的計畫走。</small></span><span aria-hidden="true">↳</span></label>
+        <label class="mode"><input type="radio" name="mode" value="optimized"><span><strong>最佳化中途順序</strong><small>固定起終點，找出較省時的順序。</small></span><span aria-hidden="true">⤨</span></label>
+      </fieldset>
+      <p class="hint limits">依序最多 50 點；最佳化最多 12 點。</p>
+      <button id="plan" class="primary">規劃步行路線 <span aria-hidden="true">→</span></button>
+      <div id="status" class="status" role="status" aria-live="polite">從兩個地點開始，規劃一段新的散步。</div>
+      <details id="settings"><summary>路由服務設定 <span id="key-state">尚未設定 API Key</span></summary><div class="settings-body"><label for="api-key">OpenRouteService API Key</label><input id="api-key" type="password" autocomplete="off" placeholder="貼上你的 API Key"><p class="hint">Key 只保留在此分頁記憶體，重新整理即清除。座標與 Key 會直接送至 OpenRouteService，不經過本網站伺服器。</p><a href="https://account.heigit.org/" target="_blank" rel="noopener noreferrer">申請 API Key ↗</a></div></details>
+    </aside>
+    <section class="map-panel" aria-label="步行地圖與結果">
+      <div class="map-wrapper"><div id="map" aria-label="互動地圖"></div><div class="map-caption"><span class="live-dot"></span> 步行探索地圖 <span class="map-caption-sub">／ 點一下，加入行程</span></div><button class="fit-button" id="fit" aria-label="顯示所有地點">⌖</button><div class="map-hint" id="map-hint">你的下一段散步，從這裡開始。</div></div>
+      <div class="result-bar"><div><span class="metric-label">步行距離</span><strong id="distance">—<small> km</small></strong></div><div><span class="metric-label">預估時間</span><strong id="duration">—<small> 分鐘</small></strong></div><div><span class="metric-label">沿途停靠</span><strong id="stops">—<small> 個地點</small></strong></div><button id="export" class="export-button" disabled>下載 GPX <span aria-hidden="true">↓</span></button></div>
+      <div class="route-details" id="route-details" hidden><div class="result-heading"><h2>這次的散步路線</h2><span id="route-mode" class="pill"></span></div><p id="route-order"></p><p id="route-notice" class="hint"></p><ol id="segments"></ol><details><summary>逐步導航</summary><ol id="directions"></ol></details></div>
+    </section>
+  </div>
+  <footer><span><b>少一點繞路，多一點風景。</b> Made for wandering.</span><span>路線由 <a href="https://openrouteservice.org/" target="_blank" rel="noopener noreferrer">OpenRouteService</a> 提供 · 地圖 © OpenStreetMap contributors</span></footer>
+</main>
+</body></html>
